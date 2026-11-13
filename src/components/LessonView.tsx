@@ -124,7 +124,7 @@ export default function LessonView({
           <Prediction expected={lesson.examples[0].output}/>
           {lesson.examples.map((example, index) => <article className="example" key={example.title}>
             <h3>{example.title}</h3>
-            <CodeLab initial={example.code} input={example.input} expected={example.output} onRun={onRun} label={`example_${index + 1}.py`}/>
+            <CodeLab draftId={'chapter-'+lesson.id+'-example-'+index} initial={example.code} input={example.input} expected={example.output} onRun={onRun} label={`example_${index + 1}.py`}/>
             {example.annotations && <details><summary>Read the syntax</summary><dl>
               {example.annotations.map(([syntax, explanation]) => <div key={syntax}><dt><code>{syntax}</code></dt><dd>{explanation}</dd></div>)}
             </dl></details>}
@@ -133,7 +133,7 @@ export default function LessonView({
         </Section>
         <Section title="Break it & fix it">
           <p>Run this example, identify the mistake and try a fix.</p>
-          <CodeLab initial={lesson.mistake.code} input={lesson.examples[0].input} label="fix_me.py"/>
+          <CodeLab draftId={'chapter-'+lesson.id+'-repair'} initial={lesson.mistake.code} input={lesson.examples[0].input} label="fix_me.py"/>
           <details><summary>Show the fix & explanation</summary><pre>{lesson.mistake.fix}</pre><p>{lesson.mistake.why}</p></details>
           {lesson.misconceptions && <ul>{lesson.misconceptions.map(item => <li key={item}>{item}</li>)}</ul>}
         </Section>

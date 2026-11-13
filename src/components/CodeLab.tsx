@@ -1,3 +1,4 @@
+import {storage} from '../lib/storage';
 import {Component, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode} from 'react';
 import Editor from 'react-simple-code-editor';
 import Prism from 'prismjs';
@@ -22,7 +23,7 @@ type Result = {name: string; passed: boolean; detail?: string};
 type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; cases?: Result[]};
 type Props = {
   initial: string; input?: string; expected?: string; tests?: string; cases?: TestCase[];
-  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; onCodeChange?: (code: string) => void;
+  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; onCodeChange?: (code: string) => void;
 };
 
 function explainError(error: string) {
@@ -35,11 +36,31 @@ function explainError(error: string) {
 }
 
 export default function CodeLab({
-  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, onCodeChange,
+  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, onCodeChange,
 }: Props) {
   const editorId = useId();
-  const [code, setCode] = useState(initial);
-  const [queue, setQueue] = useState(input);
+  const draftKey = draftId || persist ? 'python-lab.editor.v1:' + (draftId ?? label) : null;
+  const [draft,setDraft] = useState(() => {
+    if (draftKey) {
+      try {
+        const saved = JSON.parse(storage.getItem(draftKey) ?? 'null');
+        if (typeof saved?.code === 'string' && typeof saved?.input === 'string') return {code:saved.code as string,input:saved.input as string,saved:true};
+      } catch { /* A corrupt draft falls back to the starter. */ }
+    }
+    return {code:initial,input,saved:false};
+  });
+  const {code,input:queue} = draft;
+  const [saveFailed,setSaveFailed] = useState(false);
+
+  function saveDraft(code:string, input:string) {
+    let saved = false;
+    if (draftKey) {
+      try { storage.setItem(draftKey,JSON.stringify({code,input})); saved = true; }
+      catch { setSaveFailed(true); }
+    }
+    if (saved) setSaveFailed(false);
+    setDraft({code,input,saved});
+  }
   const [stdout, setStdout] = useState('');
   const [stderr, setStderr] = useState('');
   const [exception, setException] = useState('');
@@ -70,7 +91,7 @@ export default function CodeLab({
   }, []);
 
   function update(value: string) {
-    setCode(value);
+    saveDraft(value,queue);
     onCodeChange?.(value);
   }
 
@@ -171,6 +192,10 @@ export default function CodeLab({
   }}>
     <div className="editor-title">
       <span><span className="file-dot"/> {label} <small>Python 3</small></span>
+      <div className="editor-file-actions">
+        {draftKey && <span className="draft-status" data-saved={draft.saved} role="status">
+          {saveFailed ? 'Draft could not save. Copy your code before leaving.' : draft.saved ? 'Saved on this device' : 'Autosaves on this device'}
+        </span>}
       <button className="icon-button" title="Copy code" aria-label="Copy code" onClick={async () => {
         try {
           await navigator.clipboard.writeText(code);
@@ -179,6 +204,7 @@ export default function CodeLab({
           setFeedback('Copy is unavailable. Select and copy the code manually.');
         }
       }}><Copy size={15}/></button>
+      </div>
     </div>
     <div className="editor-body">
       <label className="sr-only" htmlFor={editorId}>Python code: {label}</label>
@@ -192,16 +218,17 @@ export default function CodeLab({
       </div>
     </div>
     <label className="queue-label">Program input <span>One response per line, supplied before Run</span>
-      <textarea value={queue} onChange={event => setQueue(event.target.value)} placeholder="For input() examples" rows={2}/>
+      <textarea value={queue} onChange={event => saveDraft(code,event.target.value)} placeholder="For input() examples" rows={2}/>
     </label>
     <div className="editor-actions">
       <button className="button primary small" disabled={busy} onClick={() => run()} title="Ctrl or Command + Enter"><Play size={15}/> Run Code</button>
       {onPass && <button className="button small" disabled={busy} onClick={() => run(true)}><CheckCircle2 size={15}/> Check Answer</button>}
       <button className="button small" disabled={!busy} onClick={() => stop()}><Square size={14}/> Stop</button>
       <button className="icon-button" title="Reset code and runtime" aria-label="Reset code and runtime" onClick={() => {
+        if ((code !== initial || queue !== input) && !window.confirm("Replace your saved work with the starter code and input?")) return;
         stop('Reset. Ready to run.');
-        update(initial);
-        setQueue(input);
+        saveDraft(initial,input);
+        onCodeChange?.(initial);
         clearOutput();
       }}><RotateCcw size={16}/></button>
       <button className="icon-button" title="Clear output" aria-label="Clear output" onClick={clearOutput}><Trash2 size={16}/></button>
@@ -221,8 +248,8 @@ export default function CodeLab({
     </li>)}</ul>}
     {persist && <Snippets code={code} input={queue} onLoad={snippet => {
       stop('Snippet loaded. Ready to run.');
-      update(snippet.code);
-      setQueue(snippet.input);
+      saveDraft(snippet.code,snippet.input);
+      onCodeChange?.(snippet.code);
       clearOutput();
     }}/>}
     <p className="runtime-note">Ctrl or Command + Enter runs the code. Pyodide downloads on first use. Each run has a 12-second execution limit.</p>

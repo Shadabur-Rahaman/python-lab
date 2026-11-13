@@ -21,7 +21,7 @@ export default function TaskCard({task, solved, onPass}: {task: Task; solved: bo
         : <pre>{task.tests ? 'Your function must pass the assertion suite.' : task.expected}</pre>}
       {task.tests && <details><summary>View assertions</summary><pre>{task.tests}</pre></details>}
     </div>
-    <CodeLab initial={task.starter} input={task.input} expected={task.expected} tests={task.tests}
+    <CodeLab key={task.id} draftId={'task-'+task.id} initial={task.starter} input={task.input} expected={task.expected} tests={task.tests}
       cases={task.cases} onPass={onPass} label={`${task.id}.py`}/>
     <div className="hint-area">
       <button className="button small" disabled={hintCount >= task.hints.length} onClick={() => setHintCount(hintCount + 1)}>

@@ -16,7 +16,7 @@ function TopicView({topic, lessonTitle}: {topic: Topic; lessonTitle: string}) {
       <dl>{topic.symbols.map(([symbol, detail]) => <div key={symbol}><dt><code>{symbol}</code></dt><dd>{detail}</dd></div>)}</dl>
     </div>
     <h3>Try it in Python</h3>
-    <CodeLab initial={topic.code} input={topic.input} expected={topic.output} label={`${topic.id}.py`}/>
+    <CodeLab key={topic.id} draftId={'syntax-'+topic.id} initial={topic.code} input={topic.input} expected={topic.output} label={`${topic.id}.py`}/>
     <details className="card"><summary>Expected output and execution trace</summary><pre>{topic.output}</pre><p>{topic.trace}</p></details>
     <div className="card"><h3>Common mistake</h3><p>{topic.pitfall}</p><details><summary>Show a working alternative</summary><pre>{topic.correction}</pre></details></div>
     <div className="card"><h3>Practice</h3><ol>{topic.practice.map(task => <li key={task}>{task}</li>)}</ol></div>
