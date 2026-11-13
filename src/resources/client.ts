@@ -5,7 +5,7 @@ const key = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? '').trim();
 const validUrl = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(url)
   || /^http:\/\/(127\.0\.0\.1|localhost):54321\/?$/.test(url);
 export const cloud = validUrl && key.startsWith('sb_publishable_')
-  ? createClient(url, key, {auth:{storageKey:'python-lab.teacher.session'}})
+  ? createClient(url, key, {auth:{storageKey:'python-lab.teacher.session',flowType:'pkce'}})
   : null;
 
 export type Resource = {
@@ -51,4 +51,13 @@ export async function categories() {
   const {data,error} = await cloud.from('resource_categories').select('id,name').eq('archived',false).order('display_order');
   if (error) throw error;
   return data as Category[];
+}
+
+export async function signedLink(id:string, preview:boolean, teacher:boolean) {
+  const result = await request<{url:string}>('link',{id,preview},teacher);
+  const url = new URL(result.url);
+  if (url.protocol !== 'https:' && !(url.protocol === 'http:' && ['localhost','127.0.0.1'].includes(url.hostname))) {
+    throw Error('The file link is unavailable.');
+  }
+  return url.href;
 }

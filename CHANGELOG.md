@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0
+
+- Restored the dedicated Supabase connection in the GitHub Pages build.
+- Grouped the student workspace navigation and added a keyboard shortcut for course search.
+- Redesigned Study Materials with file metadata, filters, sorting and keyboard-accessible previews.
+- Moved teacher tools behind a direct route with a dedicated sign-in screen and server-verified role.
+
 ## 3.0–3.3 preview
 
 - Added 30 deep-linkable syntax topics with executable examples and knowledge checks.

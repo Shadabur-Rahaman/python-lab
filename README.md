@@ -57,3 +57,9 @@ Put one response per line in **Program input** before running `input()` examples
 - `public/python-worker.js` runs Python and returns structured case results.
 
 See the [curriculum map](docs/CURRICULUM-MAP.md), [authoring guide](docs/AUTHORING.md), [audit and roadmap](docs/AUDIT-AND-ROADMAP.md), and [changelog](CHANGELOG.md).
+
+## Study Materials and Teacher Studio
+
+Use **Study Materials** in the student navigation to browse published resources. Filter by course chapter, language, difficulty, category, type or publication date. PDF, image and text files support preview.
+
+Authorized teachers use the [direct studio link](https://shadabur-rahaman.github.io/python-lab/#/teacher/resources). See [Private Teacher Studio](PRIVATE_TEACHER_STUDIO.md) for account and recovery setup, and [Supabase connection verification](SUPABASE_CONNECTION_VERIFICATION.md) for the GitHub Pages configuration.

@@ -1,5 +1,5 @@
 import {lazy,Suspense,useEffect,useState} from 'react';
-import {ArrowRight,BookOpen,Code2,FlaskConical,Home,Menu,Moon,Sun,Target,Trophy,FolderOpen,Search,Check,ChevronRight,Sparkles,Terminal,Compass} from 'lucide-react';
+import {ArrowRight,BookOpen,Code2,FlaskConical,Home,Menu,Moon,Sun,Target,Trophy,FolderOpen,Search,Check,ChevronRight,Terminal,Compass} from 'lucide-react';
 import {chapters as beginner,allTasks,revisionQuiz} from './data/curriculum';
 import {buildCatalog,lessonNeighbors} from './data/catalog.mjs';
 import {projects} from './data/projects';
@@ -20,11 +20,17 @@ const KnowledgeSearch = lazy(() => import('./components/KnowledgeSearch'));
 const SyntaxAcademy = lazy(() => import('./components/SyntaxAcademy'));
 const catalog = buildCatalog(beginner, projects);
 const chapters = catalog.lessons;
-const nav=[['home','Home',Home],['chapters','Chapters',BookOpen],['syntax','Python Syntax Academy',Code2],['glossary','Bilingual Glossary',BookOpen],['practice','Practice',Code2],['lab','Experiment Lab',FlaskConical],['quiz','Quiz Arena',Target],['resources','Study Materials',FolderOpen],['projects','Real-World Projects',FolderOpen],['progress','My Progress',Trophy],['teacher','Teacher Dashboard',FolderOpen]] as const;
+const groups = [
+ ['Workspace', [['home','Home',Home],['progress','My Progress',Trophy]]],
+ ['Learn', [['chapters','Learning Roadmap',BookOpen],['syntax','Python Syntax Academy',Code2],['glossary','Bilingual Glossary',BookOpen],['resources','Study Materials',FolderOpen]]],
+ ['Build and practice', [['practice','Practice',Code2],['lab','Experiment Lab',FlaskConical],['quiz','Quiz Arena',Target],['projects','Real-World Projects',FolderOpen]]],
+] as const;
+const nav = groups.flatMap(([,items]) => [...items]);
 const link=(route:string)=>`#/${route}`;
 export default function App(){
  const [route,setRoute]=useState(location.hash.slice(2)||'home');
  const [menu,setMenu]=useState(false);
+ const [collapsed,setCollapsed]=useState(false);
  const [quizTopic,setQuizTopic]=useState('0');
  const [notice,setNotice]=useState('');
  const [expanded,setExpanded]=useState<Chapter[]>();
@@ -32,6 +38,7 @@ export default function App(){
  const [progress,setProgress]=useState(()=>loadProgress(storage,catalog));
  const [dark,setDark]=useState(()=>{try{return localStorage.getItem('python-lab.theme')==='dark';}catch{return false;}});
  const [page,id,topicId]=route.split('?')[0].split('/');
+ const teacherRoute=route.split('?')[0]==='teacher/resources'||new URLSearchParams(location.search).get('teacher-recovery')==='1';
  const metadata=chapters.find(item=>String(item.id)===id);
  const chapter=beginner.find(item=>String(item.id)===id) ?? expanded?.find(item=>String(item.id)===id);
  const project=projects.find(item=>item.id===id);
@@ -99,6 +106,19 @@ export default function App(){
    return ()=>window.removeEventListener('keydown',closeOnEscape);
  },[menu]);
 
+ useEffect(()=>{
+   if(teacherRoute) return;
+   function searchShortcut(event:KeyboardEvent) {
+     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k') {
+       event.preventDefault();
+       if(page==='search') document.querySelector<HTMLInputElement>('#main input')?.focus();
+       else location.hash=link('search');
+     }
+   }
+   window.addEventListener('keydown',searchShortcut);
+   return ()=>window.removeEventListener('keydown',searchShortcut);
+ },[page,teacherRoute]);
+
  const last=chapters.find(item=>item.id===progress.last) ?? chapters[0];
  const next=progress.completed.includes(last.id)
    ? lessonNeighbors(catalog,last.id).next ?? chapters.find(item=>!progress.completed.includes(item.id)) ?? last
@@ -116,18 +136,48 @@ export default function App(){
  const selectedQuiz=quizTopic==='revision'?revisionQuiz:
    (beginner.find(item=>String(item.id)===quizTopic)??expanded?.find(item=>String(item.id)===quizTopic))?.quiz;
  const waiting=needsExpanded&&!expanded;
- const titles:Record<string,string>={home:'Your learning dashboard',chapters:'Your Python roadmap',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',teacher:'Teacher Dashboard',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||'Build something real.',progress:'Look how far you’ve come.'};
- return <div className="app-shell"><a className="skip-link" href="#main" onClick={e=>{e.preventDefault();document.getElementById("main")?.focus();}}>Skip to content</a><aside id="workspace-sidebar" className={`sidebar ${menu?'open':''}`}><a className="brand" href={link('home')}><span className="brand-mark"><Code2 size={24}/></span><span>Python<span className="brand-light">Lab</span><small>FROM ZERO TO “I BUILT THIS.”</small></span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{nav.map(([path,name,Icon])=><a key={path} href={link(path==='teacher'?'teacher/resources':path)} className={(page===path||(path==='chapters'&&page==='chapter'))?'active':''} aria-current={page===path?'page':undefined}><Icon size={19}/>{name}{path==='lab'&&<span className="tiny-pill">TRY IT</span>}</a>)}</nav><div className="sidebar-course"><span className="small-label">PYTHON FOUNDATIONS</span><div className="section-heading"><b>Your journey</b><span>{coursePercent}%</span></div><div className="progress-track"><span style={{width:`${coursePercent}%`}}/></div><small>{progress.completed.length} of {chapters.length} chapters completed</small><a href={link(`chapter/${next.id}`)}>Keep going <ArrowRight size={15}/></a></div><div className="sidebar-footer"><span className="live-dot"/> A small step, every day.<small>Made for curious minds.</small></div></aside>
- {menu&&<button className="menu-shade" aria-label="Close navigation" onClick={()=>setMenu(false)}/>}
- <div className="main-shell"><header className="topbar"><div><button className="icon-button mobile-menu" aria-label="Toggle navigation" aria-expanded={menu} aria-controls="workspace-sidebar" onClick={()=>setMenu(!menu)}><Menu size={22}/></button><a href={link('home')}>Workspace</a><ChevronRight size={14}/><span>{nav.find(([path])=>path===page)?.[1]||(page==='chapter'?'Chapters':'Home')}</span></div><div className="topbar-actions"><span className="beginner-tag"><span/> Beginner friendly</span><a className="icon-button" href={link("search")} aria-label="Search Python Lab"><Search size={18}/></a><button className="icon-button" onClick={()=>setDark(!dark)} aria-label={dark?'Switch to light mode':'Switch to dark mode'}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button><span className="avatar" title="Your local learning space">Y</span></div></header>
+ const titles:Record<string,string>={home:'Your learning dashboard',chapters:'Your Python roadmap',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||'Build something real.',progress:'Look how far you’ve come.'};
+ const themeButton=<button className="icon-button" onClick={()=>setDark(!dark)} aria-label={dark?'Switch to light mode':'Switch to dark mode'}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>;
+ if(teacherRoute) return <div className="studio-shell">
+   <header className="studio-header"><a href={link('home')} className="studio-brand"><Code2 size={22}/> Python Lab</a>{themeButton}</header>
+   <main id="main" className="studio-main" tabIndex={-1}>
+     <Suspense fallback={<p role="status">Loading teacher sign-in…</p>}><TeacherResources lessons={chapters}/></Suspense>
+   </main>
+ </div>;
+ return <div className={'app-shell'+(collapsed?' sidebar-collapsed':'')}>
+   <a className="skip-link" href="#main" onClick={event=>{event.preventDefault();document.getElementById('main')?.focus();}}>Skip to content</a>
+   <aside id="workspace-sidebar" className={'sidebar'+(menu?' open':'')}>
+     <a className="brand" href={link('home')}><span className="brand-mark"><Code2 size={24}/></span><span>Python<span className="brand-light">Lab</span><small>STUDENT WORKSPACE</small></span></a>
+     <nav aria-label="Main navigation">
+       {groups.map(([label,items])=><details key={label} open className="nav-group">
+         <summary>{label}<ChevronRight size={13}/></summary>
+         {items.map(([path,name,Icon])=>{
+           const active=page===path||(path==='chapters'&&page==='chapter');
+           return <a key={path} href={link(path)} className={active?'active':''} aria-current={active?'page':undefined}><Icon size={18}/>{name}</a>;
+         })}
+       </details>)}
+     </nav>
+     <div className="sidebar-course"><div className="section-heading"><b>Course progress</b><span>{coursePercent}%</span></div>
+       <div className="progress-track"><span style={{width:coursePercent+'%'}}/></div>
+       <small>{progress.completed.length} of {chapters.length} chapters completed</small>
+     </div>
+   </aside>
+   {menu&&<button className="menu-shade" aria-label="Close navigation" onClick={()=>setMenu(false)}/>}
+   <div className="main-shell"><header className="topbar">
+     <div>
+       <button className="icon-button mobile-menu" aria-label="Toggle navigation" aria-expanded={menu} aria-controls="workspace-sidebar" onClick={()=>setMenu(!menu)}><Menu size={22}/></button>
+       <button className="icon-button desktop-menu" aria-label={collapsed?'Show navigation':'Hide navigation'} aria-expanded={!collapsed} aria-controls="workspace-sidebar" onClick={()=>setCollapsed(!collapsed)}><Menu size={18}/></button>
+       <a href={link('home')}>Workspace</a><ChevronRight size={14}/><span>{nav.find(([path])=>path===page)?.[1]||(page==='chapter'?'Chapters':page==='search'?'Search':'Home')}</span>
+     </div>
+     <div className="topbar-actions"><a className="search-shortcut" href={link('search')} aria-label="Search Python Lab"><Search size={17}/><span>Search</span><kbd>{navigator.platform.includes('Mac')?'⌘':'Ctrl'} K</kbd></a>{themeButton}</div>
+   </header>
  <main id="main" tabIndex={-1}>{notice&&<p className="feedback" role="alert">{notice}</p>}
- {page==='home'?<><div className="welcome-heading"><div><span className="eyebrow">LET’S MAKE SOMETHING CLICK</span><h2>Hello, future Pythonista <span className="wave">✦</span></h2><p>Big things start with a simple <code>print("Hello")</code>.</p></div><span className="version-tag">PYTHON LAB <b>3.0 PREVIEW</b></span></div><section className="hero"><div className="hero-copy"><span className="hero-badge"><Sparkles size={14}/> ZERO EXPERIENCE. ENDLESS POSSIBILITIES.</span><h1>Your Python journey<br/>starts <em>here.</em></h1><p>No experience? No problem. Learn Python step by step, run your first program, experiment with code, and build real things — right in your browser.</p><div className="hero-buttons"><a className="button primary" href={link(`chapter/${next.id}`)}>Start Learning <ArrowRight size={17}/></a><a className="button white" href={link('lab')}><Terminal size={17}/> Open Python Playground</a></div><div className="hero-checks"><span><Check size={14}/> No setup needed</span><span><Check size={14}/> Learn at your pace</span><span><Check size={14}/> 100% free</span></div></div><div className="hero-art" aria-label="Python code transforms an idea into output"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><span className="floating-tag tag-one"><span>✦</span> Ideas become code</span><div className="hero-window"><div className="window-bar"><i/><i/><i/><span>hello_python.py</span><Code2 size={14}/></div><div className="hero-code"><span className="code-comment"># Every expert was once a beginner.</span><br/><span className="code-purple">name</span> = <span className="code-yellow">"Future Pythonista"</span><br/><br/><span className="code-blue">print</span>(<span className="code-yellow">"Hello,"</span>, name)<br/><span className="code-blue">print</span>(<span className="code-yellow">"Let's build something!"</span>)</div><div className="hero-output"><span>›_ OUTPUT</span><p>Hello, Future Pythonista<br/>Let's build something!</p><small><span/> Executed successfully</small></div></div><div className="python-tile"><span>Py</span><small>your first superpower</small></div><span className="floating-tag tag-two"><Check size={15}/> You can do this.</span></div></section>
+ {page==='home'?<><section className="hero"><div className="hero-copy"><h1>Learn Python<br/><em>by writing it.</em></h1><p>Start with variables and simple programs, then put each concept to work in your browser.</p><div className="hero-buttons"><a className="button primary" href={link(`chapter/${next.id}`)}>{progress.visited.length?'Continue learning':'Start Learning'} <ArrowRight size={17}/></a><a className="button white" href={link('lab')}><Terminal size={17}/> Open Python Playground</a></div><div className="hero-checks"><span><Check size={14}/> No setup needed</span><span><Check size={14}/> Learn at your pace</span><span><Check size={14}/> 100% free</span></div></div><div className="hero-art" aria-label="Python code transforms an idea into output"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><span className="floating-tag tag-one"><span>✦</span> Ideas become code</span><div className="hero-window"><div className="window-bar"><i/><i/><i/><span>hello_python.py</span><Code2 size={14}/></div><div className="hero-code"><span className="code-comment"># Every expert was once a beginner.</span><br/><span className="code-purple">name</span> = <span className="code-yellow">"Future Pythonista"</span><br/><br/><span className="code-blue">print</span>(<span className="code-yellow">"Hello,"</span>, name)<br/><span className="code-blue">print</span>(<span className="code-yellow">"Let's build something!"</span>)</div><div className="hero-output"><span>›_ OUTPUT</span><p>Hello, Future Pythonista<br/>Let's build something!</p><small><span/> Executed successfully</small></div></div><div className="python-tile"><span>Py</span><small>your first superpower</small></div><span className="floating-tag tag-two"><Check size={15}/> You can do this.</span></div></section>
  <div className="stats-grid">{[[BookOpen,chapters.length,'Guided chapters','From the very first step'],[Code2,catalog.taskIds.size,'Practice challenges','Learn by doing'],[FlaskConical,experimentNames.length,'Interactive experiments','Make concepts click'],[FolderOpen,projects.length,'Real-world projects','Build with confidence']].map(([Icon,n,label,sub]:any,i)=><div className="stat-card" key={label}><span className={`stat-icon color-${i}`}><Icon size={21}/></span><div><b>{n} <span>{label}</span></b><small>{sub}</small></div></div>)}</div>
- <div className="dashboard-columns"><section><div className="section-heading"><div><span className="eyebrow">ONE CONCEPT AT A TIME</span><h2>Your learning roadmap</h2></div><a className="text-link" href={link('chapters')}>Explore Chapters <ArrowRight size={15}/></a></div><div className="roadmap-list">{chapters.slice(0,5).map((c,i)=><a className="roadmap-row" href={link(`chapter/${c.id}`)} key={c.id}><span className={`chapter-number ${progress.completed.includes(c.id)?'complete':''}`}>{progress.completed.includes(c.id)?<Check size={18}/>:String(c.id).padStart(2,'0')}</span><div><h3>{c.title}</h3><p>{c.subtitle}</p></div><span className={`lesson-status ${c.id===next.id?'current':''}`}>{progress.completed.includes(c.id)?'Completed':c.id===next.id?'Start here':`${i<2?'45':'60'} min`}</span><ChevronRight size={17}/></a>)}</div><a className="roadmap-bottom" href={link('chapters')}>A whole world ahead. Explore all {chapters.length} chapters <ArrowRight size={15}/></a></section><aside className="dashboard-right"><div className="continue-card"><span className="eyebrow">YOUR NEXT SMALL STEP</span><span className="continue-icon"><Compass size={25}/></span><h3>{next.title}</h3><p>{next.subtitle}. A great place to {progress.visited.length?'pick up where you left off.':'begin your adventure.'}</p><a className="button primary" href={link(`chapter/${next.id}`)}>{progress.visited.length?'Continue learning':'Let’s get started'} <ArrowRight size={16}/></a><small>No rush. You’re learning, not racing.</small></div><a href={link('lab')} className="play-card"><span className="stat-icon color-2"><FlaskConical size={22}/></span><div><h3>What if you change it?</h3><p>Meet the playground. Break things.<br/>That’s how the learning happens.</p><b>Try an experiment <ArrowRight size={14}/></b></div></a></aside></div>{progress.recent.length>0&&<section className="card"><h2>Recently visited</h2><ul>{progress.recent.map(id=><li key={id}><a className="inline-link" href={link(`chapter/${id}`)}>{chapters.find(item=>item.id===id)?.title}</a></li>)}</ul></section>}<div className="philosophy"><span>LEARN IT.</span><i>→</i><span>TRY IT.</span><i>→</i><span>BREAK IT.</span><i>→</i><span>FIX IT.</span><i>→</i><b>MASTER IT.</b></div></>:
- <><div className="page-heading"><span className="eyebrow">PYTHON LAB / {page==='chapter'?`CHAPTER ${metadata?.id ?? ""}`:page.toUpperCase()}</span><h1>{titles[page]||'Find your next step'}</h1><p>{page==='chapters'?'A clear path from your first line of code to your first real project. Every chapter is open to explore.':page==='practice'?'Run to experiment. Check Answer to verify your solution. Mistakes are part of the process.':page==='lab'?'A safe place to ask “what if?”. This is real Python, right in your browser.':page==='quiz'?'Strengthen your understanding, one good question at a time.':page==='projects'?'Useful skills become useful things. Choose a guided project and make it yours.':page==='progress'?'Every experiment, every mistake, every small win counts.':metadata?.subtitle}</p></div>
+ <div className="dashboard-columns"><section><div className="section-heading"><div><span className="eyebrow">ONE CONCEPT AT A TIME</span><h2>Your learning roadmap</h2></div><a className="text-link" href={link('chapters')}>Explore Chapters <ArrowRight size={15}/></a></div><div className="roadmap-list">{chapters.slice(0,5).map((c,i)=><a className="roadmap-row" href={link(`chapter/${c.id}`)} key={c.id}><span className={`chapter-number ${progress.completed.includes(c.id)?'complete':''}`}>{progress.completed.includes(c.id)?<Check size={18}/>:String(c.id).padStart(2,'0')}</span><div><h3>{c.title}</h3><p>{c.subtitle}</p></div><span className={`lesson-status ${c.id===next.id?'current':''}`}>{progress.completed.includes(c.id)?'Completed':c.id===next.id?'Start here':`${i<2?'45':'60'} min`}</span><ChevronRight size={17}/></a>)}</div><a className="roadmap-bottom" href={link('chapters')}>A whole world ahead. Explore all {chapters.length} chapters <ArrowRight size={15}/></a></section><aside className="dashboard-right"><div className="continue-card"><span className="continue-icon"><Compass size={25}/></span><h3>{next.title}</h3><p>{next.subtitle}. A great place to {progress.visited.length?'pick up where you left off.':'begin your adventure.'}</p><a className="button primary" href={link(`chapter/${next.id}`)}>{progress.visited.length?'Continue learning':'Let’s get started'} <ArrowRight size={16}/></a></div><a href={link('lab')} className="play-card"><span className="stat-icon color-2"><FlaskConical size={22}/></span><div><h3>What if you change it?</h3><p>Meet the playground. Break things.<br/>That’s how the learning happens.</p><b>Try an experiment <ArrowRight size={14}/></b></div></a></aside></div>{progress.recent.length>0&&<section className="card"><h2>Recently visited</h2><ul>{progress.recent.map(id=><li key={id}><a className="inline-link" href={link(`chapter/${id}`)}>{chapters.find(item=>item.id===id)?.title}</a></li>)}</ul></section>}</>:
+ <><div className="page-heading"><span className="eyebrow">PYTHON LAB / {page==='chapter'?`CHAPTER ${metadata?.id ?? ""}`:page.toUpperCase()}</span><h1>{titles[page]||'Find your next step'}</h1><p>{page==='chapters'?'A clear path from your first line of code to your first real project. Every chapter is open to explore.':page==='practice'?'Run to experiment. Check Answer to verify your solution. Mistakes are part of the process.':page==='lab'?'A safe place to ask “what if?”. This is real Python, right in your browser.':page==='quiz'?'Strengthen your understanding, one good question at a time.':page==='projects'?'Useful skills become useful things. Choose a guided project and make it yours.':page==='progress'?'Track the chapters, exercises and projects you’ve completed.':page==='resources'?'Notes, presentations, exercises, reference sheets and downloadable resources for your Python course.':metadata?.subtitle}</p></div>
  {page==='chapters'&&<CourseCatalog catalog={catalog} progress={progress}/>}
  {page==='resources'&&<Suspense fallback={<p role="status">Loading library…</p>}><ResourceLibrary key={route} lessons={chapters}/></Suspense>}
- {page==='teacher'&&<Suspense fallback={<p role="status">Loading teacher tools…</p>}><TeacherResources lessons={chapters}/></Suspense>}
  {page==='glossary'&&<Suspense fallback={<p role="status">Loading glossary…</p>}><GlossaryPage id={id}/></Suspense>}
  {page==='search'&&!waiting&&<Suspense fallback={<p role="status">Loading search…</p>}><KnowledgeSearch lessons={chapters}
    exercises={[...allTasks,...(expanded??[]).flatMap(lesson=>lesson.tasks)]}/></Suspense>}

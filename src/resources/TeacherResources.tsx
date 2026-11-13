@@ -1,5 +1,6 @@
 import {useEffect, useState, type FormEvent} from 'react';
 import {cloud, request, categories, type Category, type Metadata, type Resource} from './client';
+import {ResourceCard} from './ResourceLibrary';
 import {syntaxTopics} from '../data/syntax';
 import {terms} from '../data/glossary';
 import {accept, fileInfo, sha256} from '../../supabase/functions/_shared/validation.mjs';
@@ -28,6 +29,9 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
   const [reservation,setReservation] = useState<(Reservation & {file:File;mime:string})|null>(null);
   const [query,setQuery] = useState('');
   const [status,setStatus] = useState('');
+  const [showPassword,setShowPassword] = useState(false);
+  const [recover,setRecover] = useState(false);
+  const [resetPassword,setResetPassword] = useState(() => new URLSearchParams(location.search).get('teacher-recovery')==='1');
   const [limit,setLimit] = useState(25*1024*1024);
   const message = (reason:unknown) => setError(reason instanceof Error ? reason.message : 'Request failed. Please retry.');
 
@@ -54,10 +58,25 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
     cloud.auth.getSession().then(({data}) => data.session ? identify() : undefined)
       .catch(message).finally(() => setChecking(false));
     const {data} = cloud.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_OUT') { setProfile(null); setRows([]); }
+      if (event === 'SIGNED_OUT') {
+        setProfile(null); setRows([]); setGroups([]); setReservation(null); reset();
+      }
+      if (event === 'PASSWORD_RECOVERY') setResetPassword(true);
     });
     return () => data.subscription.unsubscribe();
   },[]);
+
+  useEffect(() => {
+    if (!profile) return;
+    let active = true;
+    const verify = () => void request<Profile>('profile',{},true).catch(() => {
+      if (!active) return;
+      setProfile(null); setRows([]); setGroups([]); setReservation(null); reset();
+      setError('Teacher access could not be verified. Please sign in again.');
+    });
+    window.addEventListener('focus',verify);
+    return () => { active = false; window.removeEventListener('focus',verify); };
+  },[profile]);
 
   async function signIn(event:FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -69,8 +88,12 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
         email:String(values.get('email')),password:String(values.get('password')),
       });
       form.reset();
-      if (result.error) throw result.error;
-      await identify();
+      if (result.error) throw Error('Sign-in failed. Check your email and password.');
+      try { await identify(); }
+      catch {
+        await cloud!.auth.signOut();
+        throw Error('Teacher access could not be verified for this account.');
+      }
     } catch (reason) { message(reason); }
     finally { setBusy(false); }
   }
@@ -132,23 +155,76 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
       setNotice(next === 'deleted' ? 'Moved to trash.' : `Saved as ${next}.`);
     });
   }
+  async function sendRecovery(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const email = String(new FormData(event.currentTarget).get('email'));
+    await work(async () => {
+      const redirect = new URL(location.pathname,location.origin);
+      redirect.searchParams.set('teacher-recovery','1');
+      const result = await cloud!.auth.resetPasswordForEmail(email,{redirectTo:redirect.href});
+      if (result.error) throw Error('Could not request a reset link. Please try again later.');
+      setNotice('If the account can receive a reset link, check your email.');
+    });
+  }
+  function finishRecovery() {
+    history.replaceState(null,'',location.pathname+'#/teacher/resources');
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    setResetPassword(false); setRecover(false); setError(''); setNotice('');
+  }
+  async function savePassword(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const password = String(new FormData(event.currentTarget).get('new-password'));
+    await work(async () => {
+      const {error} = await cloud!.auth.updateUser({password});
+      if (error) throw error;
+      await cloud!.auth.signOut();
+      finishRecovery();
+      setNotice('Password updated. Sign in with your new password.');
+    });
+  }
   if (!cloud) return <p className="card">Connect a dedicated Python Lab Supabase project to enable teacher sign-in.</p>;
   if (checking) return <p role="status">Checking teacher session…</p>;
-  if (!profile) return <form className="card" onSubmit={signIn}>
-    <h2>Teacher sign-in</h2>
-    <label>Email<input name="email" type="email" autoComplete="username" required/></label>
-    <label>Password<input name="password" type="password" autoComplete="current-password" required/></label>
-    <button className="button primary" disabled={busy}>Sign in</button>
+  if (resetPassword && profile) return <form className="card studio-auth" onSubmit={savePassword}>
+    <h1>Set a new password</h1>
+    <label>New password<input name="new-password" type={showPassword?'text':'password'} autoComplete="new-password" minLength={8} required/></label>
+    <div className="utility-actions"><button className="button primary" disabled={busy}>Update password</button>
+      <button className="button small" type="button" onClick={finishRecovery}>Cancel</button></div>
     {error && <p role="alert">{error}</p>}
   </form>;
+  if (!profile || resetPassword) return <form className="card studio-auth" onSubmit={recover || resetPassword ? sendRecovery : signIn}>
+    <h1>{recover || resetPassword ? 'Reset teacher password' : 'Teacher sign-in'}</h1>
+    <p>{recover || resetPassword ? 'Enter your teacher account email to request a recovery link.' : 'Sign in with your authorized teacher account to manage study materials.'}</p>
+    <label>Email<input name="email" type="email" autoComplete="username" required/></label>
+    {!recover && !resetPassword && <>
+      <label>Password<input name="password" type={showPassword?'text':'password'} autoComplete="current-password" required/></label>
+      <button className="button small password-toggle" type="button" onClick={() => setShowPassword(!showPassword)}>
+        {showPassword?'Hide password':'Show password'}
+      </button>
+    </>}
+    <div className="utility-actions">
+      <button className="button primary" disabled={busy}>{recover || resetPassword?'Send recovery link':'Sign in'}</button>
+      <button className="button small" type="button" onClick={() => {
+        if (resetPassword) finishRecovery();
+        else {setRecover(!recover); setError(''); setNotice('');}
+      }}>{recover || resetPassword?'Back to sign-in':'Forgot password?'}</button>
+    </div>
+    {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
+  </form>;
   return <>
+    <div className="page-heading"><h1>Teacher Studio</h1><p>Manage study materials and retained file versions.</p></div>
     <div className="utility-actions">
       <p>Signed in as {profile.email ?? profile.role}</p>
-      <button className="button small" onClick={() => void work(async () => {const {error} = await cloud!.auth.signOut(); if(error) throw error; reset(); setProfile(null);})}>Sign out</button>
+      <button className="button small" disabled={busy} onClick={() => void work(async () => {const {error} = await cloud!.auth.signOut(); if(error) throw error;})}>Sign out</button>
     </div>
-    <p>Current files in this list use approximately {(rows.reduce((total,row) => total + row.file_size,0)/1048576).toFixed(1)} MiB. Retained files use additional storage.</p>
+    <dl className="studio-stats">
+      <div><dt>Published</dt><dd>{rows.filter(row => row.status==='published').length}</dd></div>
+      <div><dt>Drafts</dt><dd>{rows.filter(row => row.status==='draft').length}</dd></div>
+      <div><dt>Archived or trash</dt><dd>{rows.filter(row => row.status==='archived'||row.status==='deleted').length}</dd></div>
+      <div><dt>Current file storage</dt><dd>{(rows.reduce((total,row) => total + row.file_size,0)/1048576).toFixed(1)} MiB</dd></div>
+    </dl>
+    <p>Retained file versions use additional storage.</p>
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
-    <form className="card" onSubmit={upload}>
+    <form id="studio-editor" className="card studio-form" onSubmit={upload}>
       <fieldset disabled={busy || Boolean(reservation)}>
         <legend>{editing ? 'Edit or replace material' : 'Upload materials'}</legend>
         <label>Title<input required={Boolean(editing)} value={metadata.title} maxLength={160}
@@ -174,8 +250,8 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
         <label>Tags, separated by commas<input value={metadata.tags.join(',')} onChange={event => field('tags',event.target.value.split(','))}/></label>
         <label>Glossary terms<select multiple value={metadata.glossary_ids} onChange={event => field('glossary_ids',Array.from(event.target.selectedOptions, option => option.value))}>
           {terms.map(term => <option key={term.id} value={term.id}>{term.name}</option>)}</select></label>
-        <label onDragOver={event => event.preventDefault()} onDrop={event => {event.preventDefault(); files(event.dataTransfer.files);}}>
-          Choose or drop {editing ? 'a replacement file' : 'up to ten files'}
+        <label className="studio-drop" onDragOver={event => event.preventDefault()} onDrop={event => {event.preventDefault(); files(event.dataTransfer.files);}}>
+          Choose or drop {editing ? 'a replacement file' : 'up to ten files'} · up to {(limit/1048576).toFixed(0)} MiB each
           <input type="file" accept={accept} multiple={!editing} onChange={event => {files(event.target.files); event.target.value='';}}/>
         </label>
         {drafts.map((draft,index) => <label key={index}>Title for {draft.file.name}<input value={draft.title} required maxLength={160}
@@ -211,11 +287,14 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
         <option value="">All statuses</option>{['draft','published','archived','deleted'].map(value => <option key={value}>{value}</option>)}
       </select></label>
     </div>
+    <h2>Your materials</h2>
+    {rows.length===0 && <p className="card">No materials yet. Choose a file above to start a draft.</p>}
     {rows.filter(row => (!status || row.status === status) && [row.title,row.description,...row.tags].join(' ').toLowerCase().includes(query.toLowerCase()))
-      .map(row => <article className="card" key={row.id}>
-        <h3>{row.title}</h3><p>{row.original_filename} · {row.status} · revision {row.version}</p>
+      .map(row => <section className="studio-row" key={row.id}>
+        {row.status === 'deleted' ? <div className="card"><h3>{row.title}</h3><p>{row.original_filename} · In trash</p></div> : <ResourceCard resource={row} teacher/>}
+        <p>{row.status} · revision {row.version}</p>
         <div className="utility-actions">
-          <button className="button small" disabled={busy || Boolean(reservation) || row.status === 'deleted'} onClick={() => edit(row)}>Edit or replace</button>
+          <button className="button small" disabled={busy || Boolean(reservation) || row.status === 'deleted'} onClick={() => {edit(row); document.getElementById('studio-editor')?.scrollIntoView({block:'start'});}}>Edit or replace</button>
           {row.status === 'deleted' ? <button className="button small" disabled={busy} onClick={() => void change(row,'draft')}>Restore draft</button> :
           <>
             <button className="button small" disabled={busy} onClick={() => void change(row,row.status === 'published' ? 'draft' : 'published')}>{row.status === 'published' ? 'Unpublish' : 'Publish'}</button>
@@ -235,7 +314,7 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
             reset(); await refresh(); setNotice('Previous file restored as a draft.');
           })}>Restore this file</button>
         </div>)}
-      </article>)}
+      </section>)}
     {profile.role === 'admin' && <div className="card">
       <h3>Retention and backup</h3>
       <p>Expired replacements and trash can be removed permanently. Back up metadata and Storage bytes before cleanup.</p>
