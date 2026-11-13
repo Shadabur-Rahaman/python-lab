@@ -135,3 +135,16 @@ test('Inventory report handles empty, malformed, negative and boolean data', () 
     assert.ok(matchesOutput(result.output,expected),input);
   }
 });
+
+test('Beginner naming examples agree with Python and distinguish syntax from unassigned names', () => {
+  const lesson = chapters.find(chapter => chapter.id === 2);
+  const names = lesson.nameExamples.map(example => example.name);
+  const result = python(
+    `import json, keyword\nnames = ${JSON.stringify(names)}\nprint(json.dumps([name.isidentifier() and not keyword.iskeyword(name) for name in names]))`
+  );
+  assert.ok(!result.error, result.error);
+  assert.deepEqual(JSON.parse(result.output), lesson.nameExamples.map(example => example.valid));
+  assert.match(python(lesson.mistake.code).error, /SyntaxError/);
+  assert.match(python('age = 20\nprint(Age)').error, /NameError/);
+  assert.ok(matchesOutput(python(lesson.mistake.fix).output, '85'));
+});

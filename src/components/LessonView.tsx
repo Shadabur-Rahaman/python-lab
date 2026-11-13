@@ -77,8 +77,16 @@ export default function LessonView({
           </ul></>}
         </Section>
         <Section title="A familiar problem"><p className="story">{lesson.story}</p></Section>
-        <Section title="How it works">{lesson.concepts.map(([title, text]) =>
-          <div className="concept" key={title}><h3>{title}</h3><p>{text}</p></div>)}</Section>
+        <Section title="How it works">
+          {lesson.concepts.map(([title, text]) =>
+            <div className="concept" key={title}><h3>{title}</h3><p>{text}</p></div>)}
+          {lesson.nameExamples && <div className="card">
+            <h3>Valid and invalid variable names</h3>
+            <ul>{lesson.nameExamples.map(({name, valid, reason}) => <li key={name}>
+              <code>{name}</code> <strong>· {valid ? 'Valid' : 'Invalid'}</strong> — {reason}
+            </li>)}</ul>
+          </div>}
+        </Section>
         <Section title="Follow the idea">
           <ol className="concept-flow">{lesson.visual.map(step => <li key={step}>{step}</li>)}</ol>
           {lesson.id === 0 ? <TeaOrder/> : <a className="text-link" href="#/lab">Explore interactive visual models <ArrowRight size={15}/></a>}
