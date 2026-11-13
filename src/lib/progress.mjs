@@ -36,7 +36,7 @@ function normalizeProgress(value, catalog) {
     : known(record.recent, catalog.lessonIds);
   progress.recent = [...new Set(recent)].slice(0, 10);
   if (record.scores && typeof record.scores === 'object' && !Array.isArray(record.scores)) {
-    const keys = new Set([...catalog.lessonIds].map(String).concat('revision'));
+    const keys = new Set([...catalog.lessonIds].map(String).concat('revision','applied'));
     progress.scores = Object.fromEntries(Object.entries(record.scores)
       .filter(([id, score]) => keys.has(id) && typeof score === 'number' && score >= 0 && score <= 100));
   }
@@ -113,7 +113,7 @@ export function percentage(progress, catalog) {
   const total = catalog.lessonIds.size * 2 + catalog.taskIds.size + catalog.projectIds.size;
   if (!total) return 0;
   const count = progress.completed.length + progress.solved.length + progress.projects.length
-    + Object.keys(progress.scores).filter(key => key !== 'revision').length;
+    + Object.keys(progress.scores).filter(key => key !== 'revision' && key !== 'applied').length;
   return Math.round(100 * count / total);
 }
 

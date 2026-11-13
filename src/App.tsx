@@ -7,6 +7,7 @@ import type {Chapter} from './data/types';
 import {KEY,LEGACY_KEY,freshProgress,loadProgress,saveProgress,percentage,mergeProgress,type Progress} from './lib/progress.mjs';
 import CodeLab from './components/CodeLab';
 import {storage} from './lib/storage';
+import {checkpoints} from './data/checkpoints';
 import Quiz from './components/Quiz';
 import Experiments,{experimentNames} from './components/Experiments';
 import LessonView from './components/LessonView';
@@ -17,12 +18,13 @@ const ResourceLibrary = lazy(() => import('./resources/ResourceLibrary'));
 const TeacherResources = lazy(() => import('./resources/TeacherResources'));
 const GlossaryPage = lazy(() => import('./components/GlossaryPage'));
 const KnowledgeSearch = lazy(() => import('./components/KnowledgeSearch'));
+const Keywords = lazy(() => import('./components/Keywords'));
 const SyntaxAcademy = lazy(() => import('./components/SyntaxAcademy'));
 const catalog = buildCatalog(beginner, projects);
 const chapters = catalog.lessons;
 const groups = [
  ['Workspace', [['home','Home',Home],['progress','My Progress',Trophy]]],
- ['Learn', [['chapters','Learning Roadmap',BookOpen],['syntax','Python Syntax Academy',Code2],['glossary','Bilingual Glossary',BookOpen],['resources','Study Materials',FolderOpen]]],
+ ['Learn', [['chapters','Learning Roadmap',BookOpen],['syntax','Python Syntax Academy',Code2],['keywords','Python Keywords',Code2],['glossary','Bilingual Glossary',BookOpen],['resources','Study Materials',FolderOpen]]],
  ['Build and practice', [['practice','Practice',Code2],['lab','Experiment Lab',FlaskConical],['quiz','Quiz Arena',Target],['projects','Real-World Projects',FolderOpen]]],
 ] as const;
 const nav = groups.flatMap(([,items]) => [...items]);
@@ -133,10 +135,10 @@ export default function App(){
    ['Function Creator',progress.completed.includes(11),'Complete chapter 11'],
    ['Python Beginner Graduate',beginner.every(item=>progress.completed.includes(item.id)&&item.tasks.every(task=>progress.solved.includes(task.id)))&&(progress.scores.revision??0)>=70,'Complete the original beginner chapters and exercises, then score at least 70% on V1 revision'],
  ] as const;
- const selectedQuiz=quizTopic==='revision'?revisionQuiz:
+ const selectedQuiz=quizTopic==='applied'?checkpoints.map(item=>item.question):quizTopic==='revision'?revisionQuiz:
    (beginner.find(item=>String(item.id)===quizTopic)??expanded?.find(item=>String(item.id)===quizTopic))?.quiz;
  const waiting=needsExpanded&&!expanded;
- const titles:Record<string,string>={home:'Your learning dashboard',chapters:'Your Python roadmap',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||'Build something real.',progress:'Look how far you’ve come.'};
+ const titles:Record<string,string>={keywords:'Python Keywords',home:'Your learning dashboard',chapters:'Your Python roadmap',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||'Build something real.',progress:'Look how far you’ve come.'};
  const themeButton=<button className="icon-button" onClick={()=>setDark(!dark)} aria-label={dark?'Switch to light mode':'Switch to dark mode'}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>;
  if(teacherRoute) return <div className="studio-shell">
    <header className="studio-header"><a href={link('home')} className="studio-brand"><Code2 size={22}/> Python Lab</a>{themeButton}</header>
@@ -178,6 +180,7 @@ export default function App(){
  <><div className="page-heading"><span className="eyebrow">PYTHON LAB / {page==='chapter'?`CHAPTER ${metadata?.id ?? ""}`:page.toUpperCase()}</span><h1>{titles[page]||'Find your next step'}</h1><p>{page==='chapters'?'A clear path from your first line of code to your first real project. Every chapter is open to explore.':page==='practice'?'Run to experiment. Check Answer to verify your solution. Mistakes are part of the process.':page==='lab'?'A safe place to ask “what if?”. This is real Python, right in your browser.':page==='quiz'?'Strengthen your understanding, one good question at a time.':page==='projects'?'Useful skills become useful things. Choose a guided project and make it yours.':page==='progress'?'Track the chapters, exercises and projects you’ve completed.':page==='resources'?'Notes, presentations, exercises, reference sheets and downloadable resources for your Python course.':metadata?.subtitle}</p></div>
  {page==='chapters'&&<CourseCatalog catalog={catalog} progress={progress}/>}
  {page==='resources'&&<Suspense fallback={<p role="status">Loading library…</p>}><ResourceLibrary key={route} lessons={chapters}/></Suspense>}
+ {page==='keywords'&&<Suspense fallback={<p role="status">Loading keywords…</p>}><Keywords/></Suspense>}
  {page==='glossary'&&<Suspense fallback={<p role="status">Loading glossary…</p>}><GlossaryPage id={id}/></Suspense>}
  {page==='search'&&!waiting&&<Suspense fallback={<p role="status">Loading search…</p>}><KnowledgeSearch lessons={chapters}
    exercises={[...allTasks,...(expanded??[]).flatMap(lesson=>lesson.tasks)]}/></Suspense>}
@@ -194,6 +197,7 @@ export default function App(){
  {page==='quiz'&&!waiting&&<><label className="quiz-select">Choose your assessment
    <select value={quizTopic} onChange={event=>setQuizTopic(event.target.value)}>
      {chapters.map(item=><option key={item.id} value={item.id}>{item.title}</option>)}
+     <option value="applied">Applied Python · {checkpoints.length} scenarios</option>
      <option value="revision">V1 revision · {revisionQuiz.length} questions</option>
    </select></label>
    <p>Best completed score: {progress.scores[quizTopic]===undefined?'No attempt completed yet':`${progress.scores[quizTopic]}%`}</p>

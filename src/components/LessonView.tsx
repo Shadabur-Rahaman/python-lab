@@ -5,12 +5,18 @@ import {lessonNeighbors, levels, type buildCatalog} from '../data/catalog.mjs';
 import CodeLab from './CodeLab';
 import Quiz from './Quiz';
 import TaskCard from './TaskCard';
+import {checkpoints} from '../data/checkpoints';
 import AliasModel from './AliasModel';
 
 const RelatedKnowledge = lazy(() => import('./RelatedKnowledge'));
 
+const sectionIds:Record<string,string> = {
+  'How it works':'chapter-concepts','Predict, run and change':'chapter-examples',
+  'Practice':'chapter-practice','Chapter quiz':'chapter-quiz',
+};
+
 function Section({title, children}: {title: string; children: ReactNode}) {
-  return <section className="lesson-section"><h2>{title}</h2>{children}</section>;
+  return <section className="lesson-section" id={sectionIds[title]} tabIndex={sectionIds[title] ? -1 : undefined}><h2>{title}</h2>{children}</section>;
 }
 
 function TeaOrder() {
@@ -55,6 +61,8 @@ export default function LessonView({
   const [showSidebar, setShowSidebar] = useState(true);
   const metadata = catalog.lessons.find(item => item.id === lesson.id)!;
   const {previous, next} = lessonNeighbors(catalog, lesson.id);
+  const checkpoint = checkpoints[lesson.id];
+  const [step,setStep] = useState(0);
   const related = projects.filter(project => project.chapters.includes(lesson.id));
 
   return <>
@@ -72,6 +80,22 @@ export default function LessonView({
         </a>)}
       </aside>}
       <div className="lesson-content">
+        <nav className="chapter-jumps" aria-label="In this chapter">
+          {[['concepts','Concepts'],['examples','Run code'],['practice','Practice'],['quiz','Quiz']].map(([id,label]) =>
+            <button key={id} className="button small" onClick={()=>{
+              const section = document.getElementById('chapter-'+id);
+              section?.focus({preventScroll:true});
+              section?.scrollIntoView({block:'start'});
+            }}>{label}</button>)}
+        </nav>
+        <div className="card chapter-checkpoint">
+          <h2>Try a real task</h2><p>{checkpoint.task}</p>
+          <ol className="chapter-trace">{checkpoint.steps.map((line,index)=><li key={line}>
+            <button className="button small" aria-current={step===index?'step':undefined}
+              onClick={()=>setStep(index)}>Step {index+1}</button>
+          </li>)}</ol>
+          <p role="status" className="trace-current">{checkpoint.steps[step]}</p>
+        </div>
         <Section title="What you’ll learn">
           <ul>{lesson.objectives.map(outcome => <li key={outcome}>{outcome}</li>)}</ul>
           {metadata.prerequisites.length > 0 && <><h3>Suggested prerequisites</h3><ul>
@@ -123,7 +147,7 @@ export default function LessonView({
         </Section>
         <Section title="Practice">{lesson.tasks.map(task =>
           <TaskCard key={task.id} task={task} solved={solved.includes(task.id)} onPass={() => onSolve(task.id)}/>)}</Section>
-        <Section title="Chapter quiz"><Quiz questions={lesson.quiz} onComplete={onQuiz}/></Section>
+        <Section title="Chapter quiz"><Quiz questions={[...lesson.quiz,checkpoint.question]} onComplete={onQuiz}/></Section>
         <Section title="Quick revision">
           <div className="card revision">{lesson.cheatSheet
             ? <ul>{lesson.cheatSheet.map(item => <li key={item}>{item}</li>)}</ul>

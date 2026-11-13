@@ -1,3 +1,4 @@
+import {extraTerms} from './glossary-extra';
 import {glossary as original} from './curriculum';
 
 type Translation = [string, string, string, string, number, string];
@@ -47,6 +48,7 @@ const definitions = original.map(([name, short]) => {
 });
 export const terms = [
   ...definitions,
+  ...extraTerms,
   {id:'iterable',name:'Iterable',display:'इटरेबल',short:'An object from which Python can obtain an iterator.',
     hindi:'ऐसा object जिससे iterator मिल सकता है।',explanation:'List और string iterable हैं। for इनके items एक-एक करके ले सकता है।',
     english:'An iterable can supply an iterator through iter(). The iterator is what advances through the items.',

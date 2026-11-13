@@ -193,3 +193,27 @@
 .nav-group a.active { box-shadow: inset 3px 0 #669aef; }
 .button.primary { background: #3866bf; }
 @media(max-width:620px) { .studio-form .catalog-filters { grid-template-columns: 1fr; } .studio-main > .page-heading { padding: 20px; } }
+/* Keep the workspace palette independent of the code surfaces. */
+:root { --accent:#25569e; --soft:#eaf2ff; }
+:root[data-theme=dark] { --bg:#101825; --card:#192637; --nav:#121e2c; --line:#394b63; --muted:#becade; --text:#eff5ff; --accent:#a6d6ff; --soft:#243b54; }
+.hero { background: radial-gradient(ellipse at top right,#246565,transparent 55%),linear-gradient(135deg,#14233c,#26365a); }
+.hero h1 { color:#f4f8ff; }
+.hero h1 em { color:#f9dc83; }
+.hero-checks { color:#d6e4f7; }
+.hero .button.primary { background:#f9dc83; color:#1b2841; }
+.brand, .brand-light, .lesson-aside a, .topbar { color:var(--text); }
+.brand-light { color:var(--accent); }
+.lesson-aside a.active { color:var(--accent); background:var(--soft); border-inline-start:3px solid currentColor; }
+.lesson-content { min-width:0; }
+.chapter-jumps { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.chapter-checkpoint { border-inline-start:4px solid #488eb4; background:linear-gradient(115deg,var(--soft),var(--card)); }
+.chapter-trace { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; }
+.chapter-trace [aria-current=step] { background:var(--accent); color:var(--card); }
+.trace-current { color:var(--text); font-size:1rem; font-weight:650; min-height:2em; margin:0; }
+.lesson-section[id] { scroll-margin-top:80px; }
+.keyword-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:12px; }
+.keyword-grid dd { margin:8px 0 0; color:var(--muted); }
+.keyword-grid dt code { color:var(--accent); font-size:1.05rem; font-weight:700; }
+.resource-pdf-pages { overflow-y:scroll; scrollbar-color:#7394b6 #101827; }
+.resource-pdf-pages:focus-visible { outline-offset:-3px; }
+.quiz-review-filter { margin-block: 16px; }
