@@ -1,0 +1,11 @@
+project_id = "python-lab"
+
+[auth]
+site_url = "http://127.0.0.1:5175/python-lab/"
+enable_signup = false
+
+[auth.email]
+enable_signup = true
+
+[functions.resource-api]
+verify_jwt = false

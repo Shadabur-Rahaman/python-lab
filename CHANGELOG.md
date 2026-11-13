@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0–3.3 preview
+
+- Added 30 deep-linkable syntax topics with executable examples and knowledge checks.
+- Added 28 bilingual glossary entries with search, contextual dialogs, favorites and flashcards.
+- Added shared search across lessons, exercises, syntax, glossary and published materials when configured.
+- Added a dedicated Supabase resource migration, Edge API, private Storage workflow and teacher and student library routes.
+- Added production-browser, file-validation and local database permission checks. Hosted classroom verification and later interactive upgrades remain pending.
+
 ## 2.0 foundation preview
 
 - Added a curriculum catalog with derived totals, prerequisite links, level groups and a roadmap for seven planned specializations.

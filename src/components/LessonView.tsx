@@ -1,4 +1,4 @@
-import {useState, type ReactNode} from 'react';
+import {lazy, Suspense, useState, type ReactNode} from 'react';
 import {ArrowRight, Bookmark, Check, ChevronLeft} from 'lucide-react';
 import type {Chapter, Project} from '../data/types';
 import {lessonNeighbors, levels, type buildCatalog} from '../data/catalog.mjs';
@@ -6,6 +6,8 @@ import CodeLab from './CodeLab';
 import Quiz from './Quiz';
 import TaskCard from './TaskCard';
 import AliasModel from './AliasModel';
+
+const RelatedKnowledge = lazy(() => import('./RelatedKnowledge'));
 
 function Section({title, children}: {title: string; children: ReactNode}) {
   return <section className="lesson-section"><h2>{title}</h2>{children}</section>;
@@ -92,6 +94,7 @@ export default function LessonView({
           {lesson.id === 0 ? <TeaOrder/> : <a className="text-link" href="#/lab">Explore interactive visual models <ArrowRight size={15}/></a>}
           {lesson.id === 15 && <AliasModel/>}
         </Section>
+        <Suspense fallback={null}><RelatedKnowledge lessonId={lesson.id}/></Suspense>
         <Section title="Predict, run and change">
           <p>Read the first example and predict its output before running it.</p>
           <Prediction expected={lesson.examples[0].output}/>
@@ -109,6 +112,9 @@ export default function LessonView({
           <CodeLab initial={lesson.mistake.code} input={lesson.examples[0].input} label="fix_me.py"/>
           <details><summary>Show the fix & explanation</summary><pre>{lesson.mistake.fix}</pre><p>{lesson.mistake.why}</p></details>
           {lesson.misconceptions && <ul>{lesson.misconceptions.map(item => <li key={item}>{item}</li>)}</ul>}
+        </Section>
+        <Section title="Additional Study Materials">
+          <a className="inline-link" href={`#/resources?chapter=${lesson.id}`}>Browse materials for this chapter</a>
         </Section>
         <Section title="Put it to work">
           <p>{lesson.application}</p>

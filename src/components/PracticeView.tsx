@@ -3,15 +3,15 @@ import type {Task} from '../data/types';
 import {levels, type buildCatalog} from '../data/catalog.mjs';
 import TaskCard from './TaskCard';
 
-export default function PracticeView({tasks, catalog, solved, onSolve}: {
-  tasks: Task[]; catalog: ReturnType<typeof buildCatalog>; solved: string[]; onSolve: (id: string) => void;
+export default function PracticeView({tasks, catalog, solved, onSolve, selectedTask}: {
+  selectedTask?: string; tasks: Task[]; catalog: ReturnType<typeof buildCatalog>; solved: string[]; onSolve: (id: string) => void;
 }) {
   const [topic, setTopic] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [level, setLevel] = useState('');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('course');
-  const [open, setOpen] = useState<string>();
+  const [open, setOpen] = useState<string | undefined>(selectedTask);
   const query = search.trim().toLowerCase();
   const filtered = tasks.filter(task =>
     (!topic || Number(topic) === task.chapter) && (!difficulty || difficulty === task.difficulty)

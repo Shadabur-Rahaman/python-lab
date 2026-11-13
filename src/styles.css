@@ -49,3 +49,4 @@
 @media(max-width:760px){
   .sidebar:not(.open){visibility:hidden}
 }
+.term-trigger{touch-action:manipulation}.sidebar{overflow-y:auto}

@@ -31,7 +31,7 @@ self.onmessage = async ({data}) => {
     runtime.setStderr({batched: text => emit('stderr', text)});
     const inputs = data.input ? data.input.replace(/\r/g, '').split('\n') : [];
     runtime.setStdin({stdin: () => inputs.length ? inputs.shift() : null});
-    const globals = runtime.toPy({});
+    const globals = runtime.toPy({__name__: '__main__'});
     const run = async code => {
       const result = await runtime.runPythonAsync(code, {globals});
       if (limitReached) throw new Error('Output limit reached. Try fewer repetitions.');

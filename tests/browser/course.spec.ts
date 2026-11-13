@@ -50,8 +50,8 @@ test('supports keyboard navigation and searching at a phone width', async ({page
   await page.keyboard.press('Escape');
   await expect(menu).toBeFocused();
   await expect(menu).toHaveAttribute('aria-expanded', 'false');
-  await page.getByRole('link', {name: 'Find a lesson'}).click();
-  await page.getByRole('textbox', {name: 'Search chapters'}).fill('object state');
+  await page.getByRole('link', {name: 'Search Python Lab'}).click();
+  await page.getByRole('textbox', {name: 'Search the course'}).fill('object state');
   await expect(page.getByRole('link', {name: /Classes & Object State/})).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   expect(overflow).toBe(false);

@@ -4,6 +4,8 @@ Python Lab is a free React and TypeScript course with real Python in the browser
 
 Open Python Lab on [GitHub Pages](https://shadabur-rahaman.github.io/python-lab/).
 
+The 3.0 preview adds a searchable Syntax Academy, bilingual glossary and optional classroom resources. Start with [the syntax map](SYNTAX_ACADEMY_MAP.md) or [glossary guide](BILINGUAL_GLOSSARY_GUIDE.md). Classroom resources require [a dedicated Supabase project](SUPABASE_RESOURCE_SETUP.md). See [resource security](RESOURCE_LIBRARY_SECURITY.md), [the baseline audit](PYTHON_LAB_3_GAP_AUDIT.md) and [test results](TEST_REPORT.md).
+
 ## Run locally
 
 Use Node.js 22 or later and npm. The test suite uses the `python` command and supports Python 3.12 or later. Students can use the browser course without installing Python.
