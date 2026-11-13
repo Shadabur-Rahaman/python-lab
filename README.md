@@ -63,3 +63,7 @@ See the [curriculum map](docs/CURRICULUM-MAP.md), [authoring guide](docs/AUTHORI
 Use **Study Materials** in the student navigation to browse published resources. Filter by course chapter, language, difficulty, category, type or publication date. PDF, image and text files support preview.
 
 Authorized teachers use the [direct studio link](https://shadabur-rahaman.github.io/python-lab/#/teacher/resources). See [Private Teacher Studio](PRIVATE_TEACHER_STUDIO.md) for account and recovery setup, and [Supabase connection verification](SUPABASE_CONNECTION_VERIFICATION.md) for the GitHub Pages configuration.
+
+## Python Lab 5.0 pilot
+
+Start from Home and open Variables and Values or Python Playground. The lesson and Playground share a browser-local receipt draft. See [the student journey](STUDENT_JOURNEY_V5.md) and [editor architecture](CONNECTED_EDITOR_ARCHITECTURE.md).

@@ -23,7 +23,7 @@ type Result = {name: string; passed: boolean; detail?: string};
 type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; cases?: Result[]};
 type Props = {
   initial: string; input?: string; expected?: string; tests?: string; cases?: TestCase[];
-  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; onCodeChange?: (code: string) => void;
+  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; onCodeChange?: (code: string) => void;
 };
 
 function explainError(error: string) {
@@ -36,7 +36,7 @@ function explainError(error: string) {
 }
 
 export default function CodeLab({
-  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, onCodeChange,
+  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, workspace = false, onCodeChange,
 }: Props) {
   const editorId = useId();
   const draftKey = draftId || persist ? 'python-lab.editor.v1:' + (draftId ?? label) : null;
@@ -184,7 +184,7 @@ export default function CodeLab({
     }
   }
 
-  return <div className="code-lab" onKeyDown={event => {
+  return <div className={workspace ? "code-lab editor-workspace" : "code-lab"} onKeyDown={event => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       run();
@@ -217,9 +217,13 @@ export default function CodeLab({
         </EditorFallback>
       </div>
     </div>
-    <label className="queue-label">Program input <span>One response per line, supplied before Run</span>
+    {workspace ? <details className="workspace-input" open={Boolean(queue) || undefined}><summary>Program input</summary>
+      <label className="queue-label">Program input <span>One response per line, supplied before Run</span>
       <textarea value={queue} onChange={event => saveDraft(code,event.target.value)} placeholder="For input() examples" rows={2}/>
     </label>
+    </details> : <label className="queue-label">Program input <span>One response per line, supplied before Run</span>
+      <textarea value={queue} onChange={event => saveDraft(code,event.target.value)} placeholder="For input() examples" rows={2}/>
+    </label>}
     <div className="editor-actions">
       <button className="button primary small" disabled={busy} onClick={() => run()} title="Ctrl or Command + Enter"><Play size={15}/> Run Code</button>
       {onPass && <button className="button small" disabled={busy} onClick={() => run(true)}><CheckCircle2 size={15}/> Check Answer</button>}

@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0 pilot
+
+- Added a guided Variables workspace and a dedicated Playground with a shared receipt draft. The previous Home page links to the new Playground.
+
 ## 4.0
 
 - Restored the dedicated Supabase connection in the GitHub Pages build.
