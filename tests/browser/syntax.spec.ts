@@ -58,3 +58,15 @@ test('all syntax examples and repairs run in the published Python runtime', asyn
     expect(result.actual.trim(), result.id).toBe(syntaxTopics.find(topic => topic.id === result.id)!.output);
   }
 });
+
+test('syntax landing experiment and symbol explorer respond to learner choices', async ({page})=>{
+  await page.goto('./#/syntax');
+  const model=page.locator('.syntax-launch .concept-model');
+  await model.getByRole('combobox').selectOption('1');
+  await expect(model.locator('.model-flow')).toContainText('True');
+  await page.getByRole('link',{name:'Try conditions'}).click();
+  const symbols=page.getByRole('group',{name:'Explore syntax symbols'});
+  const initial=await page.locator('.syntax-symbol-note').innerText();
+  await symbols.getByRole('button').nth(1).click();
+  await expect(page.locator('.syntax-symbol-note')).not.toHaveText(initial);
+});

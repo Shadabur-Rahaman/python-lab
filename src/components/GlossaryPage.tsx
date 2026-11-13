@@ -18,7 +18,7 @@ export function TermDetails({term, language}: {term:Term; language:Language}) {
   const topic = syntaxTopics.find(item => item.id === term.syntax);
   return <>
     {language !== 'hi' && <div lang="en"><p>{term.short}</p>{term.english !== term.short && <p>{term.english}</p>}</div>}
-    {language !== 'en' && <div lang="hi"><p><strong>{term.display}</strong> · {term.hindi}</p><p>{term.explanation}</p></div>}
+    {language !== 'en' && <div lang="hi-Latn"><p><strong>{term.display}</strong> · {term.hindi}</p>{term.explanation!==term.hindi && <p>{term.explanation}</p>}</div>}
     {term.example && <pre><code>{term.example}</code></pre>}
     {language !== 'hi' && term.misconception && <p>{term.misconception}</p>}
     <p><a className="inline-link" href={`#/chapter/${term.lesson}`}>Chapter {term.lesson}</a>
@@ -89,7 +89,7 @@ export default function GlossaryPage({id}: {id?:string}) {
   const selector = <label>Language<select value={language} onChange={event => {
     const value = event.target.value as Language;
     setLanguage(value); save('python-lab.glossary.language',value);
-  }}><option value="en">English</option><option value="hi">हिन्दी</option><option value="both">English + हिन्दी</option></select></label>;
+  }}><option value="en">English</option><option value="hi">Hinglish</option><option value="both">English + Hinglish</option></select></label>;
   if (id) return <div className="card">
     <a className="inline-link" href="#/glossary">All glossary terms</a>
     {selected ? <><h2>{selected.name}</h2>{selector}
@@ -123,7 +123,7 @@ export default function GlossaryPage({id}: {id?:string}) {
     </div> : <div className="chapter-grid">{list.map(term => <article key={term.id} className="card">
       <h2><a className="inline-link" href={glossaryLink(term.id)}>{term.name}</a></h2>
       {language !== 'hi' && <p lang="en">{term.short}</p>}
-      {language !== 'en' && <p lang="hi">{term.hindi}</p>}
+      {language !== 'en' && <p lang="hi-Latn">{term.hindi}</p>}
     </article>)}</div>}
   </>;
 }

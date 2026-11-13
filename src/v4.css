@@ -270,3 +270,8 @@
 .model-cells li { display:grid; gap:3px; min-width:52px; text-align:center; padding:6px 10px; border:1px solid var(--line); border-radius:6px; }
 .model-cells li[data-selected=true] { background:var(--soft); border-color:var(--accent); color:var(--text); }
 .model-cells li[aria-current=step] { outline:2px solid var(--accent); outline-offset:2px; }
+.syntax-launch { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:24px; align-items:center; padding:24px; border:1px solid var(--line); border-radius:16px; background:var(--soft); margin-bottom:20px; }
+.syntax-launch .concept-model { margin:0; min-width:0; }
+.syntax-symbol-note { min-height:3em; padding:12px; background:var(--soft); color:var(--text); border-inline-start:3px solid var(--accent); border-radius:6px; }
+.syntax-explorer button { max-width:100%; overflow-wrap:anywhere; white-space:normal; }
+@media(max-width:1000px) { .syntax-launch { grid-template-columns:minmax(0,1fr); padding:16px; } }
