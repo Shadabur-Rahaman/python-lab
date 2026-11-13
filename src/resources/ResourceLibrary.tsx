@@ -31,11 +31,13 @@ export function ResourceCard({resource, category, chapter, teacher = false}: {
       {resource.difficulty !== 'all' && <span className="resource-chip">{resource.difficulty}</span>}
     </div>
     <h3>{resource.title}</h3>{resource.description && <p>{resource.description}</p>}
-    <p>{resource.original_filename} · {(resource.file_size/1024).toFixed(1)} KiB
-      {resource.published_at && ' · '+resource.published_at.slice(0,10)}
-      {' · '}{languageLabels[resource.language] ?? resource.language}</p>
     {resource.chapter_id !== null && !teacher && <p><a className="inline-link" href={'#/chapter/'+resource.chapter_id}>{chapter ?? 'Related chapter '+resource.chapter_id}</a></p>}
-    {!!resource.tags.length && <p>{resource.tags.join(' · ')}</p>}
+    <details className="resource-file-details"><summary>File details</summary>
+      <p>{resource.original_filename} · {(resource.file_size/1024).toFixed(1)} KiB
+        {resource.published_at && ' · '+resource.published_at.slice(0,10)}
+        {' · '}{languageLabels[resource.language] ?? resource.language}</p>
+      {!!resource.tags.length && <p>{resource.tags.join(' · ')}</p>}
+    </details>
     <div className="utility-actions">
       {canPreview && <button ref={trigger} className="button small" onClick={() => setOpened(true)}>Preview</button>}
       <button className="button small" disabled={busy} onClick={() => void download()}>Download</button>
@@ -184,7 +186,8 @@ export default function ResourceLibrary({lessons}: {lessons:{id:number;title:str
       {select('sort','Sort by','Library order',[['newest','Newest first'],['oldest','Oldest first'],['title','Title A to Z'],['size','Largest files first']])}
     </div>
     <button className="button small" onClick={() => setAttempt(attempt+1)}>Refresh materials</button>
-    {status === 'loading' && <p role="status">Loading study materials…</p>}
+    {status === 'loading' && <><p role="status">Loading study materials…</p>
+      <div className="materials-grid" aria-hidden="true">{[0,1,2].map(i=><div key={i} className="card resource-skeleton"><span/><span/><span/></div>)}</div></>}
     {status === 'error' && <p role="alert">Study materials could not load. Refresh to retry.</p>}
     {status === 'ready' && <><p role="status">{results.length ? results.length+' '+(results.length===1?'material':'materials') : rows.length ? 'No published materials match these filters.' : 'No study materials have been published yet.'}</p>
       <div className="materials-grid">{results.map(resource => <ResourceCard key={resource.id} resource={resource}

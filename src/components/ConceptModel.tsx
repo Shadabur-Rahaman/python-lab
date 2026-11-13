@@ -1,3 +1,5 @@
+import MemoryHint from './MemoryHint';
+import {romanHints} from '../data/romanHints';
 import {useState} from 'react';
 import {models} from '../data/visualModels';
 
@@ -23,8 +25,8 @@ export default function ConceptModel({chapter}: {chapter:number}) {
     <ol className="model-flow" aria-live="polite">
       {stages.map((stage,i)=><li key={i}><small>{['Start','Operation','Result'][i]}</small><strong>{stage}</strong></li>)}
     </ol>
-    <p><strong>Remember</strong> {model.remember}</p>
-    <p><strong>{chapter===15?'Useful later':'Where you’ll use this'}</strong> {model.application}</p>
+    <MemoryHint english={model.remember} roman={romanHints[chapter]}/>
+    <p><strong><span aria-hidden="true">📊 </span>{chapter===15?'Useful later':chapter===0?'Where you’ll use this':'Data and everyday applications'}</strong> {model.application}</p>
     <small>Teaching model. Use the Python editor to run and change code.</small>
   </div>;
 }

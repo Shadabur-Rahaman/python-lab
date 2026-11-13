@@ -7,6 +7,11 @@ import Quiz from './Quiz';
 import {syntaxCheck} from '../data/syntax/checks';
 import {terms, glossaryLink} from '../data/glossary';
 
+const categoryIcons:Record<keyof typeof categories,string> = {
+  fundamentals:'💡',literals:'🔢',operators:'➗',control:'🔀',collections:'📦',functions:'🧩',
+  objects:'🏗️',errors:'🐛',modules:'📁',iteration:'🔁',advanced:'⚡',builtins:'🛠️',standard:'📚',
+};
+
 export const syntaxLink = (topic: Topic) => `#/syntax/${topic.category}/${topic.id}`;
 
 const topicModels:Record<string,number> = {
@@ -99,9 +104,21 @@ export default function SyntaxAcademy({category, id, lessons}: {
     {Object.entries(categories).map(([key, title]) => {
       const entries = results.filter(topic => topic.category === key);
       return entries.length > 0 && <section className="catalog-level" key={key}><h2>{title}</h2>
-        <div className="chapter-grid">{entries.map(topic => <a key={topic.id} className="card chapter-card" href={syntaxLink(topic)}>
-          <h3>{topic.title}</h3><p>{topic.definition}</p><span className="pill">{topic.difficulty} · Python {topic.since}+</span>
-        </a>)}</div></section>;
+        <div className="syntax-flash-grid">{entries.map(topic => {
+          const lines=topic.code.trim().split('\n');
+          const excerpt=lines.slice(0,4).join('\n');
+          const summary=topic.definition.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? topic.definition;
+          return <article key={topic.id} className="card syntax-flash">
+            <h3><span aria-hidden="true">{categoryIcons[topic.category]}</span> {topic.title}</h3>
+            <p>{summary}</p>
+            <pre aria-label={lines.length>4?'Opening lines of the Python example':'Python example'} tabIndex={0}><code>{excerpt}</code></pre>
+            {lines.length<=4 && !topic.input && topic.output.trim().length<=65 && topic.output.trim() &&
+              <p className="syntax-output"><strong>Output</strong> <code>{topic.output.trim()}</code></p>}
+            <div className="syntax-card-footer"><small>{topic.difficulty}</small>
+              <a className="button small" aria-label={'Try it: '+topic.title} href={syntaxLink(topic)}>Try it →</a>
+            </div>
+          </article>;
+        })}</div></section>;
     })}
   </>;
 }

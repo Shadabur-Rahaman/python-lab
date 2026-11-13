@@ -62,7 +62,7 @@ test('all syntax examples and repairs run in the published Python runtime', asyn
 test('syntax landing experiment and symbol explorer respond to learner choices', async ({page})=>{
   await page.goto('./#/syntax');
   const model=page.locator('.syntax-launch .concept-model');
-  await model.getByRole('combobox').selectOption('1');
+  await model.getByRole('combobox',{name:/^(?!Memory hint language)/}).selectOption('1');
   await expect(model.locator('.model-flow')).toContainText('True');
   await page.getByRole('link',{name:'Try conditions'}).click();
   const symbols=page.getByRole('group',{name:'Explore syntax symbols'});

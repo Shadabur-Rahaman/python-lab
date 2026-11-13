@@ -27,11 +27,35 @@ export default function PdfPreview({
     [zoom, setZoom] = useState(1),
     [error, setError] = useState(""),
     [retry, setRetry] = useState(0);
+  const [pageNumber,setPageNumber] = useState(1);
+  const [pageInput,setPageInput] = useState('1');
+  function jump(target:number) {
+    if (!pdf || !Number.isFinite(target)) return;
+    const number=Math.max(1,Math.min(pdf.numPages,Math.trunc(target)));
+    const region=container.current;
+    const page=region?.querySelector<HTMLElement>('[data-page="'+number+'"]');
+    if (region && page) region.scrollTop += page.getBoundingClientRect().top-region.getBoundingClientRect().top;
+    setPageNumber(number);
+    setPageInput(String(number));
+  }
+  function trackPage() {
+    const region=container.current;
+    if (!region) return;
+    const top=region.getBoundingClientRect().top+16;
+    const visible=Array.from(region.querySelectorAll<HTMLElement>('[data-page]')).find(page=>page.getBoundingClientRect().bottom>top);
+    if (visible) {
+      const number=Number(visible.dataset.page);
+      setPageNumber(number);
+      setPageInput(String(number));
+    }
+  }
   useEffect(() => {
     let active = true;
     const controller = new AbortController();
     let task: ReturnType<typeof getDocument> | undefined;
     setPdf(null);
+    setPageNumber(1);
+    setPageInput("1");
     setError("");
     void (async () => {
       try {
@@ -97,10 +121,23 @@ export default function PdfPreview({
           Loading PDF…
         </p>
       ) : null}
-      <label>Zoom<select value={zoom} onChange={event => setZoom(Number(event.target.value))}><option value={1}>Fit to width</option><option value={1.25}>125%</option><option value={1.5}>150%</option></select></label>
+      {pdf && <div className="pdf-toolbar">
+        <button className="button small" disabled={pageNumber<=1} onClick={()=>jump(pageNumber-1)}>Previous page</button>
+        <form onSubmit={event=>{event.preventDefault();jump(Number(pageInput));}}>
+          <label>Page <input type="number" min={1} max={pdf.numPages} required value={pageInput}
+            onChange={event=>setPageInput(event.target.value)}/></label>
+          <span>of {pdf.numPages}</span><button className="button small">Go</button>
+        </form>
+        <button className="button small" disabled={pageNumber>=pdf.numPages} onClick={()=>jump(pageNumber+1)}>Next page</button>
+        <label>Zoom <select aria-label="PDF zoom" value={zoom} onChange={event=>setZoom(Number(event.target.value))}>
+          <option value={1}>Fit to width</option><option value={1.25}>125%</option>
+          <option value={1.5}>150%</option><option value={2}>200%</option>
+        </select></label>
+      </div>}
       <div
         className="resource-pdf-pages"
         ref={container}
+        onScroll={trackPage}
         role="region"
         aria-label="PDF pages"
         tabIndex={0}
@@ -240,7 +277,7 @@ function PdfPage({
     <div
       className="resource-pdf-page"
       ref={frame}
-      style={{ aspectRatio: pageRatio }}
+      style={{ aspectRatio: pageRatio, width: Math.max(100,width-24) }}
       data-page={number}
       data-rendered={rendered ? "true" : "false"}
       aria-busy={near && !rendered && !error}

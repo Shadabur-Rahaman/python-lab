@@ -9,7 +9,7 @@ test('all chapter models respond and fit phone and desktop layouts',async ({page
    await page.goto('./#/chapter/'+id);
    const model=page.locator('.concept-model');
    const initial=await model.locator('.model-flow li').last().innerText();
-   await model.getByRole('combobox').selectOption('1');
+   await model.getByRole('combobox',{name:/^(?!Memory hint language)/}).selectOption('1');
    await expect(model.locator('.model-flow li').last()).not.toHaveText(initial);
    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
   }

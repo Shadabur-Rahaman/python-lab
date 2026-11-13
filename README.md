@@ -69,3 +69,4 @@ Authorized teachers use the [direct studio link](https://shadabur-rahaman.github
 Start from Home and open Variables and Values or Python Playground. The lesson and Playground share a browser-local receipt draft. See [the student journey](STUDENT_JOURNEY_V5.md) and [editor architecture](CONNECTED_EDITOR_ARCHITECTURE.md).
 
 The visual curriculum adds 16 interactive teaching models and a Learn and Reference view for the Syntax Academy. See [the component guide](INTERACTIVE_COMPONENT_GUIDE.md).
+Syntax Academy cards now show example code. Chapter models offer Roman-script hints. PDF previews support scrolling, direct page selection and zoom.

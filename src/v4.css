@@ -275,3 +275,24 @@
 .syntax-symbol-note { min-height:3em; padding:12px; background:var(--soft); color:var(--text); border-inline-start:3px solid var(--accent); border-radius:6px; }
 .syntax-explorer button { max-width:100%; overflow-wrap:anywhere; white-space:normal; }
 @media(max-width:1000px) { .syntax-launch { grid-template-columns:minmax(0,1fr); padding:16px; } }
+.memory-hint { margin-block:12px; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--soft); }
+.memory-hint label { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.memory-hint label select { width:auto; max-width:100%; margin:0; }
+.memory-hint p { margin:8px 0 0; color:var(--text); }
+.syntax-flash-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:12px; }
+.syntax-flash { display:flex; flex-direction:column; padding:16px; min-width:0; }
+.syntax-flash h3,.syntax-flash p { margin:0 0 8px; }
+.syntax-flash pre { margin:0 0 8px; padding:10px; background:var(--soft); color:var(--text); border-radius:8px; white-space:pre; overflow:auto; }
+.syntax-output code { white-space:pre-wrap; }
+.syntax-card-footer { margin-top:auto; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.pdf-toolbar,.pdf-toolbar form { display:flex; flex-wrap:wrap; align-items:end; gap:8px; }
+.pdf-toolbar { padding:8px 0 12px; }
+.pdf-toolbar form span { align-self:center; }
+.pdf-toolbar label { min-width:0; }
+.pdf-toolbar input { max-width:78px; }
+.pdf-toolbar select { width:auto; max-width:100%; }
+.resource-pdf-page { max-width:none; }
+.resource-file-details { margin:6px 0 12px; }
+.resource-skeleton span { display:block; height:12px; width:70%; background:var(--soft); border-radius:6px; margin:12px 0; }
+.resource-skeleton span:nth-child(2) { width:90%; }
+.resource-skeleton span:last-child { width:40%; }

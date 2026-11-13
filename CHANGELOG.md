@@ -1,5 +1,9 @@
 # Changelog
 
+## Visual learning and document controls
+
+- Added code-first Syntax Academy cards, Roman-script chapter hints, and PDF page navigation and zoom controls.
+
 ## Visual curriculum
 
 - Added 16 chapter models, checkable output predictions and a scannable syntax workspace with difficulty filters and topic resume.

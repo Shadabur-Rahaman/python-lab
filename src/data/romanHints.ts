@@ -1,0 +1,18 @@
+export const romanHints = [
+  'Program instructions ka set hai. Input lo, steps follow karo, output dekho.',
+  'print() value ko screen par dikhata hai. Text ko quotes mein likho.',
+  'Variable ek naam hai jo kisi value ya object ko refer karta hai.',
+  'Type batati hai value kis tarah ki hai. CSV ka text zarurat par convert karo.',
+  'input() text deta hai. Number chahiye to convert karo aur error sambhalo.',
+  '// poore groups deta hai aur % bacha hua hissa.',
+  'Agar condition true ho, tab uska block chalta hai.',
+  'Loop har item par kaam karta hai. Running total har step par badal sakta hai.',
+  'Pehla index 0 hota hai. Slice stop index se pehle rukti hai.',
+  'List ka order hota hai aur items badal sakte ho. Tuple mein item reassign nahi hota.',
+  'Dictionary mein key se value milti hai. Set mein duplicate items nahi rehte.',
+  'Logic ek baar function mein likho. return result caller ko deta hai.',
+  'Normal input, boundary value aur galat input se project test karo.',
+  'Filter sirf woh items rakhta hai jo condition pass karte hain.',
+  'File kholna aur data parse karna alag steps hain. Dono mein error aa sakta hai.',
+  'Har instance ki apni state ho sakti hai. List ko __init__ mein alag banao.',
+];
