@@ -1,3 +1,4 @@
+import ConceptModel from './ConceptModel';
 import {lazy, Suspense, useState, type ReactNode} from 'react';
 import {ArrowRight, Bookmark, Check, ChevronLeft} from 'lucide-react';
 import type {Chapter, Project} from '../data/types';
@@ -42,7 +43,15 @@ function TeaOrder() {
 }
 
 function Prediction({expected}: {expected: string}) {
-  return <div className="card"><label>Your prediction<textarea rows={2}/></label>
+  const [prediction,setPrediction]=useState('');
+  const [result,setResult]=useState('');
+  const normalize=(value:string)=>value.replace(/\r\n/g,'\n').trim();
+  return <div className="card"><label>Your prediction<textarea rows={2} value={prediction}
+    onChange={event=>{setPrediction(event.target.value);setResult('');}}/></label>
+    <button className="button small" disabled={!prediction.trim()} onClick={()=>setResult(
+      normalize(prediction)===normalize(expected)?'Your prediction matches the starter output.':'Compare your prediction with the starter output below.'
+    )}>Check predicted output</button>
+    {result && <p role="status">{result}</p>}
     <details><summary>Reveal expected output</summary>
     <pre>{expected}</pre><p>Compare this with your prediction. Run the example, then open the explanation to trace the result.</p>
   </details></div>;
@@ -96,6 +105,12 @@ export default function LessonView({
           </li>)}</ol>
           <p role="status" className="trace-current">{checkpoint.steps[step]}</p>
         </div>
+        <ConceptModel chapter={lesson.id}/>
+        <button className="button small" onClick={()=>{
+          const example=document.getElementById('chapter-examples');
+          example?.focus({preventScroll:true});
+          example?.scrollIntoView({block:'start'});
+        }}>Try this chapter in Python</button>
         <Section title="What you’ll learn">
           <ul>{lesson.objectives.map(outcome => <li key={outcome}>{outcome}</li>)}</ul>
           {metadata.prerequisites.length > 0 && <><h3>Suggested prerequisites</h3><ul>
@@ -104,8 +119,8 @@ export default function LessonView({
         </Section>
         <Section title="A familiar problem"><p className="story">{lesson.story}</p></Section>
         <Section title="How it works">
-          {lesson.concepts.map(([title, text]) =>
-            <div className="concept" key={title}><h3>{title}</h3><p>{text}</p></div>)}
+          {lesson.concepts.map(([title, text],index) =>
+            <details className="concept" key={title} open={index===0}><summary>{title}</summary><p>{text}</p></details>)}
           {lesson.nameExamples && <div className="card">
             <h3>Valid and invalid variable names</h3>
             <ul>{lesson.nameExamples.map(({name, valid, reason}) => <li key={name}>

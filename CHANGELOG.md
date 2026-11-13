@@ -1,5 +1,9 @@
 # Changelog
 
+## Visual curriculum
+
+- Added 16 chapter models, checkable output predictions and a scannable syntax workspace with difficulty filters and topic resume.
+
 ## 5.0 pilot
 
 - Added a guided Variables workspace and a dedicated Playground with a shared receipt draft. The previous Home page links to the new Playground.

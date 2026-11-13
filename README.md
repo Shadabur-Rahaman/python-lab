@@ -67,3 +67,5 @@ Authorized teachers use the [direct studio link](https://shadabur-rahaman.github
 ## Python Lab 5.0 pilot
 
 Start from Home and open Variables and Values or Python Playground. The lesson and Playground share a browser-local receipt draft. See [the student journey](STUDENT_JOURNEY_V5.md) and [editor architecture](CONNECTED_EDITOR_ARCHITECTURE.md).
+
+The visual curriculum adds 16 interactive teaching models and a Learn and Reference view for the Syntax Academy. See [the component guide](INTERACTIVE_COMPONENT_GUIDE.md).
