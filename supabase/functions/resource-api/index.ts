@@ -11,6 +11,7 @@ import {
 } from "../_shared/server.ts";
 import {
   HARD_LIMIT,
+  MetadataError,
   fileInfo,
   metadata,
   sha256,
@@ -267,12 +268,14 @@ Deno.serve(async (req: Request) => {
   } catch (error) {
     if (error instanceof ClientError)
       return response({ error: error.message }, error.status);
+    if (error instanceof MetadataError)
+      return response({ error: error.message }, 400);
     const message =
       error instanceof Error
         ? error.message
         : String((error as { message?: string })?.message || "");
     const known =
-      /Resource changed|Upload reservation expired|Finish or cancel|File exceeds|Restore to draft|Upload a file first|Upload already saved|Unsupported file|file format|File must|filename|actual file|actual contents|title of|Description or tags|Invalid chapter|Invalid display order|Invalid resource status|Invalid Office|Invalid learning metadata|expired from retention/i;
+      /Resource changed|Upload reservation expired|Finish or cancel|File exceeds|Restore to draft|Upload a file first|Upload already saved|Unsupported file|file format|File must|filename|actual file|actual contents|Invalid Office|expired from retention/i;
     return response(
       {
         error: known.test(message)

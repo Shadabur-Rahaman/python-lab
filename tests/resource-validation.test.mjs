@@ -35,3 +35,45 @@ test('learning metadata accepts chapter zero and validates structured links', ()
   assert.throws(() => metadata({title:'X',glossary_ids:['Variable Name']}));
   assert.throws(() => metadata({title:'X',language:'unknown'}));
 });
+test('default PDF form metadata survives the prepare request JSON round trip', () => {
+  const form = {
+    title:'Lesson notes',description:'',category_id:null,chapter_id:null,lesson_id:null,tags:[],
+    glossary_ids:[],language:'en',difficulty:'all',display_order:0,status:'draft',
+  };
+  assert.deepEqual(metadata(JSON.parse(JSON.stringify({action:'prepare',metadata:form})).metadata),form);
+  assert.deepEqual(metadata({title:'Lesson notes',chapter_id:'',lesson_id:''}),form);
+});
+
+test('learning metadata retains valid selections and supports all language and difficulty values', () => {
+  for (const language of ['en','hi','both']) {
+    for (const difficulty of ['all','beginner','intermediate','advanced']) {
+      for (const lesson_id of ['assignment','bits-and-walrus','input-output','object-protocols']) {
+        for (const glossary_ids of [['variable'],['identifier','local-scope','loop-body']]) {
+          const selected = {title:'Notes',chapter_id:0,language,difficulty,lesson_id,glossary_ids};
+          const validated = metadata(selected);
+          for (const [field,value] of Object.entries(selected)) assert.deepEqual(validated[field],value,field);
+        }
+      }
+    }
+  }
+});
+
+test('metadata validation reports the invalid field and enforces the glossary limit', () => {
+  const ids = ['argument','assignment','boolean','bug','dictionary','expression','function',
+    'identifier','immutable','indentation','index','interpreter','iterable'];
+  assert.deepEqual(metadata({title:'Notes',glossary_ids:ids.slice(0,12)}).glossary_ids,ids.slice(0,12));
+  for (const [field,value,message] of [
+    ['glossary_ids',ids,'Too many glossary terms (maximum 12).'],
+    ['glossary_ids','variable','Invalid glossary term ID.'],
+    ['glossary_ids',['variable','../bad'],'Invalid glossary term ID.'],
+    ['glossary_ids',['a'.repeat(121)],'Invalid glossary term ID.'],
+    ['lesson_id','fundamentals/assignment','Invalid syntax-topic ID.'],
+    ['lesson_id',false,'Invalid syntax-topic ID.'],
+    ['language','English','Invalid language selection.'],
+    ['language','','Invalid language selection.'],
+    ['difficulty','Beginner','Invalid difficulty.'],
+    ['difficulty',false,'Invalid difficulty.'],
+  ]) {
+    assert.throws(() => metadata({title:'Notes',[field]:value}),{message});
+  }
+});

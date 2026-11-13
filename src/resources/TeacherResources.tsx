@@ -3,7 +3,7 @@ import {cloud, request, categories, type Category, type Metadata, type Resource}
 import {ResourceCard} from './ResourceLibrary';
 import {syntaxTopics} from '../data/syntax';
 import {terms} from '../data/glossary';
-import {accept, fileInfo, sha256} from '../../supabase/functions/_shared/validation.mjs';
+import {accept, fileInfo, MAX_GLOSSARY_TERMS, metadata as validateMetadata, sha256} from '../../supabase/functions/_shared/validation.mjs';
 
 type Lesson = {id:number;title:string};
 type Profile = {id:string;role:'admin'|'teacher';email?:string};
@@ -120,17 +120,20 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
     if (reservation) return;
     await work(async () => {
       if (!drafts.length && editing) {
-        await request('edit',{id:editing.id,version:editing.version,metadata},true);
+        await request('edit',{id:editing.id,version:editing.version,metadata:validateMetadata(metadata)},true);
         setNotice('Metadata saved.');
       } else {
-        for (const draft of drafts) {
-          const file = draft.file;
-          const info = fileInfo(file.name,file.size,file.type,limit);
+        const pending = drafts.map(({file,title}) => ({
+          file,
+          info:fileInfo(file.name,file.size,file.type,limit),
+          learningMetadata:validateMetadata({...metadata,title}),
+        }));
+        for (const {file,info,learningMetadata} of pending) {
           const checksum = await sha256(new Uint8Array(await file.arrayBuffer()));
           const prepared = await request<Reservation>('prepare',{
             request_id:crypto.randomUUID(),resource_id:editing?.id,version:editing?.version,
             original_filename:info.name,file_size:file.size,mime_type:info.mime,sha256:checksum,
-            metadata:{...metadata,title:draft.title},
+            metadata:learningMetadata,
           },true);
           setReservation({...prepared,file,mime:info.mime});
           if (!prepared.object_exists) {
@@ -248,8 +251,24 @@ export default function TeacherResources({lessons}: {lessons:Lesson[]}) {
             {metadata.status === 'deleted' && <option value="deleted" disabled>In trash</option>}</select></label>
         </div>
         <label>Tags, separated by commas<input value={metadata.tags.join(',')} onChange={event => field('tags',event.target.value.split(','))}/></label>
-        <label>Glossary terms<select multiple value={metadata.glossary_ids} onChange={event => field('glossary_ids',Array.from(event.target.selectedOptions, option => option.value))}>
-          {terms.map(term => <option key={term.id} value={term.id}>{term.name}</option>)}</select></label>
+        <fieldset className="studio-glossary" aria-describedby="studio-glossary-help">
+          <legend>Glossary terms</legend>
+          <p id="studio-glossary-help">Select up to {MAX_GLOSSARY_TERMS} terms. Uncheck a selected term to remove it.</p>
+          <p role="status">{metadata.glossary_ids.length} of {MAX_GLOSSARY_TERMS} selected</p>
+          <div className="studio-glossary-options">
+            {terms.map(term => {
+              const selected = metadata.glossary_ids.includes(term.id);
+              return <label key={term.id}>
+                <input type="checkbox" value={term.id} checked={selected}
+                  disabled={!selected && metadata.glossary_ids.length >= MAX_GLOSSARY_TERMS}
+                  onChange={event => field('glossary_ids',event.target.checked
+                    ? [...metadata.glossary_ids,term.id]
+                    : metadata.glossary_ids.filter(id => id !== term.id))}/>
+                {term.name}
+              </label>;
+            })}
+          </div>
+        </fieldset>
         <label className="studio-drop" onDragOver={event => event.preventDefault()} onDrop={event => {event.preventDefault(); files(event.dataTransfer.files);}}>
           Choose or drop {editing ? 'a replacement file' : 'up to ten files'} · up to {(limit/1048576).toFixed(0)} MiB each
           <input type="file" accept={accept} multiple={!editing} onChange={event => {files(event.target.files); event.target.value='';}}/>

@@ -130,13 +130,17 @@ export async function sha256(bytes) {
     .map((x) => x.toString(16).padStart(2, "0"))
     .join("");
 }
+export const MAX_GLOSSARY_TERMS = 12;
+
+export class MetadataError extends Error {}
+
 export function metadata(input) {
   if (
     typeof input?.title !== "string" ||
     !input.title.trim() ||
     input.title.length > 160
   )
-    throw Error("A title of 1–160 characters is required.");
+    throw new MetadataError("A title of 1–160 characters is required.");
   const description = String(input.description || "");
   const tags = Array.isArray(input.tags)
     ? input.tags.map((t) => String(t).trim()).filter(Boolean)
@@ -146,7 +150,7 @@ export function metadata(input) {
     tags.length > 12 ||
     tags.some((t) => t.length > 40)
   )
-    throw Error("Description or tags are too long.");
+    throw new MetadataError("Description or tags are too long.");
   const chapter =
     input.chapter_id == null || input.chapter_id === ""
       ? null
@@ -155,25 +159,37 @@ export function metadata(input) {
     chapter != null &&
     (!Number.isInteger(chapter) || chapter < 0 || chapter > 10000)
   )
-    throw Error("Invalid chapter.");
+    throw new MetadataError("Invalid chapter.");
   const order = Number(input.display_order || 0);
   if (!Number.isSafeInteger(order) || Math.abs(order) > 100000)
-    throw Error("Invalid display order.");
+    throw new MetadataError("Invalid display order.");
   if (
     !["draft", "published", "archived", "deleted"].includes(
       input.status || "draft",
     )
   )
-    throw Error("Invalid resource status.");
-  const language = input.language || "en";
-  const difficulty = input.difficulty || "all";
+    throw new MetadataError("Invalid resource status.");
+  const language = input.language ?? "en";
+  if (!["en", "hi", "both"].includes(language))
+    throw new MetadataError("Invalid language selection.");
+
+  const difficulty = input.difficulty ?? "all";
+  if (!["all", "beginner", "intermediate", "advanced"].includes(difficulty))
+    throw new MetadataError("Invalid difficulty.");
+
   const glossary = input.glossary_ids ?? [];
-  const syntax = input.lesson_id || null;
-  const id = value => typeof value === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) && value.length <= 120;
-  if (!["en", "hi", "both"].includes(language) || !["all", "beginner", "intermediate", "advanced"].includes(difficulty)
-      || !Array.isArray(glossary) || glossary.length > 12 || !glossary.every(id) || (syntax !== null && !id(syntax))) {
-    throw Error("Invalid learning metadata.");
-  }
+  const validId = value =>
+    typeof value === "string" && value.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
+  if (!Array.isArray(glossary))
+    throw new MetadataError("Invalid glossary term ID.");
+  if (glossary.length > MAX_GLOSSARY_TERMS)
+    throw new MetadataError("Too many glossary terms (maximum " + MAX_GLOSSARY_TERMS + ").");
+  if (!glossary.every(validId))
+    throw new MetadataError("Invalid glossary term ID.");
+
+  const syntax = input.lesson_id == null || input.lesson_id === "" ? null : input.lesson_id;
+  if (syntax !== null && !validId(syntax))
+    throw new MetadataError("Invalid syntax-topic ID.");
   return {
     language,
     difficulty,
