@@ -38,15 +38,8 @@ export function resetWarmWorker() {
   }
 }
 
-function explainError(error: string) {
-  if (/IndentationError|TabError/.test(error)) return 'Check the leading spaces on the indicated line and the lines around it.';
-  if (error.includes("SyntaxError: expected ':'")) return 'Python expects a colon at the end of this header. Check the indicated if, elif, else, for, or while line.';
-  if (error.includes('SyntaxError')) return 'Look at the indicated line and the line above it. Check for missing punctuation, brackets or quotes.';
-  if (error.includes('NameError')) return 'Check that the name is spelled correctly and has been defined before this line runs.';
-  if (error.includes('EOFError')) return 'Add one queued response for each input() call, then run again.';
-  if (error.includes('TypeError')) return 'Check the types of the values supplied to the operation or function.';
-  return '';
-}
+import {explainError} from '../lib/explainError';
+export {explainError};
 
 export default function CodeLab({
   initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, workspace = false, verifyOutput = false, onCodeChange,

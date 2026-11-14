@@ -394,8 +394,10 @@
 .python-symbols { display:none; }
 @media(max-width:1050px) { .pilot-columns { grid-template-columns:minmax(0,1fr); } }
 @media(max-width:760px), (pointer:coarse) {
-  .python-symbols { display:flex; overflow:auto; gap:6px; padding:6px; background:var(--card); scrollbar-width:thin; }
-  .python-symbols button { flex:none; min-width:38px; min-height:40px; }
+  .python-symbols { display:flex; overflow:auto; gap:8px; padding:8px; background:var(--card); scrollbar-width:thin; }
+  .python-symbols button { flex:none; min-width:44px; min-height:44px; font-size:15px; border-radius:8px; }
+  .editor-actions .button { min-height:44px; padding:8px 14px; font-size:13px; }
+  .editor-actions .icon-button { min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; }
 }
 .pilot-position { margin:0 0 8px; font-size:.875rem; }
 .pilot-next { margin-top:16px; }
