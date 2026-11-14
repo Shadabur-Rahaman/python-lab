@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 
 test('receipt journey runs real Python and keeps code, snippets and lesson position',async ({page})=>{
   await page.goto('./#/home');
-  await expect(page.getByRole('heading',{name:/Learn Python.*by writing it/})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/Your first Python program starts here/})).toBeVisible();
   await page.getByRole('link',{name:'Open Python Playground',exact:true}).click();
   const editor=page.getByLabel('Python code: receipt.py',{exact:true});
   const run=page.getByRole('button',{name:'Run Code',exact:true}).first();
@@ -40,10 +40,24 @@ test('pilot layouts fit all requested viewport widths',async ({page})=>{
     await page.setViewportSize({width,height:900});
     for(const route of ['home','chapter/2','playground']){
       await page.goto('./#/'+route);
-      if(route==='home') await expect(page.getByRole('heading',{name:/Learn Python.*by writing it/})).toBeVisible();
+      if(route==='home') await expect(page.getByRole('heading',{name:/Your first Python program starts here/})).toBeVisible();
       else await expect(page.getByLabel('Python code: receipt.py',{exact:true})).toBeVisible();
       await page.evaluate(()=>document.fonts.ready.then(()=>undefined));
       await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),{message:route+' at '+width}).toBeLessThanOrEqual(1);
     }
   }
+});
+
+test('first-time visitor edits and runs the first program from Home',async ({page})=>{
+  await page.goto('./#/home');
+  await page.getByRole('button',{name:'Try Python Now'}).click();
+  const editor=page.getByLabel('Python code: hello.py',{exact:true});
+  await expect(editor).toBeFocused();
+  await editor.fill('print("Hello from Python!")');
+  await page.getByRole('button',{name:'Run Code',exact:true}).click();
+  await expect(page.locator('.console pre').first()).toHaveText('Hello from Python!',{timeout:60000});
+  await page.reload();
+  await expect(editor).toHaveValue('print("Hello from Python!")');
+  await page.getByRole('link',{name:'See how print() works'}).click();
+  await expect(page).toHaveURL(/#\/chapter\/1$/);
 });

@@ -296,3 +296,28 @@
 .resource-skeleton span { display:block; height:12px; width:70%; background:var(--soft); border-radius:6px; margin:12px 0; }
 .resource-skeleton span:nth-child(2) { width:90%; }
 .resource-skeleton span:last-child { width:40%; }
+:root { --bg:#f8f9fc; --accent:#2358be; --soft:#eef4ff; --line:#dbe3ef; }
+:root[data-theme=dark] { --bg:#111827; --card:#1b2638; --nav:#151f30; --soft:#243550; --line:#394b63; }
+.beginner-home { max-width:1240px; margin-inline:auto; }
+.beginner-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:center; padding:32px; border:1px solid var(--line); border-radius:18px; background:var(--card); }
+.beginner-intro h1 { font-size:clamp(2rem,4vw,3.65rem); line-height:1.08; max-width:14ch; }
+.beginner-intro > p { font-size:1rem; max-width:47ch; }
+.beginner-home .button { min-height:44px; }
+.beginner-demo { min-width:0; padding:16px; background:var(--bg); border:1px solid var(--line); border-radius:12px; }
+.beginner-demo h2 { margin:0 0 6px; }
+.beginner-demo .code-lab { margin:12px 0; }
+.beginner-demo .editor-body { overflow:auto; }
+.beginner-resume { margin-top:24px; }
+.beginner-resume p { margin:4px 0; }
+.beginner-resume progress { width:min(100%,240px); accent-color:var(--accent); }
+.beginner-paths { margin-block:32px; }
+.beginner-path-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.beginner-path { display:grid; align-content:start; gap:8px; min-width:0; padding:16px; }
+.beginner-path svg { color:var(--accent); }
+.beginner-path span { color:var(--muted); font-size:.9rem; }
+.beginner-path.recommended { background:var(--soft); border-color:var(--accent); }
+.beginner-tools { margin-top:20px; }
+.lesson-content .lesson-section { margin-block:24px; }
+.lesson-content .lesson-section > p { max-width:70ch; }
+@media(max-width:1050px) { .beginner-hero { grid-template-columns:1fr; gap:24px; } .beginner-path-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:480px) { .beginner-hero { padding:16px; } .beginner-demo { padding:12px; } .beginner-path-grid { grid-template-columns:1fr; } }
