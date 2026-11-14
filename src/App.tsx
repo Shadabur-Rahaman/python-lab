@@ -1,3 +1,4 @@
+import {isGuidedChapter} from './data/pilotActivities';
 import PilotLesson from './components/PilotLesson';
 import BeginnerHome from './components/BeginnerHome';
 import {ReceiptEditor,ReceiptLesson} from './components/ReceiptWorkspace';
@@ -188,7 +189,7 @@ export default function App(){
  {page==='search'&&!waiting&&<Suspense fallback={<p role="status">Loading search…</p>}><KnowledgeSearch lessons={chapters}
    exercises={[...allTasks,...(expanded??[]).flatMap(lesson=>lesson.tasks)]}/></Suspense>}
  {page==='syntax'&&<Suspense fallback={<p role="status">Loading syntax topics…</p>}><SyntaxAcademy category={id} id={topicId} lessons={chapters}/></Suspense>}
- {page==='chapter'&&chapter&&(chapter.id===2||chapter.id===3||chapter.id===4||chapter.id===5||chapter.id===6||chapter.id===7)&&
+ {page==='chapter'&&chapter&&isGuidedChapter(chapter.id)&&
    <PilotLesson key={'pilot-'+chapter.id} id={chapter.id} onRun={firstProgram}/>}
  {page==='playground'&&<div className="playground-workspace"><p>Your receipt draft follows you between Variables and Values and this Playground.</p>
    <ReceiptEditor onRun={firstProgram} full/><a className="inline-link" href={link('chapter/2')}>Return to Variables and Values</a>

@@ -334,3 +334,6 @@
   .python-symbols { display:flex; overflow:auto; gap:6px; padding:6px; background:var(--card); scrollbar-width:thin; }
   .python-symbols button { flex:none; min-width:38px; min-height:40px; }
 }
+.pilot-position { margin:0 0 8px; font-size:.875rem; }
+.pilot-next { margin-top:16px; }
+.pilot-guide .concept-model { margin:12px 0 0; padding:0; border:0; box-shadow:none; }

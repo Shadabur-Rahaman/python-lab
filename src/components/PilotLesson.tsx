@@ -12,6 +12,10 @@ const practiceChecks = {
   5: 'assert leftover == 3 and items == 23',
   6: 'assert order == 500, "Check the discount at the boundary of 500."',
   7: 'assert total == 6, "Store the sum in total before printing it."',
+  8: 'assert clean_name("  Noor Khan  ") == "Noor Khan", "Keep interior spaces and remove surrounding whitespace."\nassert clean_name("   ") == "", "An all-space name becomes empty."',
+  9: 'assert first_score([19, 44]) == 19, "Read the first item in a list."\nassert first_score((82,)) == 82, "Read the first item in a tuple too."',
+  10: 'assert price_or_zero({"price": 125}) == 125, "Read the actual price."\nassert price_or_zero({"name": "Pen"}) == 0, "Return zero when the key is missing."',
+
 };
 const stages=['Discover','Predict','Debug','Practice','Remember'] as const;
 
@@ -27,7 +31,13 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
   const [prediction,setPrediction]=useState('');
   const [feedback,setFeedback]=useState('');
   const [hint,setHint]=useState(0);
+  const [recall,setRecall]=useState(false);
   const [solved,setSolved]=useState(()=>storage.getItem(key)==='solved');
+  function chooseStage(index:number) {
+    setStage(index);
+    setFeedback('');
+    try {storage.setItem(key+'-stage',String(index));} catch {}
+  }
   function complete() {
     setSolved(true);
     try { storage.setItem(key,'solved'); } catch { setFeedback('Solved for this visit. Browser storage is unavailable.'); }
@@ -36,13 +46,14 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
     <h2 id="pilot-heading">{activity.title}</h2>
     <div className="utility-actions" role="group" aria-label="Activity stages">
       {stages.map((name,index)=><button type="button" className="button small" key={name} aria-pressed={stage===index}
-        onClick={()=>{setStage(index);setFeedback('');try {storage.setItem(key+'-stage',String(index));} catch {}}}>{name}</button>)}
+        onClick={()=>chooseStage(index)}>{name}</button>)}
     </div>
+    <p className="pilot-position">Step {stage+1} of {stages.length}</p>
     <div className="pilot-columns">
       <div className="card pilot-guide">
         {stage===0 && <>
           <p>{activity.intro}</p>
-          {id===3||id===4||id===5 ? <ConceptModel chapter={id}/> : id===7 ? <>
+          {id===3||id===4||id===5||id>=8 ? <ConceptModel chapter={id}/> : id===7 ? <>
             <label>Loop type<select value={whileLoop?'while':'for'} onChange={event=>{setWhileLoop(event.target.value==='while');setValue(0);}}>
               <option value="for">for</option><option value="while">while</option>
             </select></label>
@@ -79,8 +90,12 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
         {stage===3 && <><p>{activity.task}</p><p>Expected output <code>{activity.expected}</code>. Use Check Answer when your program is ready.</p>
           {solved && <p role="status">✓ Activity solved</p>}
           <details><summary>See a worked solution</summary><pre><code>{activity.solution}</code></pre></details></>}
-        {stage===4 && <><p>{activity.application}</p><details><summary>Hinglish memory hint</summary><p lang="hi-Latn">{activity.remember}</p></details>
+        {stage===4 && <><p>{activity.application}</p>
+          {'recap' in activity && <><p>{activity.recap}</p>
+            <button className="button small" aria-expanded={recall} onClick={()=>setRecall(!recall)}>{recall?'Hide answer':'Check your recall'}</button>
+            {recall && <p role="status">{activity.recall}</p>}</>}<details><summary>Hinglish memory hint</summary><p lang="hi-Latn">{activity.remember}</p></details>
           {id===7 && <p>A while loop can run indefinitely if its condition stays true. Change the counter inside the loop and check when the condition becomes false.</p>}</>}
+        {stage<stages.length-1 && <div className="pilot-next"><button className="button small" onClick={()=>chooseStage(stage+1)}>Continue to {stages[stage+1]}</button></div>}
         {feedback && <p role="status">{feedback}</p>}
       </div>
       {stage<=1 && <CodeLab key={whileLoop?'while':'experiment'} initial={whileLoop?whileCode:activity.code} draftId={key+(whileLoop?'-while':'-experiment')} input={id===4?'3':undefined} label="experiment.py" onRun={onRun} workspace/>}

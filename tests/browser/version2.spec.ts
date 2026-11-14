@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/8');
+ await page.goto('./#/chapter/11');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -87,5 +87,30 @@ test('new activities run Python and restore challenge stage and code',async ({pa
    await page.reload();
    await expect(editor).toHaveValue(code);
    await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+ }
+});
+
+test('chapter 8–10 challenges reject hardcoded output and accept working functions',async ({page})=>{
+ for(const [id,code,output] of [
+  [8,'def clean_name(text):\n    return text.strip()\nprint(clean_name("  Mina  "))','Mina'],
+  [9,'def first_score(scores):\n    return next(iter(scores))\nprint(first_score([72, 84, 91]))','72'],
+  [10,'def price_or_zero(product):\n    return product["price"] if "price" in product else 0\nprint(price_or_zero({"price": 80}))','80'],
+ ] as const){
+  await page.goto('./#/chapter/'+id);
+  const activity=page.locator('.pilot-activity');
+  await activity.getByRole('button',{name:'Continue to Predict'}).press('Enter');
+  await expect(activity.getByText('Step 2 of 5')).toBeVisible();
+  await activity.getByRole('button',{name:'Practice',exact:true}).click();
+  const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+  await editor.fill('print('+JSON.stringify(output)+')');
+  const check=activity.getByRole('button',{name:'Check Answer'});
+  await check.click();
+  await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
+  await editor.fill(code);
+  await check.click();
+  await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+  await page.reload();
+  await expect(editor).toHaveValue(code);
+  await expect(activity.getByText('✓ Activity solved')).toBeVisible();
  }
 });
