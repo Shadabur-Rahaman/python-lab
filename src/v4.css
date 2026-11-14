@@ -404,3 +404,33 @@
 .expense-report-model > div { padding:12px; background:var(--soft); border-radius:8px; }
 .expense-report-model ul,.expense-report-model ol { padding-inline-start:20px; margin-bottom:0; }
 @media(max-width:400px) { .expense-report-model { grid-template-columns:1fr; } }
+
+/* Python Runtime Stage Bar & Retry Controls */
+.runtime-stage-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+.stage-step {
+  font-weight: 500;
+  transition: color .2s, font-weight .2s;
+}
+.stage-step.active {
+  color: var(--accent);
+  font-weight: 700;
+}
+.stage-sep {
+  color: var(--muted);
+  opacity: 0.6;
+}
+.runtime-retry-row {
+  margin-top: 10px;
+}

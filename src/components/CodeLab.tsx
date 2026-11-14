@@ -20,11 +20,23 @@ class EditorFallback extends Component<{children: ReactNode; code: string; setCo
 }
 
 type Result = {name: string; passed: boolean; detail?: string};
-type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; cases?: Result[]};
+type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; stage?: number; cases?: Result[]; canRetry?: boolean};
 type Props = {
   initial: string; input?: string; expected?: string; tests?: string; cases?: TestCase[];
   onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; verifyOutput?: boolean; onCodeChange?: (code: string) => void;
 };
+
+// Module-level warm worker pool across CodeLab instances
+let warmWorker: Worker | null = null;
+let warmWorkerInUse = false;
+
+export function resetWarmWorker() {
+  if (warmWorker) {
+    try { warmWorker.terminate(); } catch {}
+    warmWorker = null;
+    warmWorkerInUse = false;
+  }
+}
 
 function explainError(error: string) {
   if (/IndentationError|TabError/.test(error)) return 'Check the leading spaces on the indicated line and the lines around it.';
@@ -98,22 +110,35 @@ export default function CodeLab({
   const worker = useRef<Worker | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active = useRef(false);
+  const [stage, setStage] = useState<number | null>(null);
+  const [lastCheck, setLastCheck] = useState(false);
 
   function finish() {
     if (timer.current) clearTimeout(timer.current);
     active.current = false;
     setBusy(false);
+    setStage(null);
+    warmWorkerInUse = false;
   }
 
   function stop(message = 'Stopped. Python will restart on the next run.') {
-    worker.current?.terminate();
-    worker.current = null;
+    if (worker.current) {
+      try { worker.current.terminate(); } catch {}
+      if (warmWorker === worker.current) {
+        warmWorker = null;
+      }
+      worker.current = null;
+    }
     finish();
     setStatus(message);
   }
 
   useEffect(() => () => {
-    worker.current?.terminate();
+    if (active.current) {
+      stop();
+    } else {
+      worker.current = null;
+    }
     if (timer.current) clearTimeout(timer.current);
   }, []);
 
@@ -133,19 +158,39 @@ export default function CodeLab({
   function run(check = false) {
     if (active.current) return;
     active.current = true;
+    setLastCheck(check);
     setBusy(true);
-    setStatus('Starting Python…');
+    setStage(1);
+    setStatus('Preparing Python…');
     clearOutput();
     let actual = '';
     try {
-      const current = worker.current ?? new Worker(`${import.meta.env.BASE_URL}python-worker.js`);
-      worker.current = current;
-      current.onerror = () => stop('Python could not start. Check your connection and try again.');
+      let current: Worker;
+      if (worker.current) {
+        current = worker.current;
+      } else if (warmWorker && !warmWorkerInUse) {
+        current = warmWorker;
+        warmWorkerInUse = true;
+        worker.current = current;
+      } else {
+        current = new Worker(`${import.meta.env.BASE_URL}python-worker.js`);
+        warmWorker = current;
+        warmWorkerInUse = true;
+        worker.current = current;
+      }
+      current.onerror = () => {
+        stop('Python could not start. Check your connection and try again.');
+        setException('Network or WebAssembly loading failed while starting the Python runtime.');
+      };
       current.onmessage = ({data}: MessageEvent<Message>) => {
         switch (data.kind) {
           case 'status':
             setStatus(data.text);
+            if (typeof data.stage === 'number') {
+              setStage(data.stage);
+            }
             if (data.text === 'Running Python…') {
+              setStage(null);
               if (timer.current) clearTimeout(timer.current);
               timer.current = setTimeout(() => stop('Stopped after 12 seconds. Check your loop condition, then run again.'), 12_000);
             }
@@ -273,9 +318,38 @@ export default function CodeLab({
     </div>
     <div className="console">
       <div role="status"><span className={busy ? 'status-dot busy' : 'status-dot'}/>{status}<small>STDOUT</small></div>
+      {busy && stage !== null && (
+        <div className="runtime-stage-bar" role="status" aria-label="Python initialization stage">
+          <span className={`stage-step ${stage >= 1 ? 'active' : ''}`}>1. Preparing</span>
+          <span className="stage-sep">→</span>
+          <span className={`stage-step ${stage >= 2 ? 'active' : ''}`}>2. Loading files</span>
+          <span className="stage-sep">→</span>
+          <span className={`stage-step ${stage >= 3 ? 'active' : ''}`}>3. Starting engine</span>
+          <span className="stage-sep">→</span>
+          <span className={`stage-step ${stage >= 4 ? 'active' : ''}`}>4. Ready</span>
+        </div>
+      )}
       <pre>{stdout || (status === 'Finished' ? 'No standard output.' : 'Your output will appear here.')}</pre>
       {stderr && <details open><summary>Standard error</summary><pre>{stderr}</pre></details>}
-      {exception && <details open><summary>Python or runtime error</summary><pre>{exception}</pre><p>{explainError(exception)}</p></details>}
+      {exception && (
+        <details open>
+          <summary>Python or runtime error</summary>
+          <pre>{exception}</pre>
+          <p>{explainError(exception)}</p>
+          <div className="runtime-retry-row">
+            <button
+              type="button"
+              className="button small primary"
+              onClick={() => {
+                stop('Retrying Python…');
+                setTimeout(() => run(lastCheck), 50);
+              }}
+            >
+              <RotateCcw size={14}/> Retry Python
+            </button>
+          </div>
+        </details>
+      )}
       {expected !== undefined && !tests && !cases?.length && status === 'Finished' &&
         <details open={Boolean(feedback)}><summary>Expected output</summary><pre>{expected}</pre></details>}
     </div>

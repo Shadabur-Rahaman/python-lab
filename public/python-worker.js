@@ -5,12 +5,16 @@ self.onmessage = async ({data}) => {
   const send = (kind, text, details = {}) => self.postMessage({kind, text, ...details});
   try {
     if (!runtime) {
-      send('status', 'Loading Python — the first download may take a moment…');
+      send('status', 'Preparing Python…', {stage: 1});
+      send('status', 'Loading required files…', {stage: 2});
       importScripts(distribution + 'pyodide.js');
+      send('status', 'Starting Python…', {stage: 3});
       runtime = await loadPyodide({indexURL: distribution});
+      send('status', 'Ready to run.', {stage: 4});
     }
-  } catch {
-    send('error', 'Python could not download. Check your network connection, then try again.');
+  } catch (error) {
+    runtime = null;
+    send('error', 'Python could not download. Check your network connection, then try again.', {canRetry: true});
     return;
   }
 
