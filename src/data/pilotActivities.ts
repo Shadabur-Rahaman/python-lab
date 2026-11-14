@@ -178,6 +178,23 @@ export const pilotActivities = {
     application:'Load saved records before filtering and sorting them. The editor uses Python’s virtual filesystem in the browser.',
     recap:'Does valid JSON guarantee that every entry is a number?', recall:'No. Parsing checks JSON syntax. Validate the values separately before calculating a total.',
   },
+  15: {
+    title:'Keep two shopping carts independent',
+    intro:'Two shoppers each need their own cart. Run the example, then add something to the second cart and compare the two totals.',
+    code:'class Cart:\n    def __init__(self):\n        self.amounts = []\n\n    def add(self, amount):\n        self.amounts.append(amount)\n\n    def total(self):\n        return sum(self.amounts)\n\nfirst = Cart()\nsecond = Cart()\nfirst.add(40)\nprint(first.total(), second.total())',
+    prediction:'After adding 40 to the first cart only, what is the second cart total?',answer:'0',
+    broken:'class Cart:\n    amounts = []\n\n    def add(self, amount):\n        self.amounts.append(amount)\n\nfirst = Cart()\nsecond = Cart()\nfirst.add(40)\nprint(second.amounts)',
+    repair:'class Cart:\n    def __init__(self):\n        self.amounts = []\n\n    def add(self, amount):\n        self.amounts.append(amount)\n\nfirst = Cart()\nsecond = Cart()\nfirst.add(40)\nprint(second.amounts)',
+    hint:'Where does Python create the list: once in the class body, or once for each cart?',
+    reason:'A list on the class is shared by both carts unless an instance has its own. Create a fresh self.amounts list in __init__.',
+    task:'Build an ExpenseTracker class with add(amount) and total(). Each tracker starts empty and tracks its own expenses. Keep the sample print line.',
+    starter:'class ExpenseTracker:\n    # Set up each tracker and add its two methods.\n    pass\n\ntracker = ExpenseTracker()\ntracker.add(40)\ntracker.add(75)\nprint(tracker.total())',
+    solution:'class ExpenseTracker:\n    def __init__(self):\n        self.amounts = []\n\n    def add(self, amount):\n        self.amounts.append(amount)\n\n    def total(self):\n        return sum(self.amounts)\n\ntracker = ExpenseTracker()\ntracker.add(40)\ntracker.add(75)\nprint(tracker.total())',
+    expected:'115',
+    remember:'Class ek blueprint hai. Har instance ki apni state ho sakti hai. self current instance ko refer karta hai.',
+    application:'An expense app can use one tracker for each trip or account. Each tracker uses the same methods and holds its own values.',
+    recap:'Where would you create a fresh list for each new tracker?',recall:'Create it in __init__ and assign it to an attribute on self.',
+  },
 } as const;
 
 export function isGuidedChapter(id:number): id is keyof typeof pilotActivities {

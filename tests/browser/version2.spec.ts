@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/15');
+ await page.goto('./#/chapter/1');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -202,6 +202,28 @@ test('JSON expense reader handles missing and malformed files and restores verif
  await check.click();
  await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
  const code='import json\nfrom pathlib import Path\ndef read_expenses(path):\n    try:\n        with open(path, encoding="utf-8") as file:\n            return json.load(file)\n    except (FileNotFoundError, json.JSONDecodeError):\n        return []\nPath("expenses_sample.json").write_text("[40, 75, 25]", encoding="utf-8")\nprint(read_expenses("expenses_sample.json"))';
+ await editor.fill(code);
+ await check.click();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+ await page.reload();
+ await expect(editor).toHaveValue(code);
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+});
+
+test('object-state challenge catches shared state and restores a verified solution',async ({page})=>{
+ await page.goto('./#/chapter/15');
+ const activity=page.locator('.pilot-activity');
+ await activity.getByRole('button',{name:'Run Code',exact:true}).click();
+ await expect(activity.locator('.console pre').first()).toHaveText('40 0',{timeout:60000});
+ await activity.getByRole('button',{name:'Practice',exact:true}).click();
+ const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+ const check=activity.getByRole('button',{name:'Check Answer'});
+ const methods='\n    def add(self, amount):\n        self.amounts.append(amount)\n    def total(self):\n        return sum(self.amounts)';
+ const sample='\nt = ExpenseTracker()\nt.add(40)\nt.add(75)\nprint(t.total())';
+ await editor.fill('class ExpenseTracker:\n    amounts = []'+methods+sample);
+ await check.click();
+ await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
+ const code='class ExpenseTracker:\n    def __init__(self):\n        self.amounts = []'+methods+sample;
  await editor.fill(code);
  await check.click();
  await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
