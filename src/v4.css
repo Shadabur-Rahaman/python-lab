@@ -321,3 +321,16 @@
 .lesson-content .lesson-section > p { max-width:70ch; }
 @media(max-width:1050px) { .beginner-hero { grid-template-columns:1fr; gap:24px; } .beginner-path-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:480px) { .beginner-hero { padding:16px; } .beginner-demo { padding:12px; } .beginner-path-grid { grid-template-columns:1fr; } }
+.pilot-activity { margin-block:16px 28px; }
+.pilot-activity > .utility-actions { margin-bottom:12px; }
+.pilot-activity [aria-pressed=true] { background:var(--soft); color:var(--accent); border-color:currentColor; }
+.pilot-columns { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:16px; align-items:start; }
+.pilot-columns > .code-lab { margin:0; }
+.pilot-guide { min-width:0; }
+.pilot-guide form button { margin-top:12px; }
+.python-symbols { display:none; }
+@media(max-width:1050px) { .pilot-columns { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:760px), (pointer:coarse) {
+  .python-symbols { display:flex; overflow:auto; gap:6px; padding:6px; background:var(--card); scrollbar-width:thin; }
+  .python-symbols button { flex:none; min-width:38px; min-height:40px; }
+}

@@ -1,5 +1,5 @@
 import {storage} from '../lib/storage';
-import {Component, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode} from 'react';
+import {Component, useEffect, useId, useRef, useState, type ComponentRef, type KeyboardEvent, type ReactNode} from 'react';
 import Editor from 'react-simple-code-editor';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-python';
@@ -23,11 +23,12 @@ type Result = {name: string; passed: boolean; detail?: string};
 type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; cases?: Result[]};
 type Props = {
   initial: string; input?: string; expected?: string; tests?: string; cases?: TestCase[];
-  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; onCodeChange?: (code: string) => void;
+  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; verifyOutput?: boolean; onCodeChange?: (code: string) => void;
 };
 
 function explainError(error: string) {
   if (/IndentationError|TabError/.test(error)) return 'Check the leading spaces on the indicated line and the lines around it.';
+  if (error.includes("SyntaxError: expected ':'")) return 'Python expects a colon at the end of this header. Check the indicated if, elif, else, for, or while line.';
   if (error.includes('SyntaxError')) return 'Look at the indicated line and the line above it. Check for missing punctuation, brackets or quotes.';
   if (error.includes('NameError')) return 'Check that the name is spelled correctly and has been defined before this line runs.';
   if (error.includes('EOFError')) return 'Add one queued response for each input() call, then run again.';
@@ -36,9 +37,35 @@ function explainError(error: string) {
 }
 
 export default function CodeLab({
-  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, workspace = false, onCodeChange,
+  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, workspace = false, verifyOutput = false, onCodeChange,
 }: Props) {
   const editorId = useId();
+  const editorRef = useRef<ComponentRef<typeof Editor>>(null);
+
+  function insertSymbol(symbol:string) {
+    const field=document.getElementById(editorId);
+    if (!(field instanceof HTMLTextAreaElement)) return;
+    const {selectionStart:start,selectionEnd:end}=field;
+    field.focus({preventScroll:true});
+    if (start===end && [')',']','}'].includes(symbol) && code[start]===symbol) {
+      field.setSelectionRange(start+1,start+1);
+      return;
+    }
+    const value=code.slice(0,start)+symbol+code.slice(end);
+    const cursor=start+symbol.length;
+    const editor=editorRef.current;
+    if (editor) {
+      const {stack,offset}=editor.session.history;
+      editor.session={history:{offset:offset+2,stack:[
+        ...stack.slice(0,offset+1),
+        {value:code,selectionStart:start,selectionEnd:end,timestamp:Date.now()},
+        {value,selectionStart:cursor,selectionEnd:cursor,timestamp:Date.now()},
+      ]}};
+    }
+    field.setRangeText(symbol,start,end,'end');
+    update(value);
+  }
+
   const draftKey = draftId || persist ? 'python-lab.editor.v1:' + (draftId ?? label) : null;
   const [draft,setDraft] = useState(() => {
     if (draftKey) {
@@ -145,12 +172,14 @@ export default function CodeLab({
             const passedCount = checks.filter(result => result.passed).length;
             const hasTests = Boolean(tests || cases?.length);
             const passed = hasTests
-              ? checks.length === (tests ? 1 : 0) + (cases?.length ?? 0) && passedCount === checks.length
+              ? checks.length === (tests ? 1 : 0) + (cases?.length ?? 0) && passedCount === checks.length && (!verifyOutput || matchesOutput(actual, expected ?? ''))
               : matchesOutput(actual, expected ?? '');
             setResults(checks);
             if (passed) {
               setFeedback('All checks passed.');
               onPass?.();
+            } else if (verifyOutput && passedCount === checks.length) {
+              setFeedback('Output differs. Compare your output with the expected result.');
             } else if (hasTests) {
               setFeedback(`${passedCount} passed · ${checks.length - passedCount} failed. Review the cases below.`);
             } else {
@@ -206,12 +235,17 @@ export default function CodeLab({
       }}><Copy size={15}/></button>
       </div>
     </div>
+    <div className="python-symbols" role="group" aria-label="Python editing symbols">
+      {['(',')',':','"',"'","[","]","{","}","=","_","#","    "].map(symbol=>
+        <button type="button" key={symbol} className="button small" onPointerDown={event=>event.preventDefault()}
+          onClick={()=>insertSymbol(symbol)}>{symbol==='    '?'Indent':symbol}</button>)}
+    </div>
     <div className="editor-body">
       <label className="sr-only" htmlFor={editorId}>Python code: {label}</label>
       <div className="editor-grid">
         <pre className="editor-gutter" aria-hidden="true">{code.split('\n').map((_, index) => index + 1).join('\n')}</pre>
         <EditorFallback code={code} setCode={update}>
-          <Editor value={code} onValueChange={update} onKeyDown={editorKeys}
+          <Editor ref={editorRef} value={code} onValueChange={update} onKeyDown={editorKeys}
             highlight={text => Prism.highlight(text, Prism.languages.python, 'python')}
             padding={22} textareaId={editorId} textareaClassName="code-input" tabSize={4} insertSpaces/>
         </EditorFallback>

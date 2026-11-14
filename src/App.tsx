@@ -1,3 +1,4 @@
+import PilotLesson from './components/PilotLesson';
 import BeginnerHome from './components/BeginnerHome';
 import {ReceiptEditor,ReceiptLesson} from './components/ReceiptWorkspace';
 import {lazy,Suspense,useEffect,useState} from 'react';
@@ -187,7 +188,8 @@ export default function App(){
  {page==='search'&&!waiting&&<Suspense fallback={<p role="status">Loading search…</p>}><KnowledgeSearch lessons={chapters}
    exercises={[...allTasks,...(expanded??[]).flatMap(lesson=>lesson.tasks)]}/></Suspense>}
  {page==='syntax'&&<Suspense fallback={<p role="status">Loading syntax topics…</p>}><SyntaxAcademy category={id} id={topicId} lessons={chapters}/></Suspense>}
- {page==='chapter'&&id==='2'&&<ReceiptLesson onRun={firstProgram}/>}
+ {page==='chapter'&&chapter&&(chapter.id===2||chapter.id===6||chapter.id===7)&&
+   <PilotLesson key={'pilot-'+chapter.id} id={chapter.id} onRun={firstProgram}/>}
  {page==='playground'&&<div className="playground-workspace"><p>Your receipt draft follows you between Variables and Values and this Playground.</p>
    <ReceiptEditor onRun={firstProgram} full/><a className="inline-link" href={link('chapter/2')}>Return to Variables and Values</a>
  </div>}
@@ -197,6 +199,7 @@ export default function App(){
      ?current.bookmarks.filter(id=>id!==chapter.id):[...current.bookmarks,chapter.id]}))}
    onComplete={()=>add('completed',chapter.id)} onSolve={id=>add('solved',id)}
    onQuiz={score=>saveScore(String(chapter.id),score)} onRun={firstProgram}/>}
+ {page==='chapter'&&id==='2'&&<details className="card"><summary>Continue the receipt workspace</summary><ReceiptLesson onRun={firstProgram}/></details>}
  {page==='practice'&&!waiting&&<PracticeView key={id} selectedTask={id} tasks={[...allTasks,...(expanded??[]).flatMap(lesson=>lesson.tasks)]}
    catalog={catalog} solved={progress.solved} onSolve={id=>add('solved',id)}/>}
  {page==='lab'&&<Experiments/>}
