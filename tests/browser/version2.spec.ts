@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/14');
+ await page.goto('./#/chapter/15');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -181,6 +181,27 @@ test('expense report filters, sorts and checks a reusable Python solution',async
  await check.click();
  await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
  const code='def expense_report(expenses, minimum):\n    return sorted((row for row in expenses if row[1] >= minimum), key=lambda row: row[1], reverse=True)\nprint(expense_report([("Travel", 40), ("Food", 75), ("Supplies", 25)], 40))';
+ await editor.fill(code);
+ await check.click();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+ await page.reload();
+ await expect(editor).toHaveValue(code);
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+});
+
+test('JSON expense reader handles missing and malformed files and restores verified work',async ({page})=>{
+ await page.goto('./#/chapter/14');
+ const activity=page.locator('.pilot-activity');
+ const model=activity.locator('.concept-model');
+ await model.getByRole('combobox',{name:/File state/}).selectOption('2');
+ await expect(model.locator('.model-flow')).toContainText('JSONDecodeError');
+ await activity.getByRole('button',{name:'Practice',exact:true}).click();
+ const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+ const check=activity.getByRole('button',{name:'Check Answer'});
+ await editor.fill('def read_expenses(path):\n    return [40, 75, 25]\nprint(read_expenses("expenses_sample.json"))');
+ await check.click();
+ await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
+ const code='import json\nfrom pathlib import Path\ndef read_expenses(path):\n    try:\n        with open(path, encoding="utf-8") as file:\n            return json.load(file)\n    except (FileNotFoundError, json.JSONDecodeError):\n        return []\nPath("expenses_sample.json").write_text("[40, 75, 25]", encoding="utf-8")\nprint(read_expenses("expenses_sample.json"))';
  await editor.fill(code);
  await check.click();
  await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});

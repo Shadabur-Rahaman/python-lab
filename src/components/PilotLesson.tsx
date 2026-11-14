@@ -19,6 +19,7 @@ const practiceChecks = {
   12: 'assert summarize_expenses([15, 25], 40) == (40, False), "A total equal to the budget is within budget."\nassert summarize_expenses([30, 45], 60) == (75, True), "Check another set of expenses over budget."\nassert summarize_expenses([], 50) == (0, False), "An empty list has a total of zero."',
 
   13: 'records = [("A", 50), ("B", 10), ("C", 50), ("D", 70)]\noriginal = records.copy()\nresult = expense_report(records, 50)\nassert result == [("D", 70), ("A", 50), ("C", 50)], "Include the boundary and preserve the order of ties."\nassert records == original and result is not records, "Return a new list and leave the input intact."\nassert expense_report(records, 100) == [], "Handle a threshold with no matches."\nassert expense_report([], 0) == [], "Handle an empty list."',
+  14: 'from tempfile import TemporaryDirectory\nfrom pathlib import Path\nwith TemporaryDirectory() as folder:\n    path = Path(folder) / "report.json"\n    assert read_expenses(str(path)) == [], "Handle a missing file."\n    path.write_text("[19, 22]", encoding="utf-8")\n    assert read_expenses(str(path)) == [19, 22], "Read the contents of the supplied path."\n    path.write_text("[19,", encoding="utf-8")\n    assert read_expenses(str(path)) == [], "Handle malformed JSON."',
 
 };
 const stages=['Discover','Predict','Debug','Practice','Remember'] as const;

@@ -161,6 +161,23 @@ export const pilotActivities = {
     application:'Filter a set of records before sharing a report. sorted() returns a new list and preserves the order of ties.',
     recap:'Which operator keeps an amount equal to the minimum?',recall:'>= includes the boundary.',
   },
+  14: {
+    title:'Load an expense report from JSON',
+    intro:'A saved report holds expenses as JSON text. Run the example, then change the path inside the with block to "missing.json" or remove the closing bracket from the saved text.',
+    code:'import json\nfrom pathlib import Path\n\npath = Path("expenses.json")\npath.write_text("[40, 75, 25]", encoding="utf-8")\ntry:\n    with Path("expenses.json").open(encoding="utf-8") as file:\n        expenses = json.load(file)\nexcept FileNotFoundError:\n    print("Missing report")\nexcept json.JSONDecodeError:\n    print("Invalid JSON")\nelse:\n    print(sum(expenses))',
+    prediction:'If valid JSON contains [40, 75, 25], what total prints?', answer:'140',
+    broken:'import json\n\ntry:\n    print(json.loads("[40, 75, 25"))\nexcept FileNotFoundError:\n    print("Missing report")',
+    repair:'import json\n\ntry:\n    print(json.loads("[40, 75, 25"))\nexcept json.JSONDecodeError:\n    print("Invalid JSON")',
+    hint:'Read the last line of the traceback. Did opening a file fail, or did parsing fail?',
+    reason:'The input is malformed JSON. Catch JSONDecodeError near the parse so that unrelated errors stay visible.',
+    task:'Write read_expenses(path) to return the parsed JSON list. Return an empty list for a missing file or malformed JSON. The checker supplies valid lists or those two errors. Keep the sample print call.',
+    starter:'import json\nfrom pathlib import Path\n\ndef read_expenses(path):\n    pass\n\nPath("expenses_sample.json").write_text("[40, 75, 25]", encoding="utf-8")\nprint(read_expenses("expenses_sample.json"))',
+    solution:'import json\nfrom pathlib import Path\n\ndef read_expenses(path):\n    try:\n        with open(path, encoding="utf-8") as file:\n            return json.load(file)\n    except (FileNotFoundError, json.JSONDecodeError):\n        return []\n\nPath("expenses_sample.json").write_text("[40, 75, 25]", encoding="utf-8")\nprint(read_expenses("expenses_sample.json"))',
+    expected:'[40, 75, 25]',
+    remember:'File na mile to FileNotFoundError. JSON galat ho to JSONDecodeError.',
+    application:'Load saved records before filtering and sorting them. The editor uses Python’s virtual filesystem in the browser.',
+    recap:'Does valid JSON guarantee that every entry is a number?', recall:'No. Parsing checks JSON syntax. Validate the values separately before calculating a total.',
+  },
 } as const;
 
 export function isGuidedChapter(id:number): id is keyof typeof pilotActivities {
