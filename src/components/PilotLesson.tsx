@@ -18,8 +18,26 @@ const practiceChecks = {
   11: 'assert order_total(15, 2, 7) == 37, "Return the total using the arguments."\nassert order_total(10, 0, 5) == 5, "Include delivery even when quantity is zero."',
   12: 'assert summarize_expenses([15, 25], 40) == (40, False), "A total equal to the budget is within budget."\nassert summarize_expenses([30, 45], 60) == (75, True), "Check another set of expenses over budget."\nassert summarize_expenses([], 50) == (0, False), "An empty list has a total of zero."',
 
+  13: 'records = [("A", 50), ("B", 10), ("C", 50), ("D", 70)]\noriginal = records.copy()\nresult = expense_report(records, 50)\nassert result == [("D", 70), ("A", 50), ("C", 50)], "Include the boundary and preserve the order of ties."\nassert records == original and result is not records, "Return a new list and leave the input intact."\nassert expense_report(records, 100) == [], "Handle a threshold with no matches."\nassert expense_report([], 0) == [], "Handle an empty list."',
+
 };
 const stages=['Discover','Predict','Debug','Practice','Remember'] as const;
+
+function ExpenseReportModel({minimum,onChange}: {minimum:number;onChange:(value:number)=>void}) {
+  const rows = [{category:'Travel',amount:40},{category:'Food',amount:75},{category:'Supplies',amount:25}];
+  const report = rows.filter(row=>row.amount>=minimum).sort((a,b)=>b.amount-a.amount);
+  return <>
+    <label>Minimum expense ₹{minimum}<input type="range" min={0} max={100} step={5} value={minimum}
+      onChange={event=>onChange(Number(event.target.value))}/></label>
+    <div className="expense-report-model">
+      <div><strong>Original expenses</strong><ul>{rows.map(row=><li key={row.category}>{row.category} · ₹{row.amount}</li>)}</ul></div>
+      <div aria-live="polite"><strong>Filtered and sorted</strong>
+        {report.length ? <ol>{report.map(row=><li key={row.category}>{row.category} · ₹{row.amount}</li>)}</ol> : <p>No matching expenses.</p>}
+      </div>
+    </div>
+    <small>Teaching model. Edit the minimum in the editor to verify the result with Python.</small>
+  </>;
+}
 
 export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities;onRun:()=>void}) {
   const activity=pilotActivities[id];
@@ -28,7 +46,7 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
     const saved=Number(storage.getItem(key+'-stage'));
     return Number.isInteger(saved) && saved>=0 && saved<stages.length ? saved : 0;
   });
-  const [value,setValue]=useState(id===2?3:id===6?75:id===12?150:0);
+  const [value,setValue]=useState(id===2?3:id===6?75:id===12?150:id===13?40:0);
   const [whileLoop,setWhileLoop]=useState(false);
   const [prediction,setPrediction]=useState('');
   const [feedback,setFeedback]=useState('');
@@ -59,7 +77,7 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
       <div className="card pilot-guide">
         {stage===0 && <>
           <p>{activity.intro}</p>
-          {id===12 ? <>
+          {id===13 ? <ExpenseReportModel minimum={value} onChange={setValue}/> : id===12 ? <>
             <label>Budget in the model<input type="range" min={0} max={200} step={5} value={value} onChange={event=>setValue(Number(event.target.value))}/></label>
             <ol className="model-flow" aria-live="polite">
               <li><small>Expenses</small><strong>₹40 + ₹75 + ₹25</strong></li>

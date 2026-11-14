@@ -144,6 +144,23 @@ export const pilotActivities = {
     application:'The function keeps reporting logic reusable. Call it again with a different week of expenses or a different budget.',
     recap:'Why does the total start at zero before the loop?',recall:'The loop needs to keep adding to the same running total.',
   },
+  13: {
+    title:'Turn expenses into a report',
+    intro:'Use the same expenses as Chapter 12, now with a category on each row. Run the example, then lower the minimum from 40 to 25.',
+    code:'expenses = [("Travel", 40), ("Food", 75), ("Supplies", 25)]\nminimum = 40\nmatches = [row for row in expenses if row[1] >= minimum]\nreport = sorted(matches, key=lambda row: row[1], reverse=True)\nprint(report)',
+    prediction:'At a minimum of 40, how many rows belong in the report?',answer:'2',
+    broken:'expenses = [("Travel", 40), ("Food", 75), ("Supplies", 25)]\nprint([row for row in expenses if row[1] > 40])',
+    repair:'expenses = [("Travel", 40), ("Food", 75), ("Supplies", 25)]\nprint([row for row in expenses if row[1] >= 40])',
+    hint:'Try an expense that is exactly equal to the minimum.',
+    reason:'Greater than excludes the boundary. Greater than or equal includes it.',
+    task:'Write expense_report(expenses, minimum) to return a new list of (category, amount) tuples. Keep amounts at or above the minimum and sort largest first. Keep the original list intact and leave tied amounts in their original order.',
+    starter:'def expense_report(expenses, minimum):\n    pass\n\nprint(expense_report([("Travel", 40), ("Food", 75), ("Supplies", 25)], 40))',
+    solution:'def expense_report(expenses, minimum):\n    matches = [row for row in expenses if row[1] >= minimum]\n    return sorted(matches, key=lambda row: row[1], reverse=True)\n\nprint(expense_report([("Travel", 40), ("Food", 75), ("Supplies", 25)], 40))',
+    expected:"[('Food', 75), ('Travel', 40)]",
+    remember:'Pehle record filter karo, phir amount ke hisaab se sort karo.',
+    application:'Filter a set of records before sharing a report. sorted() returns a new list and preserves the order of ties.',
+    recap:'Which operator keeps an amount equal to the minimum?',recall:'>= includes the boundary.',
+  },
 } as const;
 
 export function isGuidedChapter(id:number): id is keyof typeof pilotActivities {

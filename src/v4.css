@@ -337,3 +337,7 @@
 .pilot-position { margin:0 0 8px; font-size:.875rem; }
 .pilot-next { margin-top:16px; }
 .pilot-guide .concept-model { margin:12px 0 0; padding:0; border:0; box-shadow:none; }
+.expense-report-model { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-block:16px; }
+.expense-report-model > div { padding:12px; background:var(--soft); border-radius:8px; }
+.expense-report-model ul,.expense-report-model ol { padding-inline-start:20px; margin-bottom:0; }
+@media(max-width:400px) { .expense-report-model { grid-template-columns:1fr; } }

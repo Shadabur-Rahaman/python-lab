@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/13');
+ await page.goto('./#/chapter/14');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -158,6 +158,29 @@ test('expense tracker teaches the boundary and checks a reusable solution',async
  await check.click();
  await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
  const code='def summarize_expenses(expenses, budget):\n    total = sum(expenses)\n    return total, total > budget\nprint(summarize_expenses([40, 75, 25], 100))';
+ await editor.fill(code);
+ await check.click();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+ await page.reload();
+ await expect(editor).toHaveValue(code);
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+});
+
+test('expense report filters, sorts and checks a reusable Python solution',async ({page})=>{
+ await page.goto('./#/chapter/13');
+ const activity=page.locator('.pilot-activity');
+ const report=activity.locator('.expense-report-model');
+ await expect(report.locator('ol li')).toHaveText(['Food · ₹75','Travel · ₹40']);
+ await activity.getByRole('slider').press('End');
+ await expect(report.getByText('No matching expenses.')).toBeVisible();
+ await expect(report.locator('ul li')).toHaveCount(3);
+ await activity.getByRole('button',{name:'Practice',exact:true}).click();
+ const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+ const check=activity.getByRole('button',{name:'Check Answer'});
+ await editor.fill('def expense_report(expenses, minimum):\n    return [("Food", 75), ("Travel", 40)]\nprint(expense_report([], 40))');
+ await check.click();
+ await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
+ const code='def expense_report(expenses, minimum):\n    return sorted((row for row in expenses if row[1] >= minimum), key=lambda row: row[1], reverse=True)\nprint(expense_report([("Travel", 40), ("Food", 75), ("Supplies", 25)], 40))';
  await editor.fill(code);
  await check.click();
  await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
