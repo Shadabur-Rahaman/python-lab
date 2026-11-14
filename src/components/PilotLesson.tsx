@@ -1,3 +1,4 @@
+import ConceptModel from './ConceptModel';
 import {useState} from 'react';
 import CodeLab from './CodeLab';
 import {pilotActivities} from '../data/pilotActivities';
@@ -6,6 +7,9 @@ import {storage} from '../lib/storage';
 const whileCode='i = 0\nwhile i < 3:\n    print("Welcome")\n    i += 1';
 const practiceChecks = {
   2: 'assert travel == 40 and food == 60, "Store the two expenses in travel and food."',
+  3: 'assert type(amount) is float and amount == 12.5',
+  4: 'assert type(tickets) is int and tickets == 3',
+  5: 'assert leftover == 3 and items == 23',
   6: 'assert order == 500, "Check the discount at the boundary of 500."',
   7: 'assert total == 6, "Store the sum in total before printing it."',
 };
@@ -14,7 +18,10 @@ const stages=['Discover','Predict','Debug','Practice','Remember'] as const;
 export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities;onRun:()=>void}) {
   const activity=pilotActivities[id];
   const key='python-lab.activity.v2:'+id;
-  const [stage,setStage]=useState(0);
+  const [stage,setStage]=useState(()=>{
+    const saved=Number(storage.getItem(key+'-stage'));
+    return Number.isInteger(saved) && saved>=0 && saved<stages.length ? saved : 0;
+  });
   const [value,setValue]=useState(id===2?3:id===6?75:0);
   const [whileLoop,setWhileLoop]=useState(false);
   const [prediction,setPrediction]=useState('');
@@ -29,13 +36,13 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
     <h2 id="pilot-heading">{activity.title}</h2>
     <div className="utility-actions" role="group" aria-label="Activity stages">
       {stages.map((name,index)=><button type="button" className="button small" key={name} aria-pressed={stage===index}
-        onClick={()=>{setStage(index);setFeedback('');}}>{name}</button>)}
+        onClick={()=>{setStage(index);setFeedback('');try {storage.setItem(key+'-stage',String(index));} catch {}}}>{name}</button>)}
     </div>
     <div className="pilot-columns">
       <div className="card pilot-guide">
         {stage===0 && <>
           <p>{activity.intro}</p>
-          {id===7 ? <>
+          {id===3||id===4||id===5 ? <ConceptModel chapter={id}/> : id===7 ? <>
             <label>Loop type<select value={whileLoop?'while':'for'} onChange={event=>{setWhileLoop(event.target.value==='while');setValue(0);}}>
               <option value="for">for</option><option value="while">while</option>
             </select></label>
@@ -56,7 +63,7 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
           {id===6 && <details><summary>Compare if, elif, and else</summary>
             <pre><code>{'if marks >= 75:\n    print("Distinction")\nelif marks >= 40:\n    print("Pass")\nelse:\n    print("Fail")'}</code></pre>
             <p>Python checks the tests from top to bottom. The spaces show which print belongs to each branch.</p></details>}
-          <small>Teaching model. Edit and run the Python example to verify it.</small>
+          {(id===2||id===6||id===7) && <small>Teaching model. Edit and run the Python example to verify it.</small>}
         </>}
         {stage===1 && <form onSubmit={event=>{
           event.preventDefault();
@@ -76,9 +83,9 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
           {id===7 && <p>A while loop can run indefinitely if its condition stays true. Change the counter inside the loop and check when the condition becomes false.</p>}</>}
         {feedback && <p role="status">{feedback}</p>}
       </div>
-      {stage<=1 && <CodeLab key={whileLoop?'while':'experiment'} initial={whileLoop?whileCode:activity.code} draftId={key+(whileLoop?'-while':'-experiment')} label="experiment.py" onRun={onRun} workspace/>}
-      {stage===2 && <CodeLab key="repair" initial={activity.broken} draftId={key+'-repair'} label="repair.py" onRun={onRun} workspace/>}
-      {stage===3 && <CodeLab key="challenge" initial={activity.starter} draftId={key+'-challenge'} label="challenge.py" expected={activity.expected} tests={practiceChecks[id]} verifyOutput
+      {stage<=1 && <CodeLab key={whileLoop?'while':'experiment'} initial={whileLoop?whileCode:activity.code} draftId={key+(whileLoop?'-while':'-experiment')} input={id===4?'3':undefined} label="experiment.py" onRun={onRun} workspace/>}
+      {stage===2 && <CodeLab key="repair" initial={activity.broken} draftId={key+'-repair'} input={id===4?'3':undefined} label="repair.py" onRun={onRun} workspace/>}
+      {stage===3 && <CodeLab key="challenge" initial={activity.starter} draftId={key+'-challenge'} input={id===4?'3':undefined} label="challenge.py" expected={activity.expected} tests={practiceChecks[id]} verifyOutput
         onRun={onRun} onPass={complete} workspace/>}
     </div>
   </section>;

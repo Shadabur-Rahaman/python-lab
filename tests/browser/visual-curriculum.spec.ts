@@ -7,7 +7,7 @@ test('all chapter models respond and fit phone and desktop layouts',async ({page
   await page.addInitScript(value=>localStorage.setItem('python-lab.theme',value),theme);
   for(let id=0;id<16;id++){
    await page.goto('./#/chapter/'+id);
-   const model=page.locator('.concept-model');
+   const model=page.locator('.lesson-content .concept-model');
    const initial=await model.locator('.model-flow li').last().innerText();
    await model.getByRole('combobox',{name:/^(?!Memory hint language)/}).selectOption('1');
    await expect(model.locator('.model-flow li').last()).not.toHaveText(initial);

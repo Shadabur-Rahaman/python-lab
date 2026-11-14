@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/3');
+ await page.goto('./#/chapter/8');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -68,4 +68,24 @@ test('mobile toolbar inserts at the cursor, replaces selection and supports undo
  await expect(editor).toHaveValue('print()');
  await editor.press('Control+y');
  await expect(editor).toHaveValue('#()');
+});
+
+test('new activities run Python and restore challenge stage and code',async ({page})=>{
+ for(const [id,code,output] of [
+   [3,'raw = "12.50"\namount = float(raw)\nprint(amount + 2.5)','15.0'],
+   [4,'tickets = int(input())\nprint(tickets * 30)','90'],
+   [5,'items = 23\nleftover = items % 5\nprint(leftover)','3'],
+ ] as const){
+   await page.goto('./#/chapter/'+id);
+   const activity=page.locator('.pilot-activity');
+   await activity.getByRole('button',{name:'Practice',exact:true}).click();
+   const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+   await editor.fill(code);
+   await activity.getByRole('button',{name:'Check Answer'}).click();
+   await expect(activity.locator('.console pre').first()).toHaveText(output,{timeout:30000});
+   await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+   await page.reload();
+   await expect(editor).toHaveValue(code);
+   await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+ }
 });
