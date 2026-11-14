@@ -1,7 +1,7 @@
 import ConceptModel from './ConceptModel';
 import {useState} from 'react';
 import CodeLab from './CodeLab';
-import {pilotActivities} from '../data/pilotActivities';
+import {pilotActivities,setChallenge} from '../data/pilotActivities';
 import {storage} from '../lib/storage';
 
 const whileCode='i = 0\nwhile i < 3:\n    print("Welcome")\n    i += 1';
@@ -15,6 +15,7 @@ const practiceChecks = {
   8: 'assert clean_name("  Noor Khan  ") == "Noor Khan", "Keep interior spaces and remove surrounding whitespace."\nassert clean_name("   ") == "", "An all-space name becomes empty."',
   9: 'assert first_score([19, 44]) == 19, "Read the first item in a list."\nassert first_score((82,)) == 82, "Read the first item in a tuple too."',
   10: 'assert price_or_zero({"price": 125}) == 125, "Read the actual price."\nassert price_or_zero({"name": "Pen"}) == 0, "Return zero when the key is missing."',
+  11: 'assert order_total(15, 2, 7) == 37, "Return the total using the arguments."\nassert order_total(10, 0, 5) == 5, "Include delivery even when quantity is zero."',
 
 };
 const stages=['Discover','Predict','Debug','Practice','Remember'] as const;
@@ -33,14 +34,18 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
   const [hint,setHint]=useState(0);
   const [recall,setRecall]=useState(false);
   const [solved,setSolved]=useState(()=>storage.getItem(key)==='solved');
+  const [setMode,setSetMode]=useState(()=>id===10 && storage.getItem(key+'-practice')==='sets');
+  const [setsSolved,setSetSolved]=useState(()=>id===10 && storage.getItem(key+'-sets')==='solved');
+  const challenge=setMode?setChallenge:activity;
   function chooseStage(index:number) {
     setStage(index);
     setFeedback('');
     try {storage.setItem(key+'-stage',String(index));} catch {}
   }
   function complete() {
-    setSolved(true);
-    try { storage.setItem(key,'solved'); } catch { setFeedback('Solved for this visit. Browser storage is unavailable.'); }
+    if(setMode) setSetSolved(true);
+    else setSolved(true);
+    try { storage.setItem(setMode?key+'-sets':key,'solved'); } catch { setFeedback('Solved for this visit. Browser storage is unavailable.'); }
   }
   return <section className="pilot-activity" aria-labelledby="pilot-heading">
     <h2 id="pilot-heading">{activity.title}</h2>
@@ -87,9 +92,16 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
           <button className="button small" disabled={hint>=3} onClick={()=>setHint(hint+1)}>Reveal next hint</button>
           {hint>=1 && <p>{activity.hint}</p>}{hint>=2 && <p>{activity.reason}</p>}
           {hint>=3 && <pre><code>{activity.repair}</code></pre>}</>}
-        {stage===3 && <><p>{activity.task}</p><p>Expected output <code>{activity.expected}</code>. Use Check Answer when your program is ready.</p>
-          {solved && <p role="status">✓ Activity solved</p>}
-          <details><summary>See a worked solution</summary><pre><code>{activity.solution}</code></pre></details></>}
+        {stage===3 && <>
+          {id===10 && <label>Challenge<select value={setMode?'sets':'dictionary'} onChange={event=>{
+            const selection=event.target.value;
+            setSetMode(selection==='sets');
+            setFeedback('');
+            try {storage.setItem(key+'-practice',selection);} catch {}
+          }}><option value="dictionary">Dictionary lookup</option><option value="sets">Count distinct categories</option></select></label>}
+          <p>{challenge.task}</p><p>Expected output <code>{challenge.expected}</code>. Use Check Answer when your program is ready.</p>
+          {(setMode?setsSolved:solved) && <p role="status">✓ Activity solved</p>}
+          <details><summary>See a worked solution</summary><pre><code>{challenge.solution}</code></pre></details></>}
         {stage===4 && <><p>{activity.application}</p>
           {'recap' in activity && <><p>{activity.recap}</p>
             <button className="button small" aria-expanded={recall} onClick={()=>setRecall(!recall)}>{recall?'Hide answer':'Check your recall'}</button>
@@ -100,7 +112,7 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
       </div>
       {stage<=1 && <CodeLab key={whileLoop?'while':'experiment'} initial={whileLoop?whileCode:activity.code} draftId={key+(whileLoop?'-while':'-experiment')} input={id===4?'3':undefined} label="experiment.py" onRun={onRun} workspace/>}
       {stage===2 && <CodeLab key="repair" initial={activity.broken} draftId={key+'-repair'} input={id===4?'3':undefined} label="repair.py" onRun={onRun} workspace/>}
-      {stage===3 && <CodeLab key="challenge" initial={activity.starter} draftId={key+'-challenge'} input={id===4?'3':undefined} label="challenge.py" expected={activity.expected} tests={practiceChecks[id]} verifyOutput
+      {stage===3 && <CodeLab key={setMode?'sets':'challenge'} initial={challenge.starter} draftId={key+(setMode?'-set-challenge':'-challenge')} input={id===4?'3':undefined} label="challenge.py" expected={challenge.expected} tests={setMode?setChallenge.tests:practiceChecks[id]} verifyOutput
         onRun={onRun} onPass={complete} workspace/>}
     </div>
   </section>;

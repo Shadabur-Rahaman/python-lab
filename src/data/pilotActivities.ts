@@ -110,8 +110,33 @@ export const pilotActivities = {
     application:'Use dictionaries for records and sets to count distinct categories, such as len(set(["Books", "Books", "Pens"])) == 2.',
     recap:'How many distinct categories are in Books, Books, Pens?', recall:'Two. A set keeps each distinct item once.',
   },
+  11: {
+    title:'Build a reusable price calculator',
+    intro:'A shop can use the same calculation for every order. Run the example, then change the quantity in the function call.',
+    code:'def subtotal(price, quantity):\n    return price * quantity\n\nprint(subtotal(20, 3))',
+    prediction:'What prints if you call subtotal(20, 5)?',answer:'100',
+    broken:'def subtotal(price, quantity):\n    print(price * quantity)\n\nprint(subtotal(20, 3) + 10)',
+    repair:'def subtotal(price, quantity):\n    return price * quantity\n\nprint(subtotal(20, 3) + 10)',
+    hint:'Which line gives a value back to the caller?',
+    reason:'print displays the subtotal. Without return, the call produces None, so adding 10 raises TypeError.',
+    task:'Write order_total(price, quantity, delivery) to return the subtotal plus delivery. Print the result for price 20, quantity 3, and delivery 10.',
+    starter:'def order_total(price, quantity, delivery):\n    pass\n\nprint(order_total(20, 3, 10))',
+    solution:'def order_total(price, quantity, delivery):\n    return price * quantity + delivery\n\nprint(order_total(20, 3, 10))',
+    expected:'70',
+    remember:'Function ek baar likho, phir dobara use karo. return result caller ko deta hai.',
+    application:'Reuse a calculation for every order in a report.',
+    recap:'Which keyword sends a value back for the caller to use?', recall:'return sends the result back. print displays it.',
+  },
 } as const;
 
 export function isGuidedChapter(id:number): id is keyof typeof pilotActivities {
   return Object.hasOwn(pilotActivities,id);
 }
+
+export const setChallenge = {
+  task:'Write count_categories(items) to return the number of distinct categories. Keep spelling and capitalization as provided.',
+  starter:'def count_categories(items):\n    pass\n\nprint(count_categories(["Books", "Books", "Pens"]))',
+  solution:'def count_categories(items):\n    return len(set(items))\n\nprint(count_categories(["Books", "Books", "Pens"]))',
+  expected:'2',
+  tests:'assert count_categories([]) == 0, "An empty list has no categories."\nassert count_categories(["Pens", "Pens", "pens", "Books"]) == 3, "Count distinct strings, including differences in case."',
+};

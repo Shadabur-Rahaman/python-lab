@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/11');
+ await page.goto('./#/chapter/12');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -113,4 +113,31 @@ test('chapter 8–10 challenges reject hardcoded output and accept working funct
   await expect(editor).toHaveValue(code);
   await expect(activity.getByText('✓ Activity solved')).toBeVisible();
  }
+});
+
+test('set and function challenges validate new inputs and preserve separate drafts',async ({page})=>{
+ const activity=page.locator('.pilot-activity');
+ await page.goto('./#/chapter/10');
+ await activity.getByRole('button',{name:'Practice',exact:true}).click();
+ const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+ await editor.fill('# my dictionary draft');
+ const choice=activity.getByRole('combobox',{name:/^Challenge/});
+ await choice.selectOption('sets');
+ await editor.fill('def count_categories(items):\n    return len(set(items))\nprint(count_categories(["Books", "Books", "Pens"]))');
+ await activity.getByRole('button',{name:'Check Answer'}).click();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+ await page.reload();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible();
+ await choice.selectOption('dictionary');
+ await expect(editor).toHaveValue('# my dictionary draft');
+ await expect(activity.getByText('✓ Activity solved')).toHaveCount(0);
+ await page.goto('./#/chapter/11');
+ await activity.getByRole('button',{name:'Practice',exact:true}).click();
+ await editor.fill('def order_total(price, quantity, delivery):\n    return 70\nprint(order_total(20, 3, 10))');
+ const check=activity.getByRole('button',{name:'Check Answer'});
+ await check.click();
+ await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
+ await editor.fill('def order_total(price, quantity, delivery):\n    return price * quantity + delivery\nprint(order_total(20, 3, 10))');
+ await check.click();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
 });
