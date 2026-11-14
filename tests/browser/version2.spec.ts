@@ -23,7 +23,7 @@ test('variables predict, debug, solve and keep the verified result',async ({page
  await activity.getByRole('button',{name:'Practice',exact:true}).click();
  await expect(activity.getByText(/Activity solved/)).toBeVisible();
  await expect(activity.getByLabel('Python code: challenge.py',{exact:true})).toHaveValue(/print\(travel \+ food\)/);
- await page.goto('./#/chapter/12');
+ await page.goto('./#/chapter/13');
  await expect(page.locator('.pilot-activity')).toHaveCount(0);
 });
 
@@ -140,4 +140,28 @@ test('set and function challenges validate new inputs and preserve separate draf
  await editor.fill('def order_total(price, quantity, delivery):\n    return price * quantity + delivery\nprint(order_total(20, 3, 10))');
  await check.click();
  await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+});
+
+test('expense tracker teaches the boundary and checks a reusable solution',async ({page})=>{
+ await page.goto('./#/chapter/12');
+ const activity=page.locator('.pilot-activity');
+ const slider=activity.getByRole('slider');
+ await slider.press('ArrowLeft');
+ await slider.press('ArrowLeft');
+ await expect(activity.locator('.model-flow li').last()).toContainText('Within budget');
+ await slider.press('ArrowLeft');
+ await expect(activity.locator('.model-flow li').last()).toContainText('Over budget');
+ await activity.getByRole('button',{name:'Practice',exact:true}).click();
+ const editor=activity.getByLabel('Python code: challenge.py',{exact:true});
+ const check=activity.getByRole('button',{name:'Check Answer'});
+ await editor.fill('def summarize_expenses(expenses, budget):\n    return 140, True\nprint(summarize_expenses([40, 75, 25], 100))');
+ await check.click();
+ await expect(activity.getByText(/0 passed/)).toBeVisible({timeout:60000});
+ const code='def summarize_expenses(expenses, budget):\n    total = sum(expenses)\n    return total, total > budget\nprint(summarize_expenses([40, 75, 25], 100))';
+ await editor.fill(code);
+ await check.click();
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible({timeout:60000});
+ await page.reload();
+ await expect(editor).toHaveValue(code);
+ await expect(activity.getByText('✓ Activity solved')).toBeVisible();
 });

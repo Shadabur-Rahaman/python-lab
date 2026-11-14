@@ -127,6 +127,23 @@ export const pilotActivities = {
     application:'Reuse a calculation for every order in a report.',
     recap:'Which keyword sends a value back for the caller to use?', recall:'return sends the result back. print displays it.',
   },
+  12: {
+    title:'Build an expense tracker',
+    intro:'You spent ₹40 on travel, ₹75 on food, and ₹25 on supplies. Run the example, then change the budget from 150 to 100 to see the overspending warning.',
+    code:'expenses = [40, 75, 25]\nbudget = 150\ntotal = 0\nfor amount in expenses:\n    total += amount\nprint(total)\nprint("Over budget" if total > budget else "Within budget")',
+    prediction:'The total is 140. What status prints if the budget is also 140?',answer:'within budget',
+    broken:'expenses = [40, 75, 25]\nfor amount in expenses:\n    total = 0\n    total += amount\nprint(total)',
+    repair:'expenses = [40, 75, 25]\ntotal = 0\nfor amount in expenses:\n    total += amount\nprint(total)',
+    hint:'Look for the line that sets total back to zero.',
+    reason:'Initialize total before the loop. Starting at zero on every iteration loses the previous expenses.',
+    task:'Write summarize_expenses(expenses, budget). Return a tuple (total, over_budget), where total is the sum and over_budget is True only if total is greater than budget. Start with the total, then add the budget comparison. Keep the sample print call.',
+    starter:'def summarize_expenses(expenses, budget):\n    # Calculate the total, then compare it with budget.\n    pass\n\nprint(summarize_expenses([40, 75, 25], 100))',
+    solution:'def summarize_expenses(expenses, budget):\n    total = sum(expenses)\n    return total, total > budget\n\nprint(summarize_expenses([40, 75, 25], 100))',
+    expected:'(140, True)',
+    remember:'Pehle total nikalo, phir budget se compare karo. Barabar ho to budget cross nahi hua.',
+    application:'The function keeps reporting logic reusable. Call it again with a different week of expenses or a different budget.',
+    recap:'Why does the total start at zero before the loop?',recall:'The loop needs to keep adding to the same running total.',
+  },
 } as const;
 
 export function isGuidedChapter(id:number): id is keyof typeof pilotActivities {

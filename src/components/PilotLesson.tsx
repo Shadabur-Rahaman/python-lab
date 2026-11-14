@@ -16,6 +16,7 @@ const practiceChecks = {
   9: 'assert first_score([19, 44]) == 19, "Read the first item in a list."\nassert first_score((82,)) == 82, "Read the first item in a tuple too."',
   10: 'assert price_or_zero({"price": 125}) == 125, "Read the actual price."\nassert price_or_zero({"name": "Pen"}) == 0, "Return zero when the key is missing."',
   11: 'assert order_total(15, 2, 7) == 37, "Return the total using the arguments."\nassert order_total(10, 0, 5) == 5, "Include delivery even when quantity is zero."',
+  12: 'assert summarize_expenses([15, 25], 40) == (40, False), "A total equal to the budget is within budget."\nassert summarize_expenses([30, 45], 60) == (75, True), "Check another set of expenses over budget."\nassert summarize_expenses([], 50) == (0, False), "An empty list has a total of zero."',
 
 };
 const stages=['Discover','Predict','Debug','Practice','Remember'] as const;
@@ -27,7 +28,7 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
     const saved=Number(storage.getItem(key+'-stage'));
     return Number.isInteger(saved) && saved>=0 && saved<stages.length ? saved : 0;
   });
-  const [value,setValue]=useState(id===2?3:id===6?75:0);
+  const [value,setValue]=useState(id===2?3:id===6?75:id===12?150:0);
   const [whileLoop,setWhileLoop]=useState(false);
   const [prediction,setPrediction]=useState('');
   const [feedback,setFeedback]=useState('');
@@ -58,7 +59,15 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
       <div className="card pilot-guide">
         {stage===0 && <>
           <p>{activity.intro}</p>
-          {id===3||id===4||id===5||id>=8 ? <ConceptModel chapter={id}/> : id===7 ? <>
+          {id===12 ? <>
+            <label>Budget in the model<input type="range" min={0} max={200} step={5} value={value} onChange={event=>setValue(Number(event.target.value))}/></label>
+            <ol className="model-flow" aria-live="polite">
+              <li><small>Expenses</small><strong>₹40 + ₹75 + ₹25</strong></li>
+              <li><small>Total and budget</small><strong>₹140 vs ₹{value}</strong></li>
+              <li><small>Status</small><strong>{140>value?'Over budget':'Within budget'}</strong></li>
+            </ol>
+            <small>Teaching model. Change the budget in the editor and run Python to compare.</small>
+          </> : id===3||id===4||id===5||id>=8 ? <ConceptModel chapter={id}/> : id===7 ? <>
             <label>Loop type<select value={whileLoop?'while':'for'} onChange={event=>{setWhileLoop(event.target.value==='while');setValue(0);}}>
               <option value="for">for</option><option value="while">while</option>
             </select></label>
