@@ -270,6 +270,73 @@
 .model-cells li { display:grid; gap:3px; min-width:52px; text-align:center; padding:6px 10px; border:1px solid var(--line); border-radius:6px; }
 .model-cells li[data-selected=true] { background:var(--soft); border-color:var(--accent); color:var(--text); }
 .model-cells li[aria-current=step] { outline:2px solid var(--accent); outline-offset:2px; }
+
+/* Chapter 0: Recipe Algorithm Steps */
+.model-recipe-steps { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap:10px; list-style:none; padding:0; margin:16px 0; }
+.recipe-step-card { background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; min-width:0; }
+.recipe-step-card .step-num { font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.5px; }
+.recipe-step-card strong { color:var(--text); font-size:13px; }
+.recipe-step-card .step-amount { color:var(--accent); font-weight:600; font-size:12px; }
+.recipe-step-card .step-note { color:var(--muted); font-size:11px; }
+
+/* Chapter 1: Statement to Output & Token Contrast */
+.model-statement-map { display:grid; gap:12px; margin:16px 0; }
+.statement-row { display:flex; align-items:center; flex-wrap:wrap; gap:12px; background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px; box-sizing:border-box; }
+.code-badge, .output-badge { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.code-label, .output-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.quote-badge { color:#10b981; font-weight:700; }
+.terminal-samp { font-family:var(--font-mono, monospace); font-weight:700; color:var(--text); background:var(--card); padding:4px 8px; border-radius:6px; border:1px solid var(--line); }
+.output-note { font-size:11px; color:var(--muted); }
+.arrow-divider { color:var(--accent); font-weight:700; font-size:16px; }
+.token-contrast-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap:10px; }
+.token-box { background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; box-sizing:border-box; }
+.contrast-arrow { color:var(--muted); font-weight:700; }
+.type-pill { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; text-transform:uppercase; display:inline-block; }
+.pill-str { background:rgba(16, 185, 129, 0.15); color:#10b981; }
+.pill-int { background:rgba(59, 130, 246, 0.15); color:#3b82f6; }
+.pill-float { background:rgba(245, 158, 11, 0.15); color:#f59e0b; }
+.pill-none { background:rgba(107, 114, 128, 0.15); color:#9ca3af; }
+.pill-err { background:rgba(239, 68, 68, 0.15); color:#ef4444; }
+
+/* Chapter 2: Labeled Memory Boxes */
+.model-memory-boxes { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:16px 0; }
+.memory-box { display:flex; flex-direction:column; align-items:center; background:var(--soft); border:2px dashed var(--line); border-radius:10px; padding:10px 14px; min-width:80px; text-align:center; box-sizing:border-box; }
+.memory-box.total-box { border-style:solid; border-color:var(--accent); }
+.box-label { font-size:12px; font-weight:700; color:var(--accent); font-family:var(--font-mono, monospace); margin-bottom:4px; }
+.box-val { font-size:15px; font-weight:800; color:var(--text); background:var(--card); padding:3px 10px; border-radius:6px; border:1px solid var(--line); min-width:48px; }
+.box-meta { font-size:10px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }
+.memory-op { font-size:18px; font-weight:800; color:var(--muted); }
+
+/* Chapter 3: Type Conversion Funnel */
+.model-conversion-funnel { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap:10px; margin:16px 0; align-items:stretch; }
+.funnel-stage { background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:6px; justify-content:center; box-sizing:border-box; min-width:0; }
+.funnel-stage small { font-size:11px; color:var(--muted); text-transform:uppercase; }
+.funnel-stage strong { font-size:14px; color:var(--text); word-break:break-word; }
+.funnel-stage code { font-size:13px; color:var(--text); font-weight:700; }
+
+/* Chapter 4: Input Queue Pipeline */
+.model-input-pipeline { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:16px 0; }
+.pipeline-step { background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:4px; min-width:110px; flex:1; box-sizing:border-box; }
+.pipeline-step small { font-size:10px; color:var(--muted); text-transform:uppercase; }
+.pipeline-step strong { font-size:13px; color:var(--text); }
+.pipeline-step code, .pipeline-step samp { font-size:13px; font-weight:700; color:var(--text); }
+.pipeline-step.pipeline-error { border-color:#ef4444; background:rgba(239, 68, 68, 0.08); }
+.pipeline-arrow { color:var(--accent); font-weight:700; font-size:15px; }
+
+/* Chapter 5: Packaging Full Boxes (//) & Leftovers (%) */
+.model-packaging { margin:16px 0; background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:14px 16px; display:grid; gap:12px; box-sizing:border-box; }
+.pack-summary { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px; color:var(--text); border-bottom:1px solid var(--line); padding-bottom:8px; }
+.pack-containers { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap:14px; }
+.pack-boxes, .pack-leftovers { display:flex; flex-direction:column; gap:8px; }
+.pack-header { display:flex; justify-content:space-between; align-items:center; }
+.pack-title { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.pack-count { font-size:13px; font-weight:800; color:var(--accent); }
+.boxes-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.sweet-box { background:var(--card); border:1.5px solid var(--line); border-radius:8px; padding:6px 10px; display:flex; flex-direction:column; gap:4px; min-width:75px; box-sizing:border-box; }
+.sweet-box small { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.sweets-dots { display:flex; gap:3px; flex-wrap:wrap; font-size:14px; line-height:1; }
+.leftovers-tray { background:var(--card); border:1.5px dashed var(--line); border-radius:8px; padding:8px 12px; min-height:48px; display:flex; align-items:center; box-sizing:border-box; }
+.no-leftovers { font-size:12px; color:var(--muted); font-style:italic; }
 .syntax-launch { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:24px; align-items:center; padding:24px; border:1px solid var(--line); border-radius:16px; background:var(--soft); margin-bottom:20px; }
 .syntax-launch .concept-model { margin:0; min-width:0; }
 .syntax-symbol-note { min-height:3em; padding:12px; background:var(--soft); color:var(--text); border-inline-start:3px solid var(--accent); border-radius:6px; }

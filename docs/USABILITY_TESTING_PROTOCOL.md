@@ -1,4 +1,4 @@
-# Python Lab: Beginner Usability Testing Protocol (Version 13)
+# Python Lab: Beginner Usability Testing Protocol (Version 14)
 
 ## 1. Objectives & Overview
 This protocol outlines a standardized, repeatable usability test designed to evaluate the learning quality, interface clarity, and cognitive friction of Python Lab for absolute beginners (learners with zero prior programming experience).
@@ -52,8 +52,8 @@ This protocol outlines a standardized, repeatable usability test designed to eva
 ### Task 5: Encounter & Recover from a Common Syntax Mistake
 - **Prompt:** "In the editor, intentionally type `Print('Hi')` with a capital P (or delete a closing quote) and run the code."
 - **Expected Flow:** Participant encounters a `NameError` or `SyntaxError`. The error card expands showing the exception and the plain-language explanation: *"Check that the name is spelled correctly... Remember: Python is case-sensitive (e.g. print, not Print)"*.
-- **Success Criteria:** Participant reads the explanation, edits `Print` to `print`, and re-runs successfully using "Retry Python" or "Run Code".
-- **Observations to Record:** Did the plain-language explanation help them understand the mistake immediately?
+- **Success Criteria:** Participant reads the explanation, edits `Print` to `print` directly in the code editor, and re-runs successfully by clicking "Run Code". (Note: "Retry Python" is reserved for worker initialization or crash recovery, not normal code mistakes).
+- **Observations to Record:** Did the plain-language explanation help them understand the mistake immediately? Did they edit in the editor and click "Run Code" without confusion?
 
 ### Task 6: Explore Navigation & Learning Tools
 - **Prompt:** "Find the Syntax Academy to look up how to repeat instructions, or search for 'repeat code'."
@@ -69,17 +69,44 @@ This protocol outlines a standardized, repeatable usability test designed to eva
 
 ---
 
-## 4. Participant Scoring Sheet
+## 4. Participant Session Checklist & Protocol Execution
 
-| Participant ID | Device / Browser | Task 1 (s) | Task 2 (s) | Task 3 (s) | Task 4 (s / Hints) | Task 5 (Recovery s) | Task 6 (s) | Task 7 (Recovered?) | SEQ (1-7) | SUS Score | Key Feedback Notes |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **P01** | Desktop Chrome | 18s | 12s | 24s | 65s (0 hints) | 16s | 28s | Yes (100%) | 7.0 | 92.5 | "The stage loading bar made it clear it was downloading Python." |
-| **P02** | Desktop Firefox| 22s | 15s | 31s | 80s (1 hint) | 22s | 34s | Yes (100%) | 6.5 | 87.5 | "The error note saying 'print, not Print' saved me from getting stuck." |
-| **P03** | Mobile Safari (390px) | 25s | 18s | 38s | 95s (1 hint) | 28s | 42s | Yes (100%) | 6.5 | 87.5 | "Symbol toolbar at the bottom made typing colons and quotes easy on phone." |
+### Pre-Session Checklist (Moderator)
+- [ ] Device test: Clean browser session (incognito or cleared `python-lab.*` local storage).
+- [ ] Confirm screen recorder and microphone are active.
+- [ ] Brief participant: *"We are testing Python Lab, not you. There are no wrong answers. Please think aloud continuously."*
+- [ ] Verify Pyodide worker initialization cache loads smoothly on local network.
+
+### During-Session Checklist (Per Participant)
+- [ ] Record start time and duration for each task.
+- [ ] Note exact wording if participant expresses confusion or hesitation.
+- [ ] Track hint requests (0, 1, 2, 3) in guided challenges.
+- [ ] In Task 5 error recovery, verify learner edits the editor and clicks "Run Code".
+- [ ] Note mobile usability frictions (virtual keyboard overlap, tap target sizes).
+
+### Post-Session Wrap-Up
+- [ ] Administer Single Ease Question (SEQ, 1–7 scale) per task.
+- [ ] Administer standard 10-item System Usability Scale (SUS) survey.
+- [ ] Ask debrief questions and document open feedback verbatim.
 
 ---
 
-## 5. Post-Test Debrief Questions
+## 5. Participant Testing Status Roster
+
+> [!NOTE]
+> The automated test harness verifies that all user flows, error feedback paths, and responsive controls operate cleanly. Actual human usability evaluations with live beginner subjects follow the schedule below.
+
+| Participant ID | Device / Browser | Target Profile | Testing Status |
+| :--- | :--- | :--- | :--- |
+| **P01** | Desktop Chrome (1440px) | Complete novice, zero programming background | Human testing pending |
+| **P02** | Desktop Firefox (1366px) | Non-technical student, first time with Python | Human testing pending |
+| **P03** | Mobile Safari (390px phone) | Smartphone-first learner | Human testing pending |
+| **P04** | Mobile Chrome (360px phone) | Smartphone learner, entry-level Android | Human testing pending |
+| **P05** | Tablet Safari (768px iPad) | Tablet learner, touchscreen touch-target check | Human testing pending |
+
+---
+
+## 6. Post-Test Debrief Questions
 1. "What was the most rewarding moment during your first 15 minutes?"
 2. "Was there any moment where you felt unsure of what to do next?"
 3. "How did the error explanations compare to what you expected from a coding website?"
