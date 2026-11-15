@@ -876,7 +876,7 @@ export default function LessonView({
                       <span className="milestone-pill"><Sparkles size={14}/> CHAPTER 1 COMPLETE</span>
                       <span className="milestone-sub">Next: Variables</span>
                     </div>
-                    <h3>You've run Python, edited code, and fixed a syntax typo!</h3>
+                    <h3>You've run Python, edited code, and fixed a casing typo!</h3>
                     <p>Now you're ready to store numbers and text in memory so your programs can remember values.</p>
                     <div className="milestone-actions">
                       <a href="#/chapter/2" className="button primary large first-10-cta">

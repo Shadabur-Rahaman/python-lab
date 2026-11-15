@@ -1,133 +1,216 @@
-# Python Lab Version 20 — Classroom Validation & Usability Testing Protocol
+# Python Lab — Classroom Usability Pilot Protocol & Evaluation Package
 
-## 1. Objectives & Overview
-
-This protocol defines a rigorous, standardized usability study designed to evaluate Python Lab with **3–5 genuine complete beginners** (learners with zero prior programming experience in Python or any other language).
-
-- **Target Cohort:** 3–5 first-time learners.
-- **Testing Environments:**
-  - Modern desktop browser (Chrome, Edge, or Firefox at 1366×768 or 1440×900).
-  - Representative smartphone browser (Mobile Safari or Chrome at 360×800 or 390×844).
-- **Session Duration:** 15–20 minutes per participant.
-- **Methodology:** Think-aloud evaluation with neutral observation and minimal intervention.
-- **Privacy & Ethics Guardrails:**
-  - No unnecessary personally identifiable information (PII) is collected.
-  - Participants are identified solely by anonymous codes (`P01` to `P05`).
-  - No webcam recordings or keystroke loggers; observer records structured observations manually.
+**Version:** 21.0  
+**Status:** **PENDING (Scheduled for Field Validation)**  
+**Target Audience:** 3–5 complete beginner students (zero prior programming experience in Python or any other language)  
+**Study Type:** Think-aloud observational usability evaluation  
+**Privacy Policy:** Completely anonymous (`P01`–`P05`), zero personal identifying information (PII) collected or stored  
 
 ---
 
-## 2. Student-Friendly Test Script
+## 1. Facilitator Protocol & Non-Coaching Guidelines
 
-*Instructions to be read aloud by the facilitator at the start of the session:*
+To ensure empirical validity, the facilitator must observe neutral, non-interventional standards throughout the session.
 
-> *"Welcome! Today we are testing a learning tool called Python Lab. We are testing the platform, not you. You cannot do anything wrong here.*  
-> *We want to see how easy it is for someone who has never coded to explore and learn. As you work through the tasks, please speak your thoughts aloud—tell us what you are looking at, what you expect to happen, and if anything feels confusing or surprising.*  
-> *Take your time, and don't hesitate to tell us if something doesn't make sense. Let's begin!"*
+### Core Principles
+1. **Test the Platform, Not the Student:** Remind the learner that any hesitation, confusion, or error reflects a design opportunity in Python Lab, not their ability.
+2. **Never Touch the Controls:** The facilitator must never type on the student's keyboard, touch their screen, or move their mouse.
+3. **Never Point or Direct:** Do not indicate where buttons, links, or text are located.
+4. **Think-Aloud Prompting:** If the participant falls silent for more than 10 seconds, prompt neutrally:
+   - *"What are you thinking right now?"*
+   - *"What are you looking at on the screen?"*
+   - *"What would you expect to happen next?"*
+5. **Handling Requests for Help:** If the student asks *"What do I click?"* or *"Is this right?"*, deflect neutrally:
+   - *"What does the page suggest to you?"*
+   - *"What would you normally try next if you were working by yourself?"*
+6. **When to Provide a Hint:** Only offer a hint if a student is completely blocked for more than 2 minutes on a single task and expresses distress. Record every hint given in the Observer Sheet.
 
 ---
 
-## 3. Seven Core Beginner Tasks
+## 2. Participant Welcome & Briefing Script
+
+*Read aloud to each student at the beginning of the evaluation:*
+
+> *"Welcome, and thank you for taking the time to test Python Lab!*  
+> 
+> *Today, we are testing how easy and understandable our platform is for someone who has never written computer code before. We are testing the software—we are NOT testing you. You cannot break anything, and you cannot make any wrong moves.*  
+> 
+> *As you go through each task, please speak your thoughts out loud. Tell us what you notice, what makes sense, what feels unclear, and what you expect to happen when you click or tap something.*  
+> 
+> *There is no rush at all. Take all the time you need. Let's begin with Task 1!"*
+
+---
+
+## 3. Student Task Sheet (Participant Handout)
+
+Students receive the following task prompts one at a time:
 
 ### Task 1: Find Where to Begin
-- **Prompt:** *"Imagine you want to start learning Python today. Open the homepage and show me where you would begin."*
-- **Target Flow:** Learner views the homepage hero card or *"I’m completely new to coding"* onboarding and clicks **"Start Learning"** or navigates to Chapter 0.
-- **Success Criteria:** Reaches Chapter 0 ("Before Python") within 30 seconds without external guidance.
+- **Goal:** From the Python Lab homepage, find where a complete beginner should start learning.
+- **Learner Prompt:** *"You have just arrived at Python Lab with zero coding experience. Show us where you would start your learning journey."*
 
-### Task 2: Explain the Chai Recipe Algorithm
-- **Prompt:** *"Look at Chapter 0. Read the chai recipe scenario and try the recipe arrangement activity. In your own words, what is an algorithm, and why does order matter?"*
-- **Target Flow:** Learner reads the scenario, tests the ingredient scaler or `TeaOrder` step sequencer (`Boil water` → `Add tea leaves` → `Serve the chai`), and explains that computers need exact instructions in sequence.
-- **Success Criteria:** Explains the core concept (order matters; computers execute top-to-bottom) and achieves the positive confirmation message.
+### Task 2: Complete the Chai Algorithm
+- **Goal:** Experience the concept of an ordered sequence of instructions.
+- **Learner Prompt:** *"Read the chai tea recipe in Chapter 0. Try the ingredient scaler, then arrange the recipe steps so the tea is prepared in the correct order."*
 
 ### Task 3: Run Your First Python Program
-- **Prompt:** *"Go to Chapter 1 ('Your First Python Program'). Without scrolling down, find where to run code and run your very first Python program."*
-- **Target Flow:** Learner locates the prominent First Python Program Studio, clicks **Run Code**, and watches the output appear in the STDOUT console.
-- **Success Criteria:** Clicks Run Code and confirms seeing `Hello, World!` in the output panel within 20 seconds.
+- **Goal:** Execute real Python code in the browser.
+- **Learner Prompt:** *"Move to Chapter 1 ('Your First Python Program'). Without scrolling down, find where code is executed and run your very first Python program."*
 
-### Task 4: Modify a Printed Message
-- **Prompt:** *"Now change the program so it greets you with your own name or a message of your choice, then run it again."*
-- **Target Flow:** Learner clicks inside the quotes in `print("Hello, World!")`, edits the text to `print("Hello, [Name]!")`, and clicks Run Code.
-- **Success Criteria:** Successfully updates the string literal, runs the program, and observes their personalized greeting in output.
+### Task 4: Change Its Output
+- **Goal:** Edit a string literal and observe immediate execution changes.
+- **Learner Prompt:** *"Change the program in the editor so it prints your name or a personal greeting of your choice, then run it again to see your changes."*
 
-### Task 5: Fix a Simple Coding Error
-- **Prompt:** *"Look at the typo recovery box. Run the code with `Print('Hello, World!')`. Notice what happens, and try to fix it."*
-- **Target Flow:** Learner clicks Run Code on `fix_typo.py`, reads the friendly `NameError` clue explaining that Python is case-sensitive, changes uppercase `Print` to lowercase `print`, and re-runs.
-- **Success Criteria:** Corrects the casing mistake unassisted within 45 seconds and sees successful output.
+### Task 5: Fix a Simple Mistake
+- **Goal:** Experience error recovery and learn that errors are normal feedback.
+- **Learner Prompt:** *"Look at the 'Fix a mistake' confidence builder. Run the code with `Print('Hello, World!')`. Read the message that appears, and try to fix the program so it runs without an error."*
 
-### Task 6: Find the Next Chapter
-- **Prompt:** *"You have completed your first program and fixed an error. How do you move on to the next chapter?"*
-- **Target Flow:** Learner locates the primary milestone card at the end of the first-10-minutes flow (`Continue to Chapter 2: Variables & Values →`) and clicks it.
-- **Success Criteria:** Advances to Chapter 2 within 15 seconds without getting lost in secondary footer links.
+### Task 6: Explain What the Code Does
+- **Goal:** Articulate the conceptual difference between string text and numeric calculation.
+- **Learner Prompt:** *"In your own words, what is the difference between writing `print(\"10 + 20\")` and writing `print(10 + 20)`?"*
 
-### Task 7: Explain What Your Program Does
-- **Prompt:** *"Looking back at what you just did, can you explain the difference between `print("Hello")` and `print(10 + 20)`?"*
-- **Target Flow:** Learner references the syntax quick cards or token contrast model and explains that text in quotes is displayed as words, while unquoted numbers calculate arithmetic.
-- **Success Criteria:** Articulates the distinction between text strings and numeric calculation.
+### Task 7: Continue to Chapter 2
+- **Goal:** Navigate forward to the next concept without assistance.
+- **Learner Prompt:** *"Now that you have completed your first program and fixed an error, how would you continue to the next chapter on Variables?"*
 
 ---
 
-## 4. Concise Observer Recording Sheet
+## 4. Observer Recording Sheet (Data Collection Template)
 
-| Participant | Task | Success (Y/N/Partial) | Time Taken (s) | Hesitation / Confusion Observed | Hints Requested (Count) | Errors Encountered | Learner Explanation | Ease Rating (1–5) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **P01** | Task 1: Find start | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 2: Chai algorithm | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 3: First run | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 4: Modify message | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 5: Fix typo | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 6: Next chapter | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 7: Explain code | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| **P02** | Task 1: Find start | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 2: Chai algorithm | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 3: First run | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 4: Modify message | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 5: Fix typo | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 6: Next chapter | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 7: Explain code | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| **P03** | Task 1: Find start | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 2: Chai algorithm | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 3: First run | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 4: Modify message | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 5: Fix typo | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 6: Next chapter | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 7: Explain code | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| **P04** | Task 1: Find start | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 2: Chai algorithm | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 3: First run | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 4: Modify message | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 5: Fix typo | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 6: Next chapter | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 7: Explain code | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| **P05** | Task 1: Find start | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 2: Chai algorithm | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 3: First run | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 4: Modify message | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 5: Fix typo | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 6: Next chapter | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
-| | Task 7: Explain code | `[   ]` | `[   ]s` | | `[   ]` | | | `[  ] / 5` |
+Record observations for each anonymous participant (`P01` to `P05`) across the 10 required metrics:
+
+| Field | Description / Values |
+| :--- | :--- |
+| **Participant ID** | Anonymous identifier: `P01`, `P02`, `P03`, `P04`, `P05` |
+| **Device & Browser** | e.g., Windows Laptop (Chrome 131), iPhone 14 (Mobile Safari), Android (Chrome) |
+| **Task Completion** | `Yes` (completed unassisted) / `Partial` (required minor prompt) / `No` (abandoned) |
+| **Time Taken** | Elapsed seconds from task prompt to completion |
+| **Hints Requested** | Number of explicit requests for assistance or guidance |
+| **Navigation Hesitation** | Observed wandering, scrolling back and forth, clicking wrong tabs |
+| **Actual Errors** | Syntax/runtime errors produced, accidental deletions, browser refresh issues |
+| **Ability to Explain Code** | Evaluated depth of understanding on a 3-point scale: `Clear` / `Partial` / `Unclear` |
+| **Ease-of-Use Rating** | Single Ease Question (SEQ) on 1–5 scale: 1 = Very Difficult, 5 = Very Easy |
+| **Suggested Improvements** | Direct participant quote or concrete suggestion for UX clarification |
+
+### Observer Data Matrix (Template for Field Execution)
+
+```markdown
+### Participant P01
+- Device & Browser: [                                            ]
+- Overall Pilot Date: [                                          ]
+- Observer Name: [                                               ]
+
+| Task | Completion (Y/P/N) | Time (s) | Hints Requested | Navigation Hesitation | Actual Errors Observed | Code Explanation | Ease Rating (1–5) |
+| :--- | :---: | :---: | :---: | :--- | :--- | :---: | :---: |
+| 1. Find start | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 2. Chai algorithm | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 3. First Python run | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 4. Change output | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 5. Fix mistake | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 6. Explain code | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 7. Continue to Ch 2 | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+
+- Suggested Improvements / Direct Feedback:
+  > "[Participant quote here]"
 
 ---
 
-## 5. Testing Status Roster
+### Participant P02
+- Device & Browser: [                                            ]
+- Overall Pilot Date: [                                          ]
+- Observer Name: [                                               ]
+
+| Task | Completion (Y/P/N) | Time (s) | Hints Requested | Navigation Hesitation | Actual Errors Observed | Code Explanation | Ease Rating (1–5) |
+| :--- | :---: | :---: | :---: | :--- | :--- | :---: | :---: |
+| 1. Find start | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 2. Chai algorithm | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 3. First Python run | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 4. Change output | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 5. Fix mistake | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 6. Explain code | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 7. Continue to Ch 2 | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+
+- Suggested Improvements / Direct Feedback:
+  > "[Participant quote here]"
+
+---
+
+### Participant P03
+- Device & Browser: [                                            ]
+- Overall Pilot Date: [                                          ]
+- Observer Name: [                                               ]
+
+| Task | Completion (Y/P/N) | Time (s) | Hints Requested | Navigation Hesitation | Actual Errors Observed | Code Explanation | Ease Rating (1–5) |
+| :--- | :---: | :---: | :---: | :--- | :--- | :---: | :---: |
+| 1. Find start | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 2. Chai algorithm | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 3. First Python run | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 4. Change output | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 5. Fix mistake | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 6. Explain code | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 7. Continue to Ch 2 | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+
+- Suggested Improvements / Direct Feedback:
+  > "[Participant quote here]"
+
+---
+
+### Participant P04
+- Device & Browser: [                                            ]
+- Overall Pilot Date: [                                          ]
+- Observer Name: [                                               ]
+
+| Task | Completion (Y/P/N) | Time (s) | Hints Requested | Navigation Hesitation | Actual Errors Observed | Code Explanation | Ease Rating (1–5) |
+| :--- | :---: | :---: | :---: | :--- | :--- | :---: | :---: |
+| 1. Find start | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 2. Chai algorithm | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 3. First Python run | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 4. Change output | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 5. Fix mistake | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 6. Explain code | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 7. Continue to Ch 2 | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+
+- Suggested Improvements / Direct Feedback:
+  > "[Participant quote here]"
+
+---
+
+### Participant P05
+- Device & Browser: [                                            ]
+- Overall Pilot Date: [                                          ]
+- Observer Name: [                                               ]
+
+| Task | Completion (Y/P/N) | Time (s) | Hints Requested | Navigation Hesitation | Actual Errors Observed | Code Explanation | Ease Rating (1–5) |
+| :--- | :---: | :---: | :---: | :--- | :--- | :---: | :---: |
+| 1. Find start | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 2. Chai algorithm | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 3. First Python run | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 4. Change output | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+| 5. Fix mistake | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 6. Explain code | [ ] | [ ]s | [ ] | [ ] | [ ] | [ ] | [ ] / 5 |
+| 7. Continue to Ch 2 | [ ] | [ ]s | [ ] | [ ] | [ ] | N/A | [ ] / 5 |
+
+- Suggested Improvements / Direct Feedback:
+  > "[Participant quote here]"
+```
+
+---
+
+## 5. Post-Study Debrief Interview
+
+Following task completion, the observer conducts a 3-minute qualitative debrief:
+
+1. *"Overall, how easy or challenging was it to get started with coding today? (1 = very difficult, 5 = very easy)"*
+2. *"What felt like the clearest or most satisfying part of the experience?"*
+3. *"Was there any moment where you felt stuck, confused, or unsure what the platform wanted you to do?"*
+4. *"If you were practicing on your own at home, would you feel comfortable continuing to Chapter 2?"*
+
+---
+
+## 6. Scientific Integrity & Usability Status
 
 > [!IMPORTANT]
-> **Human Usability Testing Status: PENDING**  
-> In accordance with Google Antigravity and academic research integrity standards, automated end-to-end browser specifications (`tests/browser/*.spec.ts`) continuously verify that all technical flows, mode tab switches, keyboard interactions, error feedback cards, and responsive controls operate cleanly. Actual human usability evaluations with live beginner subjects remain **PENDING** and will be conducted according to the schedule below without simulated or fabricated participant data.
-
-| Participant ID | Target Profile | Device & Viewport | Testing Status | Scheduled Session |
-| :--- | :--- | :--- | :--- | :--- |
-| **P01** | Novice student, zero prior programming background | Desktop Chrome (1440×900) | **PENDING** | Classroom Cohort 1 |
-| **P02** | Non-technical learner, first contact with coding | Desktop Firefox (1366×768) | **PENDING** | Classroom Cohort 1 |
-| **P03** | Smartphone-first learner | Mobile Safari (390×844 phone) | **PENDING** | Mobile Testing Lab |
-| **P04** | Entry-level smartphone learner | Mobile Chrome (360×800 phone) | **PENDING** | Mobile Testing Lab |
-| **P05** | Tablet learner, touchscreen touch targets | iPad Safari (768×1024 tablet) | **PENDING** | Touch Usability Session |
-
----
-
-## 6. Post-Study Single Ease & Feedback Prompts
-
-After completing the 7 tasks, the facilitator asks:
-1. *"On a scale of 1 to 5 (1 = very difficult, 5 = very easy), how would you rate your experience overall?"*
-2. *"What was the clearest moment during your session?"*
-3. *"Was there any moment where you felt stuck or unsure what the computer wanted you to do?"*
-4. *"If you came back tomorrow, would you feel confident continuing to Chapter 2 on your own?"*
+> **Human Usability Testing Status:** **PENDING**  
+> In accordance with Google Antigravity research standards, no simulated or fabricated participant observations, ratings, or appointment times are presented. Automated browser and unit tests verify technical correctness. Field evaluation data will be collected and recorded using this protocol when human participant sessions occur.
+>
+> **Comparative Objectivity Notice:** Python Lab does not claim to be "objectively easier" or "superior" to established platforms such as W3Schools, GeeksforGeeks, or DataCamp without rigorous, side-by-side empirical testing.

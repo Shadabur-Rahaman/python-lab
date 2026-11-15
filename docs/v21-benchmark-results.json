@@ -1,0 +1,223 @@
+{
+  "timestamp": "2026-11-15T15:54:39.927Z",
+  "system": {
+    "cpuModel": "AMD Ryzen 7 5800HS with Radeon Graphics        ",
+    "cpuCores": 16,
+    "totalMemoryGB": "15.40 GB",
+    "osPlatform": "win32",
+    "osRelease": "10.0.26300",
+    "nodeVersion": "v24.13.1"
+  },
+  "browser": {
+    "name": "Chromium",
+    "version": "158.0.8127.18"
+  },
+  "timingDefinitions": {
+    "pageReadinessMs": "Navigation start to editor / Run Code button visible and interactive in DOM",
+    "executionTimeMs": "Clicking Run Code to target output rendered in .console > pre",
+    "totalTimeToOutputMs": "Sum of page readiness and execution time",
+    "warmWorkerExecutionMs": "Click to output when Pyodide WebAssembly worker is already warm in memory"
+  },
+  "scenarios": {
+    "coldCache": {
+      "description": "Fresh browser context, no pre-cached assets in browser HTTP cache",
+      "cacheState": "Cold (empty context)",
+      "workerExisted": false,
+      "runsCount": 5,
+      "pageReadinessMs": {
+        "min": 1512,
+        "max": 1726,
+        "median": 1665,
+        "mean": 1626,
+        "runs": [
+          1665,
+          1726,
+          1683,
+          1546,
+          1512
+        ]
+      },
+      "executionTimeMs": {
+        "min": 4548,
+        "max": 9587,
+        "median": 5490,
+        "mean": 6224,
+        "runs": [
+          4548,
+          9587,
+          6019,
+          5490,
+          5475
+        ]
+      },
+      "totalTimeToOutputMs": {
+        "min": 6213,
+        "max": 11313,
+        "median": 7036,
+        "mean": 7850,
+        "runs": [
+          6213,
+          11313,
+          7702,
+          7036,
+          6987
+        ]
+      }
+    },
+    "warmCache": {
+      "description": "Reloaded page with assets populated in browser HTTP cache",
+      "cacheState": "Warm (cached Pyodide Wasm + JS)",
+      "workerExisted": false,
+      "runsCount": 5,
+      "pageReadinessMs": {
+        "min": 705,
+        "max": 940,
+        "median": 721,
+        "mean": 762,
+        "runs": [
+          940,
+          720,
+          723,
+          721,
+          705
+        ]
+      },
+      "executionTimeMs": {
+        "min": 4444,
+        "max": 5528,
+        "median": 4475,
+        "mean": 4677,
+        "runs": [
+          5528,
+          4491,
+          4475,
+          4444,
+          4447
+        ]
+      },
+      "totalTimeToOutputMs": {
+        "min": 5152,
+        "max": 6468,
+        "median": 5198,
+        "mean": 5439,
+        "runs": [
+          6468,
+          5211,
+          5198,
+          5165,
+          5152
+        ]
+      }
+    },
+    "warmWorkerReuse": {
+      "description": "Continuous session with warm Pyodide worker already initialized in memory",
+      "cacheState": "In-Memory Hot Worker",
+      "workerExisted": true,
+      "runsCount": 5,
+      "executionTimeMs": {
+        "min": 70,
+        "max": 95,
+        "median": 78,
+        "mean": 81,
+        "runs": [
+          70,
+          95,
+          78,
+          77,
+          87
+        ]
+      }
+    },
+    "simulatedFast3G": {
+      "description": "Network throttled via CDP to 1.6 Mbps download, 750 kbps upload, 150ms RTT",
+      "throttling": {
+        "latency": 150,
+        "downloadBps": 204800,
+        "uploadBps": 96000
+      },
+      "cacheState": "Cold with 3G network emulation",
+      "workerExisted": false,
+      "runsCount": 3,
+      "stageIndicatorDisplayed": true,
+      "pageReadinessMs": {
+        "min": 1787,
+        "max": 1826,
+        "median": 1798,
+        "mean": 1804,
+        "runs": [
+          1826,
+          1798,
+          1787
+        ]
+      },
+      "executionTimeMs": {
+        "min": 31162,
+        "max": 31538,
+        "median": 31525,
+        "mean": 31408,
+        "runs": [
+          31525,
+          31162,
+          31538
+        ]
+      },
+      "totalTimeToOutputMs": {
+        "min": 32960,
+        "max": 33352,
+        "median": 33325,
+        "mean": 33212,
+        "runs": [
+          33352,
+          32960,
+          33325
+        ]
+      }
+    },
+    "mobileViewport": {
+      "description": "Mobile viewport emulation (390x844, touch-enabled)",
+      "viewport": "390x844",
+      "cacheState": "Warm HTTP cache (reused assets)",
+      "workerExisted": false,
+      "runsCount": 5,
+      "pageReadinessMs": {
+        "min": 1466,
+        "max": 1656,
+        "median": 1499,
+        "mean": 1535,
+        "runs": [
+          1466,
+          1656,
+          1499,
+          1574,
+          1479
+        ]
+      },
+      "executionTimeMs": {
+        "min": 4433,
+        "max": 4963,
+        "median": 4459,
+        "mean": 4551,
+        "runs": [
+          4963,
+          4459,
+          4433,
+          4439,
+          4463
+        ]
+      },
+      "totalTimeToOutputMs": {
+        "min": 5932,
+        "max": 6429,
+        "median": 6013,
+        "mean": 6086,
+        "runs": [
+          6429,
+          6115,
+          5932,
+          6013,
+          5942
+        ]
+      }
+    }
+  }
+}

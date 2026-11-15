@@ -1,0 +1,147 @@
+{
+  "timestamp": "2026-11-15T15:59:10.177Z",
+  "git": {
+    "head": "6a13275cd70412792dd03426eca94a295882ee74",
+    "branch": "main",
+    "dirty": false
+  },
+  "build": {
+    "command": "npm run build",
+    "runner": "tsc + vite",
+    "success": true,
+    "exitCode": 0
+  },
+  "unitTests": {
+    "runner": "node:test (Node.js built-in)",
+    "command": "node --test tests/*.test.mjs",
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 27894.0029
+  },
+  "browserTests": {
+    "runner": "@playwright/test",
+    "command": "npx playwright test --reporter=json",
+    "fileCount": 16,
+    "totalDiscovered": 81,
+    "passed": 81,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 325965,
+    "files": [
+      {
+        "file": "beginner-visuals.spec.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "course.spec.ts",
+        "tests": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "first-10-minutes.spec.ts",
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "focused-learning.spec.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "glossary.spec.ts",
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "learning.spec.ts",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "pilot.spec.ts",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "resources.spec.ts",
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "runtime-isolation.spec.ts",
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "runtime-performance.spec.ts",
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "syntax.spec.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "ux-refinement.spec.ts",
+        "tests": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "version2.spec.ts",
+        "tests": 10,
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "visual-curriculum.spec.ts",
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "visual-models-ch11-15.spec.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "visual-models-ch6-10.spec.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      }
+    ]
+  }
+}
