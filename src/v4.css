@@ -337,6 +337,86 @@
 .sweets-dots { display:flex; gap:3px; flex-wrap:wrap; font-size:14px; line-height:1; }
 .leftovers-tray { background:var(--card); border:1.5px dashed var(--line); border-radius:8px; padding:8px 12px; min-height:48px; display:flex; align-items:center; box-sizing:border-box; }
 .no-leftovers { font-size:12px; color:var(--muted); font-style:italic; }
+
+/* Chapter 6: Decision Branching Visualizer */
+.model-decision-branch { display:grid; gap:12px; margin:16px 0; }
+.decision-condition-card { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; }
+.condition-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+.condition-code { font-family:var(--font-mono, monospace); font-size:13px; font-weight:700; color:var(--text); }
+.condition-eval strong { color:var(--accent); }
+.decision-fork { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:10px; }
+.branch-card { background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:6px; box-sizing:border-box; transition:all 0.2s ease; }
+.branch-card.branch-active { border-color:#10b981; background:rgba(16, 185, 129, 0.08); box-shadow:0 0 0 2px rgba(16, 185, 129, 0.2); }
+.branch-card.branch-dimmed { opacity:0.5; border-style:dashed; }
+.branch-header { display:flex; justify-content:space-between; align-items:center; }
+.branch-tag { font-size:11px; font-weight:700; text-transform:uppercase; padding:2px 6px; border-radius:4px; }
+.tag-true { background:rgba(16, 185, 129, 0.15); color:#10b981; }
+.tag-false { background:rgba(239, 68, 68, 0.15); color:#ef4444; }
+.branch-status-badge { font-size:11px; font-weight:800; color:#10b981; }
+.branch-outcome { font-size:11px; color:var(--muted); }
+.decision-output-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:var(--soft); border-radius:8px; }
+.decision-hint-pill { margin-left:auto; font-size:11px; color:var(--muted); }
+
+/* Chapter 7: Loop & Iteration Step Tracer */
+.model-loop-tracer { display:grid; gap:12px; margin:16px 0; }
+.loop-status-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:var(--soft); border:1px solid var(--line); border-radius:10px; }
+.loop-iteration-badge { font-size:12px; font-weight:700; color:var(--accent); }
+.loop-accumulator-badge { font-size:13px; color:var(--text); font-family:var(--font-mono, monospace); }
+.loop-accumulator-badge strong { color:#10b981; font-weight:800; }
+.chip-current { color:var(--accent) !important; font-weight:700; }
+.chip-done { color:#10b981 !important; font-weight:600; }
+.chip-wait { color:var(--muted) !important; }
+.loop-trace-explanation { padding:8px 12px; background:var(--soft); border-radius:8px; font-size:12px; color:var(--muted); }
+
+/* Chapter 8: Sequence Dual-Index & Slice Visualizer */
+.model-string-explorer { display:grid; gap:12px; margin:16px 0; }
+.dual-index-grid { display:grid; gap:6px; background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px; box-sizing:border-box; }
+.index-row { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.index-row-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; min-width:95px; }
+.indices-cells { display:flex; gap:6px; flex-wrap:wrap; }
+.idx-cell { font-family:var(--font-mono, monospace); font-size:11px; font-weight:700; min-width:44px; text-align:center; padding:3px 6px; border-radius:4px; color:var(--muted); }
+.idx-cell.idx-active { color:var(--accent); background:rgba(35, 88, 190, 0.12); font-weight:800; }
+.char-cells { margin:4px 0 !important; }
+.string-slice-card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:8px; }
+.slice-preview { display:flex; align-items:center; flex-wrap:wrap; gap:8px; font-size:13px; }
+.slice-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.slice-result { color:#10b981; font-weight:800; }
+.slice-note { font-size:11px; color:var(--muted); }
+.method-pill-row { display:flex; flex-wrap:wrap; gap:8px; }
+.method-pill { font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px; background:var(--soft); color:var(--text); border:1px solid var(--line); }
+.pill-immutable { color:#f59e0b; border-color:rgba(245, 158, 11, 0.3); background:rgba(245, 158, 11, 0.08); }
+
+/* Chapter 9: List Tray vs Tuple Record Visualizer */
+.model-sequence-tray { display:grid; gap:14px; margin:16px 0; }
+.tray-section { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:10px; box-sizing:border-box; }
+.tray-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.tray-title { font-size:13px; font-weight:700; color:var(--text); }
+.tray-badge { font-size:10px; font-weight:800; text-transform:uppercase; padding:3px 8px; border-radius:12px; }
+.badge-mutable { background:rgba(16, 185, 129, 0.15); color:#10b981; border:1px solid rgba(16, 185, 129, 0.3); }
+.badge-locked { background:rgba(245, 158, 11, 0.15); color:#f59e0b; border:1px solid rgba(245, 158, 11, 0.3); }
+.list-cells { margin:0 !important; }
+.list-operations-preview { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap:8px; }
+.op-chip { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:6px 10px; display:flex; flex-direction:column; gap:2px; font-size:11px; }
+.op-chip small { color:var(--muted); text-transform:uppercase; font-size:9px; font-weight:700; }
+.tuple-tray { border-style:dashed; }
+.tuple-body { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:12px; }
+.tuple-error-note { color:#ef4444; font-size:11px; }
+
+/* Chapter 10: Dictionary Key-Value & Set Deduplication Visualizer */
+.model-dict-set { display:grid; gap:14px; margin:16px 0; }
+.dict-lookup-card, .set-dedup-card { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:10px; box-sizing:border-box; }
+.dict-header, .set-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.dict-title, .set-title { font-size:13px; font-weight:700; color:var(--text); }
+.dict-badge, .set-badge { font-size:10px; font-weight:800; text-transform:uppercase; padding:3px 8px; border-radius:12px; background:var(--card); border:1px solid var(--line); color:var(--accent); }
+.lookup-flow, .set-transform-flow { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.lookup-key-box, .lookup-val-box, .set-input-box, .set-result-box { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 12px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; min-width:110px; }
+.lookup-arrow, .set-funnel-arrow { font-size:16px; font-weight:800; color:var(--accent); }
+.lookup-key-box small, .lookup-val-box small, .set-input-box small, .set-result-box small { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.val-found strong { color:#10b981; }
+.val-missing strong { color:#ef4444; }
+.get-fallback-badge { font-size:10px; color:#10b981; background:rgba(16, 185, 129, 0.1); padding:2px 6px; border-radius:4px; margin-top:2px; font-weight:600; }
+.dup-item { text-decoration:line-through; opacity:0.5; color:#ef4444; }
+.set-result-box strong { color:var(--accent); font-size:14px; }
 .syntax-launch { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:24px; align-items:center; padding:24px; border:1px solid var(--line); border-radius:16px; background:var(--soft); margin-bottom:20px; }
 .syntax-launch .concept-model { margin:0; min-width:0; }
 .syntax-symbol-note { min-height:3em; padding:12px; background:var(--soft); color:var(--text); border-inline-start:3px solid var(--accent); border-radius:6px; }

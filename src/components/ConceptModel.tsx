@@ -170,16 +170,217 @@ export default function ConceptModel({chapter}: {chapter:number}) {
       </div>;
     })()}
 
-    {chapter===7 && <ol className="model-cells" aria-label="Transaction rows">
-      {[120,80,50].map((sale,i)=><li key={sale} data-selected={i<index} aria-current={i===index-1?'step':undefined}>
-        <small>Row {i+1}</small><strong>₹{sale}</strong><small>{i<index?'Counted':'Waiting'}</small>
-      </li>)}
-    </ol>}
-    {(chapter===8 || chapter===9) && <ol className="model-cells" aria-label={chapter===8?'String positions':'List positions'}>
-      {(chapter===8?[...'PYTHON']:[72,84,91]).map((value,i)=><li key={i} data-selected={i===index}>
-        <small>Index {i}</small><strong>{value}</strong>{i===index && <small>Selected</small>}
-      </li>)}
-    </ol>}
+    {/* Chapter 6: Decision Branching Visualizer */}
+    {chapter===6 && (() => {
+      const score = [39, 40, 72][index];
+      const isPass = score >= 40;
+      return <div className="model-decision-branch" aria-label="Decision branching paths">
+        <div className="decision-condition-card">
+          <span className="condition-label">Evaluated Condition</span>
+          <code className="condition-code">marks &gt;= 40 <span className="condition-eval">({score} &gt;= 40 ➔ <strong>{isPass ? 'True' : 'False'}</strong>)</span></code>
+        </div>
+        <div className="decision-fork">
+          <div className={`branch-card branch-true ${isPass ? 'branch-active' : 'branch-dimmed'}`} aria-label="True branch: Pass">
+            <div className="branch-header">
+              <span className="branch-tag tag-true">True branch (if)</span>
+              {isPass && <span className="branch-status-badge">✓ Running</span>}
+            </div>
+            <code>print("Pass")</code>
+            <small className="branch-outcome">Executed when score is 40 or higher</small>
+          </div>
+          <div className={`branch-card branch-false ${!isPass ? 'branch-active' : 'branch-dimmed'}`} aria-label="False branch: Review">
+            <div className="branch-header">
+              <span className="branch-tag tag-false">False branch (else)</span>
+              {!isPass && <span className="branch-status-badge">✓ Running</span>}
+            </div>
+            <code>print("Review")</code>
+            <small className="branch-outcome">Executed when score is under 40</small>
+          </div>
+        </div>
+        <div className="decision-output-row">
+          <span className="output-label">Terminal Output:</span>
+          <samp className="terminal-samp">{isPass ? 'Pass' : 'Review'}</samp>
+          <span className="decision-hint-pill"><small>Tip: <code>==</code> checks equality; <code>=</code> assigns</small></span>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 7: Loop & Iteration Step Tracer */}
+    {chapter===7 && (() => {
+      const sales = [120, 80, 50];
+      const totals = [0, 120, 200, 250];
+      const currentTotal = totals[index];
+      return <div className="model-loop-tracer" aria-label="Loop step tracer">
+        <div className="loop-status-header">
+          <span className="loop-iteration-badge">
+            {index === 0 ? 'Ready: Before entering loop' : index === 3 ? 'Completed: 3 of 3 iterations processed' : `Iteration ${index} of 3`}
+          </span>
+          <span className="loop-accumulator-badge">
+            running_total: <strong>₹{currentTotal}</strong>
+          </span>
+        </div>
+
+        <ol className="model-cells" aria-label="Transaction rows">
+          {sales.map((sale, i) => {
+            const isProcessed = i < index;
+            const isCurrent = i === index - 1;
+            return <li key={sale} data-selected={isProcessed} aria-current={isCurrent ? 'step' : undefined}>
+              <small>Row {i + 1}</small>
+              <strong>₹{sale}</strong>
+              <small className={isCurrent ? 'chip-current' : isProcessed ? 'chip-done' : 'chip-wait'}>
+                {isCurrent ? '▶ Active' : isProcessed ? '✓ Counted' : 'Waiting'}
+              </small>
+            </li>;
+          })}
+        </ol>
+
+        <div className="loop-trace-explanation">
+          {index === 0 && <small>The loop is ready. <code>total = 0</code> is initialized before the loop starts.</small>}
+          {index === 1 && <small>Pass 1: row 1 value (₹120) added. <code>total = 0 + 120 = 120</code>.</small>}
+          {index === 2 && <small>Pass 2: row 2 value (₹80) added. <code>total = 120 + 80 = 200</code>.</small>}
+          {index === 3 && <small>Pass 3: row 3 value (₹50) added. <code>total = 200 + 50 = 250</code>. All rows done!</small>}
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 8: Sequence Dual-Index & Slice Visualizer */}
+    {chapter===8 && (() => {
+      const chars = [...'PYTHON'];
+      const negIndices = [-6, -5, -4, -3, -2, -1];
+      return <div className="model-string-explorer" aria-label="String sequence and dual indexing">
+        <div className="dual-index-grid">
+          <div className="index-row pos-indices" aria-label="Positive indexes">
+            <span className="index-row-label">Positive index:</span>
+            <div className="indices-cells">
+              {chars.map((_, i) => <span key={i} className={`idx-cell ${i === index ? 'idx-active' : ''}`}>+{i}</span>)}
+            </div>
+          </div>
+
+          <ol className="model-cells char-cells" aria-label="String positions">
+            {chars.map((value, i) => <li key={i} data-selected={i === index}>
+              <small>Index {i}</small>
+              <strong>{value}</strong>
+              {i === index && <small>Selected</small>}
+            </li>)}
+          </ol>
+
+          <div className="index-row neg-indices" aria-label="Negative indexes">
+            <span className="index-row-label">Negative index:</span>
+            <div className="indices-cells">
+              {negIndices.map((neg, i) => <span key={neg} className={`idx-cell ${i === index ? 'idx-active' : ''}`}>{neg}</span>)}
+            </div>
+          </div>
+        </div>
+
+        <div className="string-slice-card">
+          <div className="slice-preview">
+            <span className="slice-label">Slice example:</span>
+            <code>"PYTHON"[0:3] ➔ <span className="slice-result">"Pyt"</span></code>
+            <small className="slice-note">(Index 3 is the stop line: stop is excluded!)</small>
+          </div>
+          <div className="method-pill-row">
+            <span className="method-pill">.strip() removes ends</span>
+            <span className="method-pill">.lower() ➔ "python"</span>
+            <span className="method-pill pill-immutable">🔒 Strings are immutable</span>
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 9: List Tray vs Tuple Record Visualizer */}
+    {chapter===9 && (() => {
+      const scores = [72, 84, 91];
+      return <div className="model-sequence-tray" aria-label="List tray and tuple comparison">
+        <div className="tray-section list-tray">
+          <div className="tray-header">
+            <span className="tray-title">Mutable List: <code>scores = [72, 84, 91]</code></span>
+            <span className="tray-badge badge-mutable">Editable [ ]</span>
+          </div>
+
+          <ol className="model-cells list-cells" aria-label="List positions">
+            {scores.map((value, i) => <li key={i} data-selected={i === index}>
+              <small>Index {i}</small>
+              <strong>{value}</strong>
+              {i === index && <small>Selected</small>}
+            </li>)}
+          </ol>
+
+          <div className="list-operations-preview">
+            <div className="op-chip">
+              <small>Read item</small>
+              <code>scores[{index}] ➔ {scores[index]}</code>
+            </div>
+            <div className="op-chip">
+              <small>Update item</small>
+              <code>scores[0] = 85</code>
+            </div>
+            <div className="op-chip">
+              <small>Add item</small>
+              <code>scores.append(100)</code>
+            </div>
+          </div>
+        </div>
+
+        <div className="tray-section tuple-tray">
+          <div className="tray-header">
+            <span className="tray-title">Immutable Tuple: <code>point = (19.07, 72.87)</code></span>
+            <span className="tray-badge badge-locked">🔒 Sealed ( )</span>
+          </div>
+          <div className="tuple-body">
+            <code>point[0] = 20.0</code>
+            <span className="tuple-error-note">➔ Raises <strong>TypeError</strong>: tuple does not allow item assignment</span>
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 10: Dictionary Key-Value & Set Deduplication Visualizer */}
+    {chapter===10 && (() => {
+      const keys = ['name', 'price', 'stock', 'category'];
+      const selectedKey = keys[index];
+      const dictValues: Record<string, string | number> = {name: 'Notebook', price: 80, stock: 3};
+      const hasKey = selectedKey in dictValues;
+      const val = dictValues[selectedKey];
+
+      return <div className="model-dict-set" aria-label="Dictionary and set visualizer">
+        <div className="dict-lookup-card">
+          <div className="dict-header">
+            <span className="dict-title">Dictionary: <code>product = &#123;"name": "Notebook", "price": 80, "stock": 3&#125;</code></span>
+            <span className="dict-badge">Key ➔ Value</span>
+          </div>
+          <div className="lookup-flow">
+            <div className="lookup-key-box">
+              <small>Selected Key</small>
+              <strong>"{selectedKey}"</strong>
+            </div>
+            <span className="lookup-arrow" aria-hidden="true">➔</span>
+            <div className={`lookup-val-box ${hasKey ? 'val-found' : 'val-missing'}`}>
+              <small>{hasKey ? 'Retrieved Value' : 'Missing Key'}</small>
+              <strong>{hasKey ? String(val) : 'KeyError with [ ]'}</strong>
+              {!hasKey && <span className="get-fallback-badge">.get("{selectedKey}", "Unknown") ➔ "Unknown"</span>}
+            </div>
+          </div>
+        </div>
+
+        <div className="set-dedup-card">
+          <div className="set-header">
+            <span className="set-title">Set Deduplication: <code>set([101, 102, 101, 103])</code></span>
+            <span className="set-badge">Unique Items Only</span>
+          </div>
+          <div className="set-transform-flow">
+            <div className="set-input-box">
+              <small>Input list with duplicates</small>
+              <code>[101, 102, <span className="dup-item">101</span>, 103]</code>
+            </div>
+            <span className="set-funnel-arrow" aria-hidden="true">➔</span>
+            <div className="set-result-box">
+              <small>Unique set (len = 3)</small>
+              <strong>&#123;101, 102, 103&#125;</strong>
+            </div>
+          </div>
+        </div>
+      </div>;
+    })()}
 
     <ol className="model-flow" aria-live="polite">
       {stages.map((stage,i)=><li key={i}><small>{['Start','Operation','Result'][i]}</small><strong>{stage}</strong></li>)}
