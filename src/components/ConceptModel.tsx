@@ -275,7 +275,7 @@ export default function ConceptModel({chapter}: {chapter:number}) {
         <div className="string-slice-card">
           <div className="slice-preview">
             <span className="slice-label">Slice example:</span>
-            <code>"PYTHON"[0:3] ➔ <span className="slice-result">"Pyt"</span></code>
+            <code>"PYTHON"[0:3] ➔ <span className="slice-result">"PYT"</span></code>
             <small className="slice-note">(Index 3 is the stop line: stop is excluded!)</small>
           </div>
           <div className="method-pill-row">
@@ -376,6 +376,289 @@ export default function ConceptModel({chapter}: {chapter:number}) {
             <div className="set-result-box">
               <small>Unique set (len = 3)</small>
               <strong>&#123;101, 102, 103&#125;</strong>
+            </div>
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 11: Function Machine Visualizer */}
+    {chapter===11 && (() => {
+      const prices = [20, 50, 80];
+      const price = prices[index];
+      const quantity = 3;
+      const subtotal = price * quantity;
+      return <div className="model-function-machine" aria-label="Function execution and return flow">
+        <div className="function-pipeline">
+          <div className="function-stage stage-inputs">
+            <span className="fn-stage-label">1. Inputs (Arguments)</span>
+            <div className="fn-arg-card">
+              <code>price = <strong>{price}</strong></code>
+              <code>quantity = <strong>{quantity}</strong></code>
+            </div>
+          </div>
+
+          <span className="fn-pipe-arrow" aria-hidden="true">➔</span>
+
+          <div className="function-stage stage-body">
+            <span className="fn-stage-label">2. Function (Local Scope)</span>
+            <div className="fn-body-card">
+              <span className="fn-sig">def calculate_bill(price, quantity):</span>
+              <div className="fn-calc">
+                <small>Local calculation:</small>
+                <code>total = {price} × {quantity} = <strong>{subtotal}</strong></code>
+              </div>
+              <div className="fn-return-line">
+                <code>return total <span className="return-badge">➔ {subtotal}</span></code>
+              </div>
+            </div>
+          </div>
+
+          <span className="fn-pipe-arrow" aria-hidden="true">➔</span>
+
+          <div className="function-stage stage-output">
+            <span className="fn-stage-label">3. Caller & Screen Output</span>
+            <div className="fn-output-card">
+              <span className="fn-caller">result = calculate_bill({price}, {quantity})</span>
+              <div className="output-preview">
+                <small>Terminal print:</small>
+                <samp className="terminal-samp">{subtotal}</samp>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="function-distinction-banner">
+          <div className="distinction-item">
+            <span className="distinction-tag tag-return">return</span>
+            <span>Sends data back to code so other functions or calculations can use it.</span>
+          </div>
+          <div className="distinction-item">
+            <span className="distinction-tag tag-print">print()</span>
+            <span>Only displays characters on the screen; does not give a usable value to code.</span>
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 12: Project Builder & Architecture Visualizer */}
+    {chapter===12 && (() => {
+      const cases = [
+        {name: 'Normal division', op: '8 ÷ 2', code: '8 / 2', result: '4.0', status: 'Valid operation', type: 'success'},
+        {name: 'Negative result', op: '−8 ÷ 2', code: '-8 / 2', result: '-4.0', status: 'Signed calculation', type: 'success'},
+        {name: 'Zero divisor', op: '8 ÷ 0', code: '8 / 0', result: 'ZeroDivisionError handled', status: 'Handled gracefully', type: 'error'}
+      ];
+      const curCase = cases[index];
+      return <div className="model-project-builder" aria-label="Project architecture and data flow">
+        <div className="project-flow-card">
+          <div className="project-flow-header">
+            <span className="project-title">Mini-Project Architecture: <code>Safe Calculator</code></span>
+            <span className={`project-case-badge ${curCase.type==='error'?'badge-guard':'badge-pass'}`}>
+              {curCase.status}
+            </span>
+          </div>
+
+          <div className="project-stages-grid">
+            <div className="project-stage">
+              <small>1. Raw Inputs</small>
+              <code>{curCase.op}</code>
+            </div>
+            <span className="proj-arrow" aria-hidden="true">➔</span>
+            <div className="project-stage">
+              <small>2. Guard & Logic</small>
+              <code>{index===2 ? 'try / except ZeroDivisionError' : curCase.code}</code>
+            </div>
+            <span className="proj-arrow" aria-hidden="true">➔</span>
+            <div className="project-stage">
+              <small>3. Verified Result</small>
+              <strong className={curCase.type==='error'?'text-err':'text-ok'}>{curCase.result}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="project-blueprint-card">
+          <span className="blueprint-title">7-Stage Project Engineering Workflow</span>
+          <div className="blueprint-steps">
+            {[
+              {n:1, label:'Understand'},
+              {n:2, label:'Inputs'},
+              {n:3, label:'Plan Logic'},
+              {n:4, label:'Implement'},
+              {n:5, label:'Test'},
+              {n:6, label:'Fix Bugs'},
+              {n:7, label:'Reflect'}
+            ].map(s => <div key={s.n} className="blueprint-step-pill">
+              <span className="step-badge">{s.n}</span>
+              <span>{s.label}</span>
+            </div>)}
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 13: Data Transformation Pipeline */}
+    {chapter===13 && (() => {
+      const thresholds = [50, 100, 200];
+      const threshold = thresholds[index];
+      const rawExpenses = [50, 100, 200];
+      const filtered = rawExpenses.filter(x => x >= threshold);
+
+      return <div className="model-data-pipeline" aria-label="Data transformation pipeline">
+        <div className="pipeline-container">
+          <div className="data-source-section">
+            <span className="pipe-header-label">1. Source Collection: <code>expenses = [50, 100, 200]</code></span>
+            <div className="data-cards-row">
+              {rawExpenses.map(item => {
+                const passes = item >= threshold;
+                return <div key={item} className={`data-chip ${passes ? 'chip-pass' : 'chip-skip'}`}>
+                  <strong>₹{item}</strong>
+                  <span className="chip-eval-tag">{passes ? '✓ Keep' : '✗ Skip'}</span>
+                  <small className="chip-condition">{item} &gt;= {threshold}</small>
+                </div>;
+              })}
+            </div>
+          </div>
+
+          <div className="comprehension-anatomy-card">
+            <span className="pipe-header-label">2. List Comprehension Anatomy</span>
+            <div className="comprehension-code-block">
+              <code>
+                [<span className="comp-expr">item</span> for <span className="comp-var">item</span> in <span className="comp-source">expenses</span> if <span className="comp-cond">item &gt;= {threshold}</span>]
+              </code>
+            </div>
+            <div className="comprehension-legend">
+              <span className="legend-item"><span className="legend-dot dot-expr"></span>Output expression</span>
+              <span className="legend-item"><span className="legend-dot dot-source"></span>Iteration</span>
+              <span className="legend-item"><span className="legend-dot dot-cond"></span>Filter condition</span>
+            </div>
+          </div>
+
+          <div className="pipeline-result-section">
+            <span className="pipe-header-label">3. Transformed Result: Brand-New List</span>
+            <div className="result-row">
+              <code>large = [{filtered.join(', ')}]</code>
+              <span className="result-meta-pill">Length: {filtered.length} items (Source list remains untouched!)</span>
+            </div>
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 14: File Processing Journey */}
+    {chapter===14 && (() => {
+      const fileStates = [
+        {name: 'Valid JSON', file: 'data.json', text: '{"units": 3}', result: "{'units': 3}", error: null, note: 'Parsed into Python dictionary successfully.'},
+        {name: 'Missing file', file: 'data.json (absent)', text: 'No file at path', result: 'Handled: FileNotFoundError', error: 'FileNotFoundError', note: 'Caught by except FileNotFoundError: fallback [] returned.'},
+        {name: 'Malformed JSON', file: 'data.json (corrupt)', text: '{"units": }', result: 'Handled: JSONDecodeError', error: 'JSONDecodeError', note: 'Caught by except json.JSONDecodeError: fallback [] returned.'}
+      ];
+      const curState = fileStates[index];
+      const isOk = !curState.error;
+
+      return <div className="model-file-journey" aria-label="File loading and exception handling flow">
+        <div className="file-journey-steps">
+          <div className="journey-step step-disk">
+            <small>1. Virtual Storage</small>
+            <div className="file-card">
+              <span className="file-icon" aria-hidden="true">📄</span>
+              <span className="file-name">{curState.file}</span>
+              <code className="file-preview">{curState.text}</code>
+            </div>
+          </div>
+
+          <span className="journey-arrow" aria-hidden="true">➔</span>
+
+          <div className="journey-step step-operation">
+            <small>2. Safe Read Operation</small>
+            <div className="op-card">
+              <code>try:</code>
+              <code>&nbsp;&nbsp;data = json.loads(text)</code>
+              <code>except (FileNotFoundError, JSONDecodeError):</code>
+              <code>&nbsp;&nbsp;data = []</code>
+            </div>
+          </div>
+
+          <span className="journey-arrow" aria-hidden="true">➔</span>
+
+          <div className={`journey-step step-outcome ${isOk ? 'outcome-success' : 'outcome-handled'}`}>
+            <small>3. Program State</small>
+            <div className="outcome-card">
+              <strong className="outcome-val">{curState.result}</strong>
+              <small className="outcome-note">{curState.note}</small>
+              <span className="safety-badge">🛡️ Program does not crash</span>
+            </div>
+          </div>
+        </div>
+      </div>;
+    })()}
+
+    {/* Chapter 15: Object State & Class Visualizer */}
+    {chapter===15 && (() => {
+      const itemsCount = index;
+      const prices = [40, 40, 40];
+      const cartAItems = prices.slice(0, itemsCount);
+      const cartATotal = cartAItems.reduce((a, b) => a + b, 0);
+
+      return <div className="model-object-state" aria-label="Object state and instance independence">
+        <div className="instances-comparison">
+          <div className="instance-card instance-a">
+            <div className="instance-header">
+              <span className="instance-title">Cart A <code>(Instance 1)</code></span>
+              <span className="instance-badge badge-active">Modified {itemsCount}×</span>
+            </div>
+            <div className="instance-body">
+              <div className="inst-row">
+                <small>self.amounts:</small>
+                <code>[{cartAItems.map(p => `₹${p}`).join(', ')}]</code>
+              </div>
+              <div className="inst-row">
+                <small>self.total():</small>
+                <strong className="inst-total">₹{cartATotal}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="instance-card instance-b">
+            <div className="instance-header">
+              <span className="instance-title">Cart B <code>(Instance 2)</code></span>
+              <span className="instance-badge badge-isolated">Independent</span>
+            </div>
+            <div className="instance-body">
+              <div className="inst-row">
+                <small>self.amounts:</small>
+                <code>[]</code>
+              </div>
+              <div className="inst-row">
+                <small>self.total():</small>
+                <strong className="inst-total">₹0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="state-independence-banner">
+          <p>
+            <strong>Key Insight:</strong> Cart B remains at <strong>0 items (₹0)</strong>! Changing Cart A's instance attributes does not affect Cart B.
+          </p>
+        </div>
+
+        <div className="shared-state-warning-card">
+          <div className="warning-header">
+            <span className="warning-title">⚠️ Common Python Pitfall: Shared Mutable Class Attributes</span>
+          </div>
+          <div className="warning-comparison">
+            <div className="code-contrast contrast-bad">
+              <small>❌ Bug: Shared across all instances</small>
+              <code>
+                class Cart:<br/>
+                &nbsp;&nbsp;amounts = [] # Shared list!
+              </code>
+            </div>
+            <div className="code-contrast contrast-good">
+              <small>✅ Correct: Private per instance</small>
+              <code>
+                def __init__(self):<br/>
+                &nbsp;&nbsp;self.amounts = [] # New list per cart!
+              </code>
             </div>
           </div>
         </div>

@@ -417,6 +417,121 @@
 .get-fallback-badge { font-size:10px; color:#10b981; background:rgba(16, 185, 129, 0.1); padding:2px 6px; border-radius:4px; margin-top:2px; font-weight:600; }
 .dup-item { text-decoration:line-through; opacity:0.5; color:#ef4444; }
 .set-result-box strong { color:var(--accent); font-size:14px; }
+
+/* Chapter 11: Function Machine Visualizer */
+.model-function-machine { display:grid; gap:14px; margin:16px 0; }
+.function-pipeline { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap:10px; align-items:center; }
+.function-stage { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; box-sizing:border-box; min-width:0; }
+.fn-stage-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+.fn-arg-card, .fn-output-card { display:flex; flex-direction:column; gap:4px; font-size:12px; }
+.fn-body-card { display:flex; flex-direction:column; gap:4px; font-size:12px; }
+.fn-sig { font-family:var(--font-mono, monospace); font-weight:700; color:var(--accent); font-size:11px; }
+.fn-calc { font-size:11px; color:var(--text); margin-top:2px; }
+.fn-calc strong { color:#10b981; }
+.fn-return-line { font-family:var(--font-mono, monospace); font-size:12px; margin-top:4px; }
+.return-badge { color:#10b981; font-weight:800; }
+.fn-caller { font-family:var(--font-mono, monospace); font-size:11px; color:var(--muted); }
+.output-preview { display:flex; align-items:center; gap:6px; margin-top:4px; }
+.fn-pipe-arrow { font-size:16px; font-weight:800; color:var(--accent); text-align:center; }
+.function-distinction-banner { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:8px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; }
+.distinction-item { display:flex; align-items:flex-start; gap:8px; font-size:11px; color:var(--muted); }
+.distinction-tag { font-size:10px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; flex-shrink:0; }
+.tag-return { background:rgba(16, 185, 129, 0.15); color:#10b981; }
+.tag-print { background:rgba(59, 130, 246, 0.15); color:#3b82f6; }
+
+/* Chapter 12: Project Builder & Architecture Visualizer */
+.model-project-builder { display:grid; gap:14px; margin:16px 0; }
+.project-flow-card { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:10px; box-sizing:border-box; }
+.project-flow-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.project-title { font-size:13px; font-weight:700; color:var(--text); }
+.project-case-badge { font-size:10px; font-weight:800; text-transform:uppercase; padding:3px 8px; border-radius:12px; }
+.badge-guard { background:rgba(239, 68, 68, 0.15); color:#ef4444; border:1px solid rgba(239, 68, 68, 0.3); }
+.badge-pass { background:rgba(16, 185, 129, 0.15); color:#10b981; border:1px solid rgba(16, 185, 129, 0.3); }
+.project-stages-grid { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.project-stage { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 12px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; flex:1; min-width:110px; }
+.project-stage small { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.proj-arrow { font-size:16px; font-weight:800; color:var(--accent); }
+.text-err { color:#ef4444; font-size:12px; }
+.text-ok { color:#10b981; font-size:13px; font-weight:800; }
+.project-blueprint-card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:8px; }
+.blueprint-title { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+.blueprint-steps { display:flex; flex-wrap:wrap; gap:6px; }
+.blueprint-step-pill { display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:4px 10px; background:var(--soft); border:1px solid var(--line); border-radius:20px; font-weight:600; color:var(--text); }
+.step-badge { font-size:9px; font-weight:800; background:var(--accent); color:#fff; border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; }
+
+/* Chapter 13: Data Transformation Pipeline */
+.model-data-pipeline { display:grid; gap:14px; margin:16px 0; }
+.pipeline-container { display:grid; gap:12px; }
+.data-source-section, .pipeline-result-section { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:8px; box-sizing:border-box; }
+.pipe-header-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+.data-cards-row { display:flex; flex-wrap:wrap; gap:8px; }
+.data-chip { background:var(--card); border:1.5px solid var(--line); border-radius:8px; padding:8px 12px; display:flex; flex-direction:column; gap:4px; min-width:85px; box-sizing:border-box; transition:all 0.2s ease; }
+.data-chip.chip-pass { border-color:#10b981; background:rgba(16, 185, 129, 0.08); }
+.data-chip.chip-skip { opacity:0.5; border-style:dashed; }
+.chip-eval-tag { font-size:10px; font-weight:800; text-transform:uppercase; }
+.chip-pass .chip-eval-tag { color:#10b981; }
+.chip-skip .chip-eval-tag { color:#ef4444; }
+.chip-condition { font-size:10px; color:var(--muted); font-family:var(--font-mono, monospace); }
+.comprehension-anatomy-card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:8px; }
+.comprehension-code-block { font-size:13px; font-family:var(--font-mono, monospace); font-weight:700; background:var(--soft); padding:8px 12px; border-radius:6px; overflow-x:auto; }
+.comp-expr { color:#10b981; font-weight:800; }
+.comp-var { color:var(--text); }
+.comp-source { color:var(--accent); }
+.comp-cond { color:#f59e0b; font-weight:800; }
+.comprehension-legend { display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:var(--muted); }
+.legend-item { display:inline-flex; align-items:center; gap:5px; }
+.legend-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.dot-expr { background:#10b981; }
+.dot-source { background:var(--accent); }
+.dot-cond { background:#f59e0b; }
+.result-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; font-size:13px; font-family:var(--font-mono, monospace); }
+.result-meta-pill { font-family:var(--font-sans, sans-serif); font-size:11px; color:#10b981; font-weight:600; background:rgba(16, 185, 129, 0.1); padding:3px 8px; border-radius:6px; }
+
+/* Chapter 14: File Processing Journey */
+.model-file-journey { display:grid; gap:14px; margin:16px 0; }
+.file-journey-steps { display:flex; align-items:stretch; flex-wrap:wrap; gap:10px; }
+.journey-step { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; flex:1; min-width:130px; box-sizing:border-box; }
+.journey-step small { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+.file-card, .op-card, .outcome-card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 10px; display:flex; flex-direction:column; gap:4px; height:100%; box-sizing:border-box; }
+.file-icon { font-size:18px; }
+.file-name { font-size:11px; font-weight:700; color:var(--text); font-family:var(--font-mono, monospace); }
+.file-preview { font-size:11px; color:var(--muted); }
+.op-card code { font-size:10px; font-family:var(--font-mono, monospace); line-height:1.4; color:var(--text); }
+.journey-arrow { font-size:16px; font-weight:800; color:var(--accent); align-self:center; }
+.outcome-val { font-size:12px; color:var(--text); }
+.outcome-note { font-size:10px; color:var(--muted); }
+.safety-badge { font-size:10px; font-weight:700; color:#10b981; margin-top:auto; padding-top:4px; }
+.outcome-handled { border-color:#f59e0b; }
+.outcome-handled .outcome-val { color:#d97706; }
+.outcome-success { border-color:#10b981; }
+.outcome-success .outcome-val { color:#10b981; }
+
+/* Chapter 15: Object State & Class Visualizer */
+.model-object-state { display:grid; gap:14px; margin:16px 0; }
+.instances-comparison { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap:10px; }
+.instance-card { background:var(--soft); border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:8px; box-sizing:border-box; }
+.instance-card.instance-a { border-color:var(--accent); }
+.instance-card.instance-b { border-style:dashed; }
+.instance-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; }
+.instance-title { font-size:13px; font-weight:700; color:var(--text); }
+.instance-badge { font-size:10px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; }
+.badge-active { background:rgba(35, 88, 190, 0.15); color:var(--accent); }
+.badge-isolated { background:rgba(107, 114, 128, 0.15); color:var(--muted); }
+.instance-body { display:flex; flex-direction:column; gap:4px; font-size:12px; }
+.inst-row { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.inst-row small { font-size:10px; color:var(--muted); font-family:var(--font-mono, monospace); }
+.inst-total { color:#10b981; font-weight:800; }
+.state-independence-banner { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text); }
+.state-independence-banner strong { color:#10b981; }
+.shared-state-warning-card { background:#fff8e6; border:1px solid #fae29c; border-radius:10px; padding:12px 14px; display:grid; gap:8px; color:#8c6307; }
+:root[data-theme=dark] .shared-state-warning-card { background:#382e16; border-color:#634f21; color:#f7d070; }
+.warning-header { display:flex; align-items:center; }
+.warning-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+.warning-comparison { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap:10px; }
+.code-contrast { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 10px; display:flex; flex-direction:column; gap:4px; font-size:11px; }
+.code-contrast small { font-weight:700; }
+.contrast-bad small { color:#ef4444; }
+.contrast-good small { color:#10b981; }
 .syntax-launch { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:24px; align-items:center; padding:24px; border:1px solid var(--line); border-radius:16px; background:var(--soft); margin-bottom:20px; }
 .syntax-launch .concept-model { margin:0; min-width:0; }
 .syntax-symbol-note { min-height:3em; padding:12px; background:var(--soft); color:var(--text); border-inline-start:3px solid var(--accent); border-radius:6px; }

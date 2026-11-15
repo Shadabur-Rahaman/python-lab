@@ -58,7 +58,7 @@ test.describe('Visual Learning Models (Chapters 6-10)', () => {
     await expect(model.locator('.pos-indices')).toContainText('+0');
     await expect(model.locator('.neg-indices')).toContainText('-1');
     await expect(model.locator('.string-slice-card')).toContainText('"PYTHON"[0:3]');
-    await expect(model.locator('.slice-result')).toHaveText('"Pyt"');
+    await expect(model.locator('.slice-result')).toHaveText('"PYT"');
 
     // Select index 2 (character 'T')
     await model.getByRole('combobox', {name: /Index in PYTHON/}).selectOption({index: 2});
