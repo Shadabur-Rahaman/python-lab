@@ -230,11 +230,12 @@ const reportData = {
   },
 };
 
-const evidencePath = path.resolve(rootDir, 'docs', 'v24-test-evidence.json');
+const evidencePath = path.resolve(rootDir, 'docs', 'v25-test-evidence.json');
 fs.writeFileSync(evidencePath, JSON.stringify(reportData, null, 2), 'utf8');
+fs.writeFileSync(path.resolve(rootDir, 'docs', 'v24-test-evidence.json'), JSON.stringify(reportData, null, 2), 'utf8');
 // Backwards compatibility with previous evidence checker
 fs.writeFileSync(path.resolve(rootDir, 'docs', 'v23-test-evidence.json'), JSON.stringify(reportData, null, 2), 'utf8');
-console.log(`\nMachine-readable evidence saved to: docs/v24-test-evidence.json and docs/v23-test-evidence.json`);
+console.log(`\nMachine-readable evidence saved to: docs/v25-test-evidence.json, docs/v24-test-evidence.json, and docs/v23-test-evidence.json`);
 
 // 7. Print Generated Markdown Table for Documentation
 console.log('\n=====================================================');

@@ -1,8 +1,24 @@
 import {useState} from 'react';
-import {ArrowLeft, CheckCircle2, ChevronRight, Copy, Database, FileSpreadsheet, Sparkles, Terminal, Trophy, AlertTriangle, Layers} from 'lucide-react';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ChevronRight,
+  Copy,
+  Database,
+  FileSpreadsheet,
+  Sparkles,
+  Terminal,
+  Trophy,
+  AlertTriangle,
+  Layers,
+  Download,
+  BookOpen,
+  Code2
+} from 'lucide-react';
 import CodeLab from './CodeLab';
 import {studentMarksAnalyzerProject} from '../data/intermediatePath';
 import {loadIntermediateProgress, saveIntermediateProgress} from '../lib/intermediateProgress';
+import {exportFile} from '../lib/projectStudioProgress';
 
 const SAMPLE_CSV_PREVIEW = `student_id,name,math,science,english
 S01,Ayaan Khan,85,90,88
@@ -50,10 +66,38 @@ assert empty_report['honors'] == [], "Empty dataset honors should be empty list"
 print("All capstone assertion suites passed successfully!")
 `;
 
+const MILESTONES_DATA = [
+  {
+    step: 1,
+    title: 'Milestone 1: Robust CSV Ingestion',
+    target: 'parse_marks(csv_text)',
+    desc: 'Parse tabular lines into structured dictionaries with cleaned whitespace and typed float scores.',
+  },
+  {
+    step: 2,
+    title: 'Milestone 2: Missing Value Handling & Summaries',
+    target: 'calculate_student_summary(student)',
+    desc: 'Compute totals and averages safely when subjects are absent without raising ValueError.',
+  },
+  {
+    step: 3,
+    title: 'Milestone 3: Class Aggregation & Honors',
+    target: 'analyze_class(students_data)',
+    desc: 'Aggregate whole-class mean, find top student with max(), and filter students with >= 85% average.',
+  },
+  {
+    step: 4,
+    title: 'Milestone 4: Defensive Boundary Assertions',
+    target: 'Automated Test Verification',
+    desc: 'Verify that empty CSV files, zero counts, and unexpected spaces produce predictable results.',
+  },
+];
+
 export default function StudentMarksAnalyzerView() {
   const [progress, setProgress] = useState(() => loadIntermediateProgress());
   const [copied, setCopied] = useState(false);
   const [verifiedViaRunner, setVerifiedViaRunner] = useState(false);
+  const [activeMilestoneTab, setActiveMilestoneTab] = useState(0);
 
   function toggleCompleted(checked: boolean) {
     const updated = {
@@ -78,6 +122,29 @@ export default function StudentMarksAnalyzerView() {
     });
   }
 
+  function downloadPythonScript() {
+    exportFile('student_marks_analyzer.py', studentMarksAnalyzerProject.solution);
+  }
+
+  function downloadDocumentation() {
+    const readmeContent = `# Student Marks Analyzer
+
+A production-grade Python data processing pipeline parsing gradebook CSV records, computing student statistics, and building honor roll reports.
+
+## Architecture
+1. **parse_marks(csv_text)**: Ingests CSV using \`csv.DictReader\` and \`io.StringIO\`.
+2. **calculate_student_summary(student)**: Computes student total, average, and pass criteria.
+3. **analyze_class(students_data)**: Computes class average, top student, and honors list.
+
+## Test Verification
+Run with Python 3:
+\`\`\`bash
+python student_marks_analyzer.py
+\`\`\`
+`;
+    exportFile('README.md', readmeContent, 'text/markdown');
+  }
+
   return (
     <div className="capstone-workspace">
       {/* Navigation & Header */}
@@ -93,7 +160,7 @@ export default function StudentMarksAnalyzerView() {
           </p>
         </div>
 
-        {/* Milestone Badge */}
+        {/* Milestone Badge & Export Actions */}
         <div className="capstone-status-bar">
           <div className="status-indicator">
             <span className={`pill large ${progress.capstoneCompleted ? 'easy' : ''}`}>
@@ -105,10 +172,13 @@ export default function StudentMarksAnalyzerView() {
               </span>
             )}
           </div>
-          <div className="journey-track-pill">
-            <span>Intermediate Python</span>
-            <ChevronRight size={14} />
-            <strong>Capstone Analyzer</strong>
+          <div className="capstone-export-buttons">
+            <button className="button small" onClick={downloadPythonScript} title="Download verified Python script">
+              <Download size={14} /> Export .py
+            </button>
+            <button className="button small" onClick={downloadDocumentation} title="Download project README">
+              <BookOpen size={14} /> Export README
+            </button>
           </div>
         </div>
       </div>
@@ -146,11 +216,39 @@ export default function StudentMarksAnalyzerView() {
         </div>
       </div>
 
+      {/* Guided Milestones Navigation Tabs */}
+      <div className="card milestone-roadmap-card">
+        <div className="section-heading">
+          <h2><Sparkles size={18} /> Guided Implementation Milestones</h2>
+          <small>Break down the pipeline into 4 manageable stages</small>
+        </div>
+        <div className="milestones-nav-tabs" role="tablist">
+          {MILESTONES_DATA.map((m, idx) => (
+            <button
+              key={idx}
+              role="tab"
+              aria-selected={activeMilestoneTab === idx}
+              className={`milestone-nav-tab ${activeMilestoneTab === idx ? 'active' : ''}`}
+              onClick={() => setActiveMilestoneTab(idx)}
+            >
+              <span className="tab-step-badge">{m.step}</span>
+              <div className="tab-step-text">
+                <strong>{m.title}</strong>
+                <code>{m.target}</code>
+              </div>
+            </button>
+          ))}
+        </div>
+        <div className="milestone-tab-detail">
+          <p><strong>Stage Objective:</strong> {MILESTONES_DATA[activeMilestoneTab].desc}</p>
+        </div>
+      </div>
+
       {/* Project Brief & Sample Data */}
       <div className="two-columns capstone-details-grid">
         <div className="card">
           <h2><FileSpreadsheet size={18} /> Sample Gradebook CSV</h2>
-          <p>This is the test dataset your code will parse. Notice student 103 (Rohan Verma) has an empty science field:</p>
+          <p>This is the test dataset your code will parse. Notice student S03 (Rohan Verma) has an empty science field:</p>
           <div className="code-header-bar">
             <span>gradebook.csv</span>
             <button className="button small text-button" onClick={copyCsv}>
@@ -181,19 +279,6 @@ export default function StudentMarksAnalyzerView() {
               <p>{studentMarksAnalyzerProject.mistake}</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Step by Step Implementation Guide */}
-      <div className="card steps-guide-card">
-        <h2><Sparkles size={18} /> Step-by-Step Implementation Roadmap</h2>
-        <div className="steps-timeline">
-          {studentMarksAnalyzerProject.steps.map((step, idx) => (
-            <div key={idx} className="timeline-item">
-              <span className="timeline-badge">{idx + 1}</span>
-              <div className="timeline-content">{step}</div>
-            </div>
-          ))}
         </div>
       </div>
 

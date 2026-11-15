@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-11-15T19:18:25.748Z",
+  "timestamp": "2026-11-15T20:16:08.411Z",
   "git": {
-    "head": "4da334b79d2ddabe8b1690ed11fa963cfdea60d1",
+    "head": "10b6d090a0a1d1b8aa13ed76ef9f69558eb6cfcc",
     "branch": "main",
     "dirty": true
   },
@@ -14,21 +14,21 @@
   "unitTests": {
     "runner": "node:test (Node.js built-in)",
     "command": "node --test tests/*.test.mjs",
-    "total": 48,
-    "passed": 48,
+    "total": 56,
+    "passed": 56,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 34385.8324
+    "durationMs": 38087.1517
   },
   "browserTests": {
     "runner": "@playwright/test",
     "command": "npx playwright test --reporter=json",
-    "fileCount": 18,
-    "totalDiscovered": 93,
-    "passed": 93,
+    "fileCount": 19,
+    "totalDiscovered": 98,
+    "passed": 98,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 402468,
+    "durationMs": 478296,
     "files": [
       {
         "file": "beginner-visuals.spec.ts",
@@ -90,6 +90,13 @@
         "file": "practice-mastery.spec.ts",
         "tests": 6,
         "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "project-studio.spec.ts",
+        "tests": 5,
+        "passed": 5,
         "failed": 0,
         "skipped": 0
       },

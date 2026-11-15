@@ -2690,3 +2690,591 @@
     gap: 10px;
   }
 }
+
+/* ==========================================================================
+   V25 PROJECT STUDIO & STUDENT PORTFOLIO STYLES
+   ========================================================================== */
+
+.project-studio-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.project-studio-workspace * {
+  box-sizing: border-box;
+}
+
+.studio-top-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.catalog-hero-card {
+  padding: 24px;
+}
+
+.catalog-hero-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 8px;
+  max-width: 750px;
+}
+
+.highlight-pill {
+  background: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  font-weight: 700;
+}
+
+/* Studio Projects Grid */
+.studio-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.studio-project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.studio-project-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.project-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.studio-project-card h3 {
+  margin: 4px 0 8px;
+  font-size: 18px;
+}
+
+.studio-project-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0 0 16px;
+}
+
+.project-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.project-card-footer small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Foundational Projects Section */
+.foundational-projects-section {
+  margin-top: 16px;
+}
+
+.foundational-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.foundational-project-pill {
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--text);
+  background: var(--card);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.foundational-project-pill:hover {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+
+.pill-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pill-index {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.foundational-project-pill strong {
+  font-size: 14px;
+}
+
+.foundational-project-pill p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* Individual Project Workspace */
+.project-detail-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.project-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  gap: 16px;
+}
+
+.project-title-meta h2 {
+  margin: 4px 0 0;
+  font-size: 22px;
+}
+
+.project-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brief-scenario {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 8px 0 16px;
+}
+
+.brief-details-grid {
+  margin-top: 12px;
+}
+
+.brief-col strong {
+  display: block;
+  font-size: 13px;
+  margin: 8px 0 4px;
+}
+
+.brief-col p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.competency-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.competency-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* Milestone Flow Card */
+.milestone-flow-card {
+  padding: 20px 24px;
+}
+
+.milestones-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.milestone-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.milestone-pill:hover {
+  border-color: var(--accent);
+}
+
+.milestone-pill.active {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+
+.milestone-pill.verified .milestone-badge {
+  background: #22c55e;
+  color: #fff;
+}
+
+.milestone-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--line);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.milestone-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.milestone-text strong {
+  font-size: 12px;
+}
+
+.milestone-text span {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Milestone Workspace Pane */
+.milestone-workspace-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.milestone-instructions {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 10px 0;
+}
+
+.milestone-tests-list {
+  background: var(--bg);
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  margin-top: 12px;
+}
+
+.milestone-tests-list strong {
+  font-size: 12px;
+}
+
+.milestone-tests-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.milestone-tests-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.milestone-tests-list li.verified-check {
+  color: #16a34a;
+}
+
+.milestone-explanation-box {
+  background: var(--bg);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 16px;
+}
+
+.milestone-explanation-box strong {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.milestone-explanation-box p {
+  margin: 4px 0 6px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.hinglish-tip {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.milestone-footer-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+/* Student Portfolio View */
+.student-portfolio-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.portfolio-hero-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+}
+
+.portfolio-hero-text h2 {
+  margin: 4px 0 8px;
+  font-size: 22px;
+}
+
+.portfolio-hero-text p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 600px;
+}
+
+.portfolio-metrics-grid {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.portfolio-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.portfolio-project-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.portfolio-project-card.verified {
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.portfolio-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.portfolio-project-card h3 {
+  margin: 4px 0 6px;
+  font-size: 17px;
+}
+
+.portfolio-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 0 0 14px;
+  flex-grow: 1;
+}
+
+.portfolio-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.concept-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.portfolio-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+/* Top bar for foundational project detail */
+.project-detail-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.project-export-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.capstone-export-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Milestone Roadmap Card in Capstone */
+.milestone-roadmap-card {
+  padding: 20px 24px;
+}
+
+.milestones-nav-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.milestone-nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.milestone-nav-tab:hover,
+.milestone-nav-tab.active {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+
+.tab-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tab-step-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tab-step-text strong {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-step-text code {
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.milestone-tab-detail {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .portfolio-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .portfolio-metrics-grid {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .project-view-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .project-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .milestone-footer-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .project-detail-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
