@@ -41,7 +41,12 @@ function ExpenseReportModel({minimum,onChange}: {minimum:number;onChange:(value:
   </>;
 }
 
-export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities;onRun:()=>void}) {
+export default function PilotLesson({id,onRun,onTakeQuiz,onReadReference}: {
+  id:keyof typeof pilotActivities;
+  onRun:()=>void;
+  onTakeQuiz?:()=>void;
+  onReadReference?:()=>void;
+}) {
   const activity=pilotActivities[id];
   const key='python-lab.activity.v2:'+id;
   const [stage,setStage]=useState(()=>{
@@ -140,12 +145,18 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
             <span className="pilot-completed-tag">✓ Guided activity completed</span>
             <div className="utility-actions">
               <button type="button" className="button primary small" onClick={()=>{
-                const quiz=document.getElementById('chapter-quiz');
-                if(quiz){quiz.focus({preventScroll:true});quiz.scrollIntoView({behavior:'smooth',block:'start'});}
+                if (onTakeQuiz) onTakeQuiz();
+                else {
+                  const quiz=document.getElementById('chapter-quiz');
+                  if(quiz){quiz.focus({preventScroll:true});quiz.scrollIntoView({behavior:'smooth',block:'start'});}
+                }
               }}>Take Chapter Quiz</button>
               <button type="button" className="button small" onClick={()=>{
-                const concepts=document.getElementById('chapter-concepts');
-                if(concepts){concepts.focus({preventScroll:true});concepts.scrollIntoView({behavior:'smooth',block:'start'});}
+                if (onReadReference) onReadReference();
+                else {
+                  const concepts=document.getElementById('chapter-concepts');
+                  if(concepts){concepts.focus({preventScroll:true});concepts.scrollIntoView({behavior:'smooth',block:'start'});}
+                }
               }}>Read In-Depth Reference</button>
             </div>
           </div>
