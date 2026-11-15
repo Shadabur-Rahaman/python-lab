@@ -78,6 +78,12 @@ test.describe('Python Lab V19 — The Perfect First 10 Minutes', () => {
     await runBtn.click();
     await expect(consolePre).toContainText('Hello, Python Lab!', { timeout: 20000 });
 
+    // Verify edited program survives reload (draft persistence)
+    await page.reload();
+    const reloadedLab = page.locator('.first-10-ch1 .ch1-studio .code-lab');
+    const reloadedEditor = reloadedLab.getByLabel('Python code: first_program.py');
+    await expect(reloadedEditor).toHaveValue('print("Hello, Python Lab!")');
+
     // 4. Token contrast & visual model
     const model = page.locator('.first-10-ch1 .concept-model');
     await expect(model.locator('.model-statement-map')).toBeVisible();
@@ -116,8 +122,14 @@ test.describe('Python Lab V19 — The Perfect First 10 Minutes', () => {
   });
 
   test('seamless progression from Chapter 0 to 1 to 2 with single primary CTA', async ({ page }) => {
-    // Start at Chapter 0
-    await page.goto('./#/chapter/0');
+    // Start at Home
+    await page.goto('./#/home');
+    const startLearning = page.getByRole('link', { name: 'Start Learning' }).first();
+    await expect(startLearning).toBeVisible();
+    await startLearning.click();
+
+    // Transitioned to Chapter 0
+    await expect(page).toHaveURL(/.*#\/chapter\/0/);
     const cta0 = page.locator('.first-10-ch0 .first-10-cta');
     await expect(cta0).toBeVisible();
     await cta0.click();

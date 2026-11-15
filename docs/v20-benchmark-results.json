@@ -1,0 +1,27 @@
+{
+  "coldCache": {
+    "timeBeforeRunActionMs": 1706,
+    "executionTimeMs": 4537,
+    "totalTimeToFirstOutputMs": 6243
+  },
+  "warmCache": {
+    "timeBeforeRunActionMs": 917,
+    "executionTimeMs": 4197,
+    "totalTimeToFirstOutputMs": 5183
+  },
+  "warmWorkerReuse": {
+    "executionTimeMs": 121
+  },
+  "simulatedFast3G": {
+    "timeBeforeRunActionMs": 1880,
+    "executionTimeMs": 31097,
+    "totalTimeToFirstOutputMs": 32977,
+    "stageIndicatorDisplayed": true
+  },
+  "mobileViewport": {
+    "viewport": "390x844",
+    "timeBeforeRunActionMs": 1697,
+    "executionTimeMs": 5654,
+    "totalTimeToFirstOutputMs": 7351
+  }
+}
