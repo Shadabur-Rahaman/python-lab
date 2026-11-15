@@ -1,0 +1,42 @@
+{
+  "ch0": {
+    "desktop": {
+      "scrollHeight": 11158,
+      "sections": 23,
+      "interactive": 202,
+      "codeLabs": 6,
+      "primaryCtasInFirst10": 2,
+      "firstInteractiveTop": 1056.65625,
+      "overflow": 0
+    },
+    "mobile": {
+      "scrollHeight": 13318,
+      "sections": 23,
+      "interactive": 202,
+      "codeLabs": 6,
+      "primaryCtasInFirst10": 2,
+      "firstInteractiveTop": 1591.765625,
+      "overflow": 0
+    }
+  },
+  "ch1": {
+    "desktop": {
+      "scrollHeight": 12331,
+      "sections": 23,
+      "interactive": 260,
+      "codeLabs": 8,
+      "primaryCtasInFirst10": 3,
+      "firstInteractiveTop": 765.703125,
+      "overflow": 0
+    },
+    "mobile": {
+      "scrollHeight": 14840,
+      "sections": 23,
+      "interactive": 260,
+      "codeLabs": 8,
+      "primaryCtasInFirst10": 3,
+      "firstInteractiveTop": 1029.671875,
+      "overflow": 0
+    }
+  }
+}

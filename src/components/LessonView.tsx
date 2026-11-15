@@ -472,7 +472,7 @@ export default function LessonView({
                   ))}
                 </ol>
                 {lesson.id === 0 ? (
-                  <TeaOrder/>
+                  <p className="story">Follow the recipe sequence practiced in the algorithm experiment above: boil water first, infuse tea leaves, then serve.</p>
                 ) : (
                   <a className="text-link" href="#/lab">
                     Explore interactive visual models <ArrowRight size={15}/>
@@ -696,6 +696,202 @@ export default function LessonView({
           {/* Chapters 0 and 1: Continuous Introductory Beginner Flow */}
           {!isGuided && (
             <>
+              {/* V19: The Perfect First 10 Minutes - Chapter 0 Intro Flow */}
+              {lesson.id === 0 && (
+                <div className="first-10-flow first-10-ch0">
+                  <div className="card first-10-hero">
+                    <div className="first-10-badge-row">
+                      <span className="first-10-badge">THE FIRST 10 MINUTES · STEP 1</span>
+                      <span className="time-badge">⏱ ~3 min</span>
+                    </div>
+                    <h2>What is Programming?</h2>
+                    <p className="scenario-text">
+                      Imagine asking a friend to <em>“make chai”</em>. Without clear details, they won't know how much water, milk, or tea leaves to use. 
+                      A computer is just like that friend, but with <strong>zero common sense</strong>: it needs exact, numbered instructions in the right order.
+                    </p>
+
+                    <div className="ipo-workflow" aria-label="Input Process Output Workflow">
+                      <div className="ipo-step">
+                        <div className="ipo-step-header">
+                          <span className="ipo-icon" aria-hidden="true">📥</span>
+                          <span className="ipo-name">1. Input</span>
+                        </div>
+                        <p className="ipo-desc">Raw ingredients or user requests</p>
+                        <div className="ipo-pill">e.g. 2 cups requested</div>
+                      </div>
+
+                      <span className="ipo-arrow" aria-hidden="true">➔</span>
+
+                      <div className="ipo-step active">
+                        <div className="ipo-step-header">
+                          <span className="ipo-icon" aria-hidden="true">⚙️</span>
+                          <span className="ipo-name">2. Process</span>
+                        </div>
+                        <p className="ipo-desc">Step-by-step recipe executed strictly top to bottom</p>
+                        <div className="ipo-pill">e.g. Boil water → Add tea → Pour milk</div>
+                      </div>
+
+                      <span className="ipo-arrow" aria-hidden="true">➔</span>
+
+                      <div className="ipo-step">
+                        <div className="ipo-step-header">
+                          <span className="ipo-icon" aria-hidden="true">📤</span>
+                          <span className="ipo-name">3. Output</span>
+                        </div>
+                        <p className="ipo-desc">The completed result displayed to the user</p>
+                        <div className="ipo-pill">e.g. 400 mL fresh chai served</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="first-10-experiment-section">
+                    <div className="experiment-heading">
+                      <span className="eyebrow">INTERACTIVE ALGORITHM EXPERIMENT</span>
+                      <h3>Watch the Recipe Algorithm Scale</h3>
+                      <p>Change the number of cups below. Notice how the computer recalculates each ingredient based on the input.</p>
+                    </div>
+                    <ConceptModel chapter={0}/>
+                  </div>
+
+                  <div className="first-10-experiment-section">
+                    <div className="experiment-heading">
+                      <span className="eyebrow">HANDS-ON LOGIC</span>
+                      <h3>Order Matters in Every Program</h3>
+                      <p>A computer executes statements strictly from top to bottom. Move each step up until the recipe is in logical order.</p>
+                    </div>
+                    <TeaOrder/>
+                  </div>
+
+                  <div className="card first-10-milestone-card">
+                    <div className="milestone-badge-row">
+                      <span className="milestone-pill"><Sparkles size={14}/> STEP 1 MASTERED</span>
+                      <span className="milestone-sub">Ready for real Python</span>
+                    </div>
+                    <h3>You understand how algorithms and instructions work!</h3>
+                    <p>Now let's write your first line of Python and make the computer speak to you.</p>
+                    <div className="milestone-actions">
+                      <a href="#/chapter/1" className="button primary large first-10-cta">
+                        Continue to Chapter 1: Your First Python Program <ArrowRight size={18}/>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="first-10-details-toggle">
+                    <h4>Looking for deeper theory, quizzes, or extra practice?</h4>
+                    <p>All reference notes, quizzes, and tasks for Chapter 0 are available below.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* V19: The Perfect First 10 Minutes - Chapter 1 Intro Flow */}
+              {lesson.id === 1 && (
+                <div className="first-10-flow first-10-ch1">
+                  <div className="card first-10-hero ch1-studio">
+                    <div className="first-10-badge-row">
+                      <span className="first-10-badge">THE FIRST 10 MINUTES · STEP 2</span>
+                      <span className="time-badge">⏱ ~5 min</span>
+                    </div>
+                    <h2>Your Very First Python Program</h2>
+                    <p className="scenario-text">
+                      In Python, <code>print()</code> is your digital voice. Whatever message you put inside quotation marks <code>("...")</code> is sent straight to your screen.
+                    </p>
+
+                    <div className="first-run-workspace">
+                      <div className="first-run-steps-bar">
+                        <span className="run-step-badge">1. Run Code</span>
+                        <p>Click the <strong>Run Code</strong> button below. Pyodide executes Python inside your browser and prints the message to the console!</p>
+                      </div>
+
+                      <CodeLab
+                        draftId="chapter-1-first-run"
+                        initial='print("Hello, World!")'
+                        expected="Hello, World!"
+                        onRun={onRun}
+                        label="first_program.py"
+                      />
+
+                      <div className="first-run-prompt-box">
+                        <span className="run-step-badge">2. Change the greeting</span>
+                        <p>
+                          Now edit the text inside the quotes to your name or custom greeting (e.g. <code>print("Hello, Python Lab!")</code>) and click <strong>Run Code</strong> again.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="first-10-experiment-section">
+                    <div className="experiment-heading">
+                      <span className="eyebrow">CORE SYNTAX DISCOVERY</span>
+                      <h3>How Python Reads Code vs Text</h3>
+                      <p>Inspect the difference between text in quotes (strings) and unquoted numbers.</p>
+                    </div>
+                    <ConceptModel chapter={1}/>
+
+                    <div className="syntax-quick-cards">
+                      <div className="syntax-card">
+                        <div className="syntax-card-title"><code>print(...)</code></div>
+                        <p>Python's built-in tool for speaking. Parentheses <code>()</code> hold what to display.</p>
+                      </div>
+                      <div className="syntax-card">
+                        <div className="syntax-card-title"><code>"Strings"</code></div>
+                        <p>Text wrapped in quotes. Python strips the quotes when printing to screen.</p>
+                      </div>
+                      <div className="syntax-card">
+                        <div className="syntax-card-title"><code>10 + 20</code> (Numbers)</div>
+                        <p>Numbers written without quotes. Python evaluates math first (10 + 20 = 30).</p>
+                      </div>
+                      <div className="syntax-card">
+                        <div className="syntax-card-title"><code># Comments</code></div>
+                        <p>Notes starting with <code>#</code>. Python skips them completely; they are for humans.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="card typo-recovery-card">
+                    <div className="first-10-badge-row">
+                      <span className="eyebrow">CONFIDENCE BUILDER</span>
+                      <span className="time-badge">Fix a mistake</span>
+                    </div>
+                    <h3>Errors are clues, not failures</h3>
+                    <p className="scenario-text">
+                      Python is strictly case-sensitive. If you write <code>Print</code> with a capital <code>P</code>, Python raises a <code>NameError</code> because it only recognizes lowercase <code>print</code>.
+                    </p>
+
+                    <div className="typo-experiment-box">
+                      <CodeLab
+                        draftId="chapter-1-typo-experiment"
+                        initial='Print("Hello, World!")'
+                        expected="Hello, World!"
+                        onRun={onRun}
+                        label="fix_typo.py"
+                      />
+                      <div className="typo-tip-box">
+                        <strong>Tip:</strong> Change <code>Print</code> to lowercase <code>print</code> and click <strong>Run Code</strong>. Watch the error vanish!
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="card first-10-milestone-card">
+                    <div className="milestone-badge-row">
+                      <span className="milestone-pill"><Sparkles size={14}/> CHAPTER 1 COMPLETE</span>
+                      <span className="milestone-sub">Next: Variables</span>
+                    </div>
+                    <h3>You've run Python, edited code, and fixed a syntax typo!</h3>
+                    <p>Now you're ready to store numbers and text in memory so your programs can remember values.</p>
+                    <div className="milestone-actions">
+                      <a href="#/chapter/2" className="button primary large first-10-cta">
+                        Continue to Chapter 2: Variables & Values <ArrowRight size={18}/>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="first-10-details-toggle">
+                    <h4>Looking for more practice tasks, quizzes, or detailed notes?</h4>
+                    <p>All reference notes, quizzes, and tasks for Chapter 1 are available below.</p>
+                  </div>
+                </div>
+              )}
+
               <div className="card chapter-checkpoint">
                 <h2>Try a real task</h2>
                 <p>{checkpoint.task}</p>
@@ -714,8 +910,6 @@ export default function LessonView({
                 </ol>
                 <p role="status" className="trace-current">{checkpoint.steps[step]}</p>
               </div>
-
-              <ConceptModel chapter={lesson.id}/>
 
               <button
                 className="button small"
@@ -783,7 +977,7 @@ export default function LessonView({
                   ))}
                 </ol>
                 {lesson.id === 0 ? (
-                  <TeaOrder/>
+                  <p className="story">Follow the recipe sequence practiced in the algorithm experiment above: boil water first, infuse tea leaves, then serve.</p>
                 ) : (
                   <a className="text-link" href="#/lab">
                     Explore interactive visual models <ArrowRight size={15}/>
