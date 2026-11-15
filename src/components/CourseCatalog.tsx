@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {ArrowRight, Bookmark, Search} from 'lucide-react';
+import {ArrowRight, Bookmark, Search, Compass, Sparkles} from 'lucide-react';
 import {levels, tracks, type buildCatalog} from '../data/catalog.mjs';
 import type {Progress} from '../lib/progress.mjs';
 
@@ -13,6 +13,18 @@ export default function CourseCatalog({catalog, progress}: {
     (!onlyBookmarks || progress.bookmarks.includes(lesson.id))
     && `${lesson.title} ${lesson.subtitle} ${lesson.topics}`.toLowerCase().includes(query));
   return <>
+    {/* Intermediate Learning Path Progression Banner */}
+    <div className="card catalog-intermediate-banner">
+      <div className="banner-content">
+        <span className="eyebrow"><Compass size={14} /> NEW STAGE AVAILABLE</span>
+        <h3>Intermediate Python Learning Path</h3>
+        <p>Master standard library modules, better functions, iterators, CSV data processing, defensive assertions, and build the Student Marks Analyzer capstone.</p>
+      </div>
+      <a href="#/intermediate" className="button primary large">
+        Explore Intermediate Path <ArrowRight size={15} />
+      </a>
+    </div>
+
     <div className="utility-actions">
       <label className="search-field"><Search size={18}/>
         <input aria-label="Search chapters" placeholder="Search titles and Python topics" value={search} onChange={event => setSearch(event.target.value)}/>

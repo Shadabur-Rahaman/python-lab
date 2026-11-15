@@ -16,6 +16,8 @@ import LessonView from './components/LessonView';
 import CourseCatalog from './components/CourseCatalog';
 import PracticeView from './components/PracticeView';
 import ProgressBackup from './components/ProgressBackup';
+import IntermediatePathView from './components/IntermediatePathView';
+import StudentMarksAnalyzerView from './components/StudentMarksAnalyzerView';
 const ResourceLibrary = lazy(() => import('./resources/ResourceLibrary'));
 const TeacherResources = lazy(() => import('./resources/TeacherResources'));
 const GlossaryPage = lazy(() => import('./components/GlossaryPage'));
@@ -25,7 +27,7 @@ const SyntaxAcademy = lazy(() => import('./components/SyntaxAcademy'));
 const catalog = buildCatalog(beginner, projects);
 const chapters = catalog.lessons;
 const groups = [
- ['Course', [['home','Home',Home],['chapters','Learn',BookOpen],['practice','Practice',Code2],
+ ['Course', [['home','Home',Home],['chapters','Learn',BookOpen],['intermediate','Intermediate',Compass],['practice','Practice',Code2],
    ['syntax','Syntax',Code2],['projects','Projects',FolderOpen],['progress','Progress',Trophy]]],
  ['Learning tools', [['playground','Python Playground',Terminal],['lab','Experiment Lab',FlaskConical],['quiz','Quiz Arena',Target],
    ['keywords','Python Keywords',Code2],['glossary','Bilingual Glossary',BookOpen],['resources','Study Materials',FolderOpen]]],
@@ -147,7 +149,7 @@ export default function App(){
  const selectedQuiz=quizTopic==='applied'?checkpoints.map(item=>item.question):quizTopic==='revision'?revisionQuiz:
    (beginner.find(item=>String(item.id)===quizTopic)??expanded?.find(item=>String(item.id)===quizTopic))?.quiz;
  const waiting=needsExpanded&&!expanded;
- const titles:Record<string,string>={playground:'Python Playground',keywords:'Python Keywords',home:'Your learning dashboard',chapters:'Your Python roadmap',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||'Build something real.',progress:'Look how far you’ve come.'};
+ const titles:Record<string,string>={playground:'Python Playground',keywords:'Python Keywords',home:'Your learning dashboard',chapters:'Your Python roadmap',intermediate:'Intermediate Python Learning Path',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||'Build something real.',progress:'Look how far you’ve come.'};
  const themeButton=<button className="icon-button" onClick={()=>setDark(!dark)} aria-label={dark?'Switch to light mode':'Switch to dark mode'}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>;
  if(teacherRoute) return <div className="studio-shell">
    <header className="studio-header"><a href={link('home')} className="studio-brand"><Code2 size={22}/> Python Lab</a>{themeButton}</header>
@@ -185,6 +187,14 @@ export default function App(){
            <a href={link('chapters')}>Learn</a>
            <ChevronRight size={14} aria-hidden="true"/>
            <span aria-current="page">Chapter {metadata.id}: {metadata.title}</span>
+         </> : page==='intermediate' ? <>
+           <a href={link('chapters')}>Learn</a>
+           <ChevronRight size={14} aria-hidden="true"/>
+           <span aria-current="page">Intermediate Python{id ? ` · Module ${id}` : ''}</span>
+         </> : page==='projects' && id==='student-marks-analyzer' ? <>
+           <a href={link('intermediate')}>Intermediate</a>
+           <ChevronRight size={14} aria-hidden="true"/>
+           <span aria-current="page">Capstone: Student Marks Analyzer</span>
          </> : <span aria-current="page">{nav.find(([path])=>path===page)?.[1]||(page==='search'?'Search':'Home')}</span>}
        </nav>
      </div>
@@ -195,6 +205,7 @@ export default function App(){
    percent={coursePercent} returning={progress.visited.length>0} onRun={firstProgram}/>:
  <><div className="page-heading"><span className="eyebrow">PYTHON LAB / {page==='chapter'?`CHAPTER ${metadata?.id ?? ""}`:page.toUpperCase()}</span><h1>{titles[page]||'Find your next step'}</h1><p>{page==='chapters'?'A clear path from your first line of code to your first real project. Every chapter is open to explore.':page==='practice'?'Run to experiment. Check Answer to verify your solution. Mistakes are part of the process.':page==='lab'?'A safe place to ask “what if?”. This is real Python, right in your browser.':page==='quiz'?'Strengthen your understanding, one good question at a time.':page==='projects'?'Useful skills become useful things. Choose a guided project and make it yours.':page==='progress'?'Track the chapters, exercises and projects you’ve completed.':page==='resources'?'Notes, presentations, exercises, reference sheets and downloadable resources for your Python course.':metadata?.subtitle}</p></div>
  {page==='chapters'&&<CourseCatalog catalog={catalog} progress={progress}/>}
+ {page==='intermediate'&&<IntermediatePathView initialModuleId={id}/>}
  {page==='resources'&&<Suspense fallback={<p role="status">Loading library…</p>}><ResourceLibrary key={route} lessons={chapters}/></Suspense>}
  {page==='keywords'&&<Suspense fallback={<p role="status">Loading keywords…</p>}><Keywords/></Suspense>}
  {page==='glossary'&&<Suspense fallback={<p role="status">Loading glossary…</p>}><GlossaryPage id={id}/></Suspense>}
@@ -224,7 +235,18 @@ export default function App(){
    {selectedQuiz&&<Quiz key={quizTopic} questions={selectedQuiz} onComplete={score=>saveScore(quizTopic,score)}/>}</>}
  {waiting&&<div className="card" role="status">{loadFailed?<><p>Lesson content could not load.</p>
    <button className="button" onClick={()=>location.reload()}>Reload page</button></>:<p>Loading lesson content…</p>}</div>}
- {page==='projects'&&!project&&<div className="chapter-grid">{projects.map((p,i)=><a className="card project-card" key={p.id} href={link(`projects/${p.id}`)}><span className={`stat-icon color-${i%4}`}><FolderOpen size={23}/></span><span className="eyebrow">PROJECT {String(i+1).padStart(2,'0')}</span><h2>{p.title}</h2><p>{p.use}</p><small>Complete chapters {p.chapters.join(', ')} first</small><div className="card-bottom"><b>{progress.projects.includes(p.id)?'✓ Completed':'Build this project'}</b><ArrowRight size={17}/></div></a>)}</div>}
+ {page==='projects'&&id==='student-marks-analyzer'&&<StudentMarksAnalyzerView/>}
+ {page==='projects'&&!project&&id!=='student-marks-analyzer'&&<div className="chapter-grid">
+   <a className="card project-card capstone-highlight-card" href={link('projects/student-marks-analyzer')}>
+     <span className="stat-icon color-1"><Trophy size={23}/></span>
+     <span className="eyebrow">CAPSTONE PROJECT</span>
+     <h2>Student Marks Analyzer</h2>
+     <p>Build a real-world CSV gradebook analyzer with validation, statistics, and automated assertions.</p>
+     <small>Requires Intermediate Python (Modules 1–5)</small>
+     <div className="card-bottom"><b>Build capstone</b><ArrowRight size={17}/></div>
+   </a>
+   {projects.map((p,i)=><a className="card project-card" key={p.id} href={link(`projects/${p.id}`)}><span className={`stat-icon color-${i%4}`}><FolderOpen size={23}/></span><span className="eyebrow">PROJECT {String(i+1).padStart(2,'0')}</span><h2>{p.title}</h2><p>{p.use}</p><small>Complete chapters {p.chapters.join(', ')} first</small><div className="card-bottom"><b>{progress.projects.includes(p.id)?'✓ Completed':'Build this project'}</b><ArrowRight size={17}/></div></a>)}
+ </div>}
  {page==='projects'&&project&&<><a className="text-link" href={link('projects')}>← All projects</a><div className="card"><h2>What you’ll build</h2><p>{project.use}</p><p>Prerequisites: {project.chapters.map(n=><a className="inline-link" key={n} href={link(`chapter/${n}`)}>Chapter {n} </a>)}</p><h3>Functional requirements</h3><ul>{project.requirements.map(s=><li key={s}>{s}</li>)}</ul><h3>Your guided breakdown</h3><ol>{project.steps.map(s=><li key={s}>{s}</li>)}</ol></div><CodeLab key={project.id} initial={project.starter} input={project.input} label={`${project.id}.py`} persist/><div className="two-columns"><div className="card"><h3>Sample input</h3><pre>{project.input||'No input required.'}</pre><h3>Sample output</h3><pre>{project.output}</pre></div><div className="card"><h3>Test your project</h3><ul>{project.tests.map(t=><li key={t}>{t}</li>)}</ul><h3>Common mistake</h3><p>{project.mistake}</p></div></div><details className="card"><summary>Reveal final solution</summary><CodeLab key={project.id} initial={project.solution} input={project.input} draftId={'project-solution-'+project.id} label="solution.py"/></details><div className="card"><h3>Make it your own</h3><ul>{project.improvements.map(s=><li key={s}>{s}</li>)}</ul><label className="project-check"><input type="checkbox" checked={progress.projects.includes(project.id)} onChange={e=>{if(e.target.checked)add('projects',project.id);else update(p=>({...p,projects:p.projects.filter(x=>x!==project.id)}));}}/> I built this project and tried the testing instructions.</label><p className="runtime-note">Project completion is self-reported. Your practice exercises use automated checks.</p></div></>}
  {page==='progress'&&<div className="progress-dashboard">
     <div className="card continue-learning-hero">
