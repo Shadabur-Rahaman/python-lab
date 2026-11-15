@@ -698,3 +698,214 @@
 .runtime-retry-row {
   margin-top: 10px;
 }
+
+/* Version 17 Premium UX & Learning Journey Refinements */
+
+.nav-group { margin-bottom: 18px; }
+.nav-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  padding: 6px 10px;
+  margin-bottom: 4px;
+}
+
+/* Returning Student & Dashboard Continue Learning Card */
+.continue-learning-hero {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px;
+  background: var(--card);
+  margin-bottom: 24px;
+}
+.resume-header { margin-bottom: 20px; }
+.resume-header .eyebrow {
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.resume-header h1, .resume-header h2 {
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  margin: 6px 0 8px;
+  color: var(--text);
+}
+.resume-header p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 14px;
+}
+.resume-target-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+}
+.target-eyebrow {
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.resume-target-info h2, .resume-target-info h3 {
+  font-size: 20px;
+  margin: 4px 0 8px;
+  color: var(--text);
+}
+.resume-target-info p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+.progress-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.progress-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text);
+}
+.progress-percent-badge {
+  font-weight: 750;
+  color: var(--accent);
+}
+.resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.button.large {
+  padding: 13px 22px;
+  font-size: 13px;
+  border-radius: 9px;
+}
+
+.hero-subheading {
+  font-size: 1.12rem;
+  font-weight: 500;
+  color: var(--text-muted, #5a6578);
+  margin: 6px 0 14px 0;
+  letter-spacing: -0.01em;
+}
+
+/* Feature Pills on Homepage */
+.hero-features-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--soft);
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.feature-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Returning Hero Quick Tools & Scratchpad */
+.resume-quick-tools { margin-block: 28px; }
+.section-title { font-size: 18px; margin-bottom: 16px; color: var(--text); }
+.returning-demo { margin-top: 24px; padding: 22px; }
+.demo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.demo-header h2 { margin: 0 0 4px; font-size: 18px; }
+.demo-header p { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* Recents Grid on Dashboard */
+.dashboard-recents-section { margin-block: 28px 24px; }
+.recent-chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.recent-chapter-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  transition: transform .16s, border-color .16s;
+}
+.recent-chapter-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.recent-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.recent-num {
+  font-size: 11px;
+  font-weight: 750;
+  color: var(--accent);
+}
+.recent-chapter-pill strong {
+  font-size: 14px;
+  color: var(--text);
+}
+.recent-chapter-pill small {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Pilot Completion Actions */
+.pilot-completion-actions {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pilot-completed-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+/* Mobile Responsiveness Refinements */
+@media (max-width: 760px) {
+  .continue-learning-hero { padding: 18px; }
+  .resume-target-card { padding: 16px; }
+  .resume-actions { flex-direction: column; align-items: stretch; }
+  .resume-actions .button { width: 100%; text-align: center; justify-content: center; }
+  .hero-action-row { flex-direction: column; align-items: stretch; }
+  .hero-action-row .button { width: 100%; text-align: center; }
+}
+

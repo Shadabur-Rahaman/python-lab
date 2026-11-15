@@ -135,7 +135,21 @@ export default function PilotLesson({id,onRun}: {id:keyof typeof pilotActivities
           {'recap' in activity && <><p>{activity.recap}</p>
             <button className="button small" aria-expanded={recall} onClick={()=>setRecall(!recall)}>{recall?'Hide answer':'Check your recall'}</button>
             {recall && <p role="status">{activity.recall}</p>}</>}<details><summary>Hinglish memory hint</summary><p lang="hi-Latn">{activity.remember}</p></details>
-          {id===7 && <p>A while loop can run indefinitely if its condition stays true. Change the counter inside the loop and check when the condition becomes false.</p>}</>}
+          {id===7 && <p>A while loop can run indefinitely if its condition stays true. Change the counter inside the loop and check when the condition becomes false.</p>}
+          <div className="pilot-completion-actions">
+            <span className="pilot-completed-tag">✓ Guided activity completed</span>
+            <div className="utility-actions">
+              <button type="button" className="button primary small" onClick={()=>{
+                const quiz=document.getElementById('chapter-quiz');
+                if(quiz){quiz.focus({preventScroll:true});quiz.scrollIntoView({behavior:'smooth',block:'start'});}
+              }}>Take Chapter Quiz</button>
+              <button type="button" className="button small" onClick={()=>{
+                const concepts=document.getElementById('chapter-concepts');
+                if(concepts){concepts.focus({preventScroll:true});concepts.scrollIntoView({behavior:'smooth',block:'start'});}
+              }}>Read In-Depth Reference</button>
+            </div>
+          </div>
+        </>}
         {stage<stages.length-1 && <div className="pilot-next"><button className="button small" onClick={()=>chooseStage(stage+1)}>Continue to {stages[stage+1]}</button></div>}
         {feedback && <p role="status">{feedback}</p>}
       </div>

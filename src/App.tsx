@@ -156,16 +156,16 @@ export default function App(){
    <aside id="workspace-sidebar" className={'sidebar'+(menu?' open':'')}>
      <a className="brand" href={link('home')}><span className="brand-mark"><Code2 size={24}/></span><span>Python<span className="brand-light">Lab</span><small>STUDENT WORKSPACE</small></span></a>
      <nav aria-label="Main navigation">
-       {groups.map(([label,items])=><details key={label} open className="nav-group">
-         <summary>{label}<ChevronRight size={13}/></summary>
+       {groups.map(([label,items])=><div key={label} className="nav-group">
+         <div className="nav-group-title">{label}</div>
          {items.map(([path,name,Icon])=>{
            const active=page===path||(path==='chapters'&&page==='chapter');
            return <a key={path} href={link(path)} className={active?'active':''} aria-current={active?'page':undefined}><Icon size={18}/>{name}</a>;
          })}
-       </details>)}
+       </div>)}
      </nav>
      <div className="sidebar-course"><div className="section-heading"><b>Course progress</b><span>{coursePercent}%</span></div>
-       <div className="progress-track"><span style={{width:coursePercent+'%'}}/></div>
+       <div className="progress-track" role="progressbar" aria-valuenow={coursePercent} aria-valuemin={0} aria-valuemax={100} aria-label="Course completion"><span style={{width:coursePercent+'%'}}/></div>
        <small>{progress.completed.length} of {chapters.length} chapters completed</small>
      </div>
    </aside>
@@ -174,7 +174,15 @@ export default function App(){
      <div>
        <button className="icon-button mobile-menu" aria-label="Toggle navigation" aria-expanded={menu} aria-controls="workspace-sidebar" onClick={()=>setMenu(!menu)}><Menu size={22}/></button>
        <button className="icon-button desktop-menu" aria-label={collapsed?'Show navigation':'Hide navigation'} aria-expanded={!collapsed} aria-controls="workspace-sidebar" onClick={()=>setCollapsed(!collapsed)}><Menu size={18}/></button>
-       <a href={link('home')}>Workspace</a><ChevronRight size={14}/><span>{nav.find(([path])=>path===page)?.[1]||(page==='chapter'?'Chapters':page==='search'?'Search':'Home')}</span>
+       <nav className="breadcrumbs" aria-label="Breadcrumb">
+         <a href={link('home')}>Home</a>
+         <ChevronRight size={14} aria-hidden="true"/>
+         {page==='chapter' && metadata ? <>
+           <a href={link('chapters')}>Learn</a>
+           <ChevronRight size={14} aria-hidden="true"/>
+           <span aria-current="page">Chapter {metadata.id}: {metadata.title}</span>
+         </> : <span aria-current="page">{nav.find(([path])=>path===page)?.[1]||(page==='search'?'Search':'Home')}</span>}
+       </nav>
      </div>
      <div className="topbar-actions"><a className="search-shortcut" href={link('search')} aria-label="Search Python Lab"><Search size={17}/><span>Search</span><kbd>{navigator.platform.includes('Mac')?'⌘':'Ctrl'} K</kbd></a>{themeButton}</div>
    </header>
@@ -216,7 +224,82 @@ export default function App(){
    <button className="button" onClick={()=>location.reload()}>Reload page</button></>:<p>Loading lesson content…</p>}</div>}
  {page==='projects'&&!project&&<div className="chapter-grid">{projects.map((p,i)=><a className="card project-card" key={p.id} href={link(`projects/${p.id}`)}><span className={`stat-icon color-${i%4}`}><FolderOpen size={23}/></span><span className="eyebrow">PROJECT {String(i+1).padStart(2,'0')}</span><h2>{p.title}</h2><p>{p.use}</p><small>Complete chapters {p.chapters.join(', ')} first</small><div className="card-bottom"><b>{progress.projects.includes(p.id)?'✓ Completed':'Build this project'}</b><ArrowRight size={17}/></div></a>)}</div>}
  {page==='projects'&&project&&<><a className="text-link" href={link('projects')}>← All projects</a><div className="card"><h2>What you’ll build</h2><p>{project.use}</p><p>Prerequisites: {project.chapters.map(n=><a className="inline-link" key={n} href={link(`chapter/${n}`)}>Chapter {n} </a>)}</p><h3>Functional requirements</h3><ul>{project.requirements.map(s=><li key={s}>{s}</li>)}</ul><h3>Your guided breakdown</h3><ol>{project.steps.map(s=><li key={s}>{s}</li>)}</ol></div><CodeLab key={project.id} initial={project.starter} input={project.input} label={`${project.id}.py`} persist/><div className="two-columns"><div className="card"><h3>Sample input</h3><pre>{project.input||'No input required.'}</pre><h3>Sample output</h3><pre>{project.output}</pre></div><div className="card"><h3>Test your project</h3><ul>{project.tests.map(t=><li key={t}>{t}</li>)}</ul><h3>Common mistake</h3><p>{project.mistake}</p></div></div><details className="card"><summary>Reveal final solution</summary><CodeLab key={project.id} initial={project.solution} input={project.input} draftId={'project-solution-'+project.id} label="solution.py"/></details><div className="card"><h3>Make it your own</h3><ul>{project.improvements.map(s=><li key={s}>{s}</li>)}</ul><label className="project-check"><input type="checkbox" checked={progress.projects.includes(project.id)} onChange={e=>{if(e.target.checked)add('projects',project.id);else update(p=>({...p,projects:p.projects.filter(x=>x!==project.id)}));}}/> I built this project and tried the testing instructions.</label><p className="runtime-note">Project completion is self-reported. Your practice exercises use automated checks.</p></div></>}
- {page==='progress'&&<><div className="card progress-overview"><div className="progress-ring" style={{background:`conic-gradient(var(--accent) ${coursePercent}%, var(--line) 0)`}}><span>{coursePercent}<small>% complete</small></span></div><div><h2>Your foundation is taking shape.</h2><p>Completion combines chapters, solved exercises, finished chapter quizzes, and self-reported projects. Revisit anything, anytime.</p><a href={link(`chapter/${next.id}`)} className="button primary">Continue learning <ArrowRight size={15}/></a></div></div><div className="stats-grid">{[[progress.visited.length,'Chapters visited'],[progress.completed.length,'Chapters completed'],[progress.solved.length,'Exercises solved'],[progress.projects.length,'Projects completed']].map(([n,label])=><div className="stat-card" key={label}><b>{n}</b><span>{label}</span></div>)}</div><h2>Your milestones</h2><div className="chapter-grid">{milestones.map(([name,earned,description])=><div className={`card achievement ${earned?'earned':''}`} key={name}><Trophy size={27}/><h3>{name}</h3><p>{description}</p><span className="pill">{earned?'✓ Earned':'Keep exploring'}</span></div>)}</div><div className="card"><h2>Quiz best scores</h2>{Object.keys(progress.scores).length===0?<p>Your first score will appear when you finish a quiz.</p>:Object.entries(progress.scores).map(([key,score])=><p key={key}>{key==='revision'?'V1 revision':`Chapter ${key}: ${chapters.find(item=>String(item.id)===key)?.title}`} <b>{score}%</b></p>)}</div><ProgressBackup progress={progress} catalog={catalog} onImport={incoming=>update(current=>mergeProgress(current,incoming))} onReset={()=>update(freshProgress)}/></>}
+ {page==='progress'&&<div className="progress-dashboard">
+    <div className="card continue-learning-hero">
+      <div className="resume-header">
+        <span className="eyebrow">CONTINUE YOUR JOURNEY</span>
+        <h2>Next recommended step</h2>
+        <p>Your foundation is taking shape. Every chapter, exercise, and quiz score is saved automatically on this device.</p>
+      </div>
+      <div className="resume-target-card">
+        <div className="resume-target-info">
+          <span className="target-eyebrow">NEXT LESSON</span>
+          <h3>Chapter {next.id}: {next.title}</h3>
+          <p>Master Python concepts with interactive visual models and hands-on exercises.</p>
+          <div className="progress-bar-container">
+            <div className="progress-bar-labels">
+              <span><strong>{progress.completed.length}</strong> of {chapters.length} chapters completed</span>
+              <span className="progress-percent-badge">{coursePercent}% complete</span>
+            </div>
+            <div className="progress-track" role="progressbar" aria-valuenow={coursePercent} aria-valuemin={0} aria-valuemax={100} aria-label="Course completion">
+              <span style={{width:`${coursePercent}%`}}/>
+            </div>
+          </div>
+        </div>
+        <div className="resume-actions">
+          <a href={link(`chapter/${next.id}`)} className="button primary large">
+            Continue learning <ArrowRight size={15}/>
+          </a>
+          <a href={link('practice')} className="button">
+            Practice Challenges
+          </a>
+          <a href={link('chapters')} className="button">
+            Curriculum Roadmap
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div className="stats-grid">
+      {[[progress.completed.length,'Chapters completed',chapters.length],[progress.solved.length,'Exercises solved',allTasks.length+3],[progress.projects.length,'Projects completed',projects.length],[progress.visited.length,'Chapters visited',chapters.length]].map(([n,label,total])=><div className="stat-card" key={label}>
+        <b>{n}</b>
+        <span>{label}</span>
+        <small>{Math.round((Number(n)/Number(total))*100)}% of total</small>
+      </div>)}
+    </div>
+
+    <div className="dashboard-recents-section">
+      <div className="section-heading">
+        <h2>Recently Visited Lessons</h2>
+        <a href={link('chapters')} className="text-link">Browse All 16 Chapters <ArrowRight size={14}/></a>
+      </div>
+      <div className="recent-chapters-grid">
+        {(progress.recent.length ? progress.recent : [next.id]).slice(0, 4).map(chapterId => {
+          const item = chapters.find(c => c.id === chapterId);
+          if (!item) return null;
+          const isDone = progress.completed.includes(item.id);
+          return <a key={item.id} href={link(`chapter/${item.id}`)} className="card recent-chapter-pill">
+            <div className="recent-meta">
+              <span className="recent-num">Ch {item.id}</span>
+              <span className={`pill small ${isDone ? 'easy' : ''}`}>{isDone ? '✓ Completed' : 'In Progress'}</span>
+            </div>
+            <strong>{item.title}</strong>
+            <small>{item.subtitle}</small>
+          </a>;
+        })}
+      </div>
+    </div>
+
+    <h2>Your milestones</h2>
+    <div className="chapter-grid">{milestones.map(([name,earned,description])=><div className={`card achievement ${earned?'earned':''}`} key={name}><Trophy size={27}/><h3>{name}</h3><p>{description}</p><span className="pill">{earned?'✓ Earned':'Keep exploring'}</span></div>)}</div>
+    
+    <div className="card">
+      <h2>Quiz best scores</h2>
+      {Object.keys(progress.scores).length===0?<p>Your first score will appear when you finish a quiz.</p>:Object.entries(progress.scores).map(([key,score])=><p key={key}>{key==='revision'?'V1 revision':`Chapter ${key}: ${chapters.find(item=>String(item.id)===key)?.title}`} <b>{score}%</b></p>)}
+    </div>
+
+    <ProgressBackup progress={progress} catalog={catalog} onImport={incoming=>update(current=>mergeProgress(current,incoming))} onReset={()=>update(freshProgress)}/>
+  </div>}
  {(!titles[page]||(page==='chapter'&&!metadata))&&<div className="card"><h2>That page isn’t in the roadmap.</h2><a className="button primary" href={link('home')}>Back to Home</a></div>}
  </>}
  <footer className="page-footer"><span><Code2 size={15}/> Python Lab <span>· Learn it. Try it. Break it. Fix it. Master it.</span></span><span>Built for your first “aha!” moment.</span></footer></main></div>
