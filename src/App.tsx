@@ -75,10 +75,16 @@ export default function App(){
  },[]);
 
  function add(key:'completed',value:number):void;
- function add(key:'solved'|'projects',value:string):void;
- function add(key:'completed'|'solved'|'projects',value:number|string) {
-   update(current=>({...current,[key]:[...new Set([...current[key],value])]}));
- }
+ function add(key:'solved'|'projects'|'attempted',value:string):void;
+ function add(key:'completed'|'solved'|'projects'|'attempted',value:number|string) {
+    if (key === 'completed') {
+      update(current=>({...current,completed:[...new Set([...current.completed,value as number])]}));
+    } else if (key === 'solved') {
+      update(current=>({ ...current, solved:[...new Set([...current.solved,value as string])], attempted:[...new Set([...(current.attempted||[]),value as string])] }));
+    } else {
+      update(current=>({...current,[key]:[...new Set([...((current[key] as string[])||[]),value as string])]}));
+    }
+  }
  const saveScore=(key:string,score:number)=>update(current=>({
    ...current,scores:{...current.scores,[key]:Math.max(current.scores[key]??0,score)},
  }));
@@ -199,14 +205,14 @@ export default function App(){
    <ReceiptEditor onRun={firstProgram} full/><a className="inline-link" href={link('chapter/2')}>Return to Variables and Values</a>
  </div>}
  {page==='chapter'&&chapter&&<LessonView key={chapter.id} lesson={chapter} catalog={catalog} projects={projects}
-   completed={progress.completed} solved={progress.solved} bookmarked={progress.bookmarks.includes(chapter.id)}
+   completed={progress.completed} solved={progress.solved} attempted={progress.attempted} bookmarked={progress.bookmarks.includes(chapter.id)}
    onBookmark={()=>update(current=>({...current,bookmarks:current.bookmarks.includes(chapter.id)
      ?current.bookmarks.filter(id=>id!==chapter.id):[...current.bookmarks,chapter.id]}))}
-   onComplete={()=>add('completed',chapter.id)} onSolve={id=>add('solved',id)}
+   onComplete={()=>add('completed',chapter.id)} onSolve={id=>add('solved',id)} onAttempt={id=>add('attempted',id)}
    onQuiz={score=>saveScore(String(chapter.id),score)} onRun={firstProgram}/>}
  {page==='chapter'&&id==='2'&&<details className="card"><summary>Continue the receipt workspace</summary><ReceiptLesson onRun={firstProgram}/></details>}
  {page==='practice'&&!waiting&&<PracticeView key={id} selectedTask={id} tasks={[...allTasks,...(expanded??[]).flatMap(lesson=>lesson.tasks)]}
-   catalog={catalog} solved={progress.solved} onSolve={id=>add('solved',id)}/>}
+    catalog={catalog} solved={progress.solved} attempted={progress.attempted} onSolve={id=>add('solved',id)} onAttempt={id=>add('attempted',id)}/>}
  {page==='lab'&&<Experiments/>}
  {page==='quiz'&&!waiting&&<><label className="quiz-select">Choose your assessment
    <select value={quizTopic} onChange={event=>setQuizTopic(event.target.value)}>

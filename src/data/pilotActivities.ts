@@ -1,5 +1,43 @@
 const loops = 'for i in range(3):\n    print("Welcome")';
 export const pilotActivities = {
+  0: {
+    title: 'Order of instructions',
+    intro: 'A computer has zero common sense: it executes your instructions strictly top to bottom, one after another.',
+    code: 'print("Step 1: Boil water")\nprint("Step 2: Add tea")\nprint("Step 3: Serve chai")',
+    prediction: 'How many lines of text will print on the screen?',
+    answer: '3',
+    broken: 'print("Serve chai")\nprint("Boil water")',
+    repair: 'print("Boil water")\nprint("Serve chai")',
+    hint: 'Think about what must happen before chai can be served.',
+    reason: 'Statements run strictly from top to bottom. Swapping lines causes a logical mistake even though the code runs without a crash.',
+    task: 'Print three steps in order: Boil water, Add tea, Serve. Each instruction must be on its own line.',
+    starter: '# Print the three steps in order\n',
+    solution: 'print("Boil water")\nprint("Add tea")\nprint("Serve")',
+    expected: 'Boil water\nAdd tea\nServe',
+    remember: 'Computer bina soche samjhe upar se neeche tak line-by-line chalta hai. Sahi order zaroori hai.',
+    application: 'Recipe steps, shopping bills, and registration forms all depend on correct execution order.',
+    recap: 'Does Python run code from bottom to top or top to bottom?',
+    recall: 'Top to bottom. Code runs strictly in sequential order.',
+  },
+  1: {
+    title: 'Your first message and calculation',
+    intro: 'print() is Python’s voice. Text inside quotes displays literally, while unquoted arithmetic calculates first.',
+    code: 'print("Python Lab")\nprint(10 + 20)',
+    prediction: 'What number prints on the second line?',
+    answer: '30',
+    broken: 'Print("Hello Python")',
+    repair: 'print("Hello Python")',
+    hint: 'Look closely at the capital P in Print.',
+    reason: 'Python is strictly case-sensitive. The built-in output function is lowercase print. Print raises a NameError.',
+    task: 'Print Welcome to Python on line 1 and the sum 50 + 50 (calculated as 100) on line 2.',
+    starter: '# Print greeting and calculation\n',
+    solution: 'print("Welcome to Python")\nprint(50 + 50)',
+    expected: 'Welcome to Python\n100',
+    remember: 'Python case-sensitive hai: print hamesha lowercase p se shuru hota hai. Quotes ke bina math calculate hota hai.',
+    application: 'Receipts, confirmations, and alerts all combine text messages with calculated numerical totals.',
+    recap: 'What error occurs if you capitalize Print?',
+    recall: 'NameError: name "Print" is not defined.',
+  },
   2: {
     title:'Chai shop bill',intro:'One cup costs ₹20. Start with three cups, then change cups to five and run the bill again.',
     code:'price = 20\ncups = 3\ntotal = price * cups\nprint(total)', prediction:'What total will five cups cost?', answer:'100',
@@ -198,7 +236,7 @@ export const pilotActivities = {
 } as const;
 
 export function isGuidedChapter(id:number): id is keyof typeof pilotActivities {
-  return Object.hasOwn(pilotActivities,id);
+  return id >= 2 && Object.hasOwn(pilotActivities,id);
 }
 
 export const setChallenge = {

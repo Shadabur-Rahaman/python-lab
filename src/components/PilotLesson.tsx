@@ -5,7 +5,9 @@ import {pilotActivities,setChallenge} from '../data/pilotActivities';
 import {storage} from '../lib/storage';
 
 const whileCode='i = 0\nwhile i < 3:\n    print("Welcome")\n    i += 1';
-const practiceChecks = {
+const practiceChecks: Record<number, string> = {
+  0: 'assert True',
+  1: 'assert True',
   2: 'assert travel == 40 and food == 60, "Store the two expenses in travel and food."',
   3: 'assert type(amount) is float and amount == 12.5',
   4: 'assert type(tickets) is int and tickets == 3',

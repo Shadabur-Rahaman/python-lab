@@ -6,6 +6,7 @@ import {lessonNeighbors, levels, type buildCatalog} from '../data/catalog.mjs';
 import CodeLab from './CodeLab';
 import Quiz from './Quiz';
 import TaskCard from './TaskCard';
+import PracticeStudio from './PracticeStudio';
 import {checkpoints} from '../data/checkpoints';
 import AliasModel from './AliasModel';
 import PilotLesson from './PilotLesson';
@@ -116,16 +117,18 @@ type Props = {
   projects: Project[];
   completed: number[];
   solved: string[];
+  attempted?: string[];
   bookmarked: boolean;
   onBookmark: () => void;
   onComplete: () => void;
   onSolve: (id: string) => void;
+  onAttempt?: (id: string) => void;
   onQuiz: (score: number) => void;
   onRun: () => void;
 };
 
 export default function LessonView({
-  lesson, catalog, projects, completed, solved, bookmarked, onBookmark, onComplete, onSolve, onQuiz, onRun,
+  lesson, catalog, projects, completed, solved, attempted = [], bookmarked, onBookmark, onComplete, onSolve, onAttempt, onQuiz, onRun,
 }: Props) {
   const [showSidebar, setShowSidebar] = useState(true);
   const metadata = catalog.lessons.find((item) => item.id === lesson.id)!;
@@ -133,7 +136,7 @@ export default function LessonView({
   const checkpoint = checkpoints[lesson.id];
   const [step, setStep] = useState(0);
   const related = projects.filter((project) => project.chapters.includes(lesson.id));
-  const isGuided = isGuidedChapter(lesson.id);
+  const isGuided = lesson.id >= 2 && isGuidedChapter(lesson.id);
 
   // Progressive learning mode tabs for guided chapters
   const tabStorageKey = `python-lab.chapter-tab:${lesson.id}`;
@@ -634,14 +637,19 @@ export default function LessonView({
               </div>
 
               <Section title="Practice">
-                {lesson.tasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    solved={solved.includes(task.id)}
-                    onPass={() => onSolve(task.id)}
-                  />
-                ))}
+                <PracticeStudio
+                  chapterId={lesson.id}
+                  chapterTitle={lesson.title}
+                  tasks={lesson.tasks}
+                  checkpoint={checkpoint}
+                  solved={solved}
+                  attempted={attempted}
+                  onSolve={onSolve}
+                  onAttempt={onAttempt}
+                  onRun={onRun}
+                  onTakeQuiz={() => jumpTo('chapter-quiz', 'practice')}
+                  onReadReference={() => handleTabChange('reference')}
+                />
               </Section>
 
               <Section title="Chapter quiz">
@@ -1072,14 +1080,17 @@ export default function LessonView({
               </Section>
 
               <Section title="Practice">
-                {lesson.tasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    solved={solved.includes(task.id)}
-                    onPass={() => onSolve(task.id)}
-                  />
-                ))}
+                <PracticeStudio
+                  chapterId={lesson.id}
+                  chapterTitle={lesson.title}
+                  tasks={lesson.tasks}
+                  checkpoint={checkpoint}
+                  solved={solved}
+                  attempted={attempted}
+                  onSolve={onSolve}
+                  onAttempt={onAttempt}
+                  onRun={onRun}
+                />
               </Section>
 
               <Section title="Chapter quiz">

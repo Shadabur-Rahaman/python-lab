@@ -47,7 +47,7 @@ export const intermediate: Chapter[] = [
     tasks: [
       task(13, 'trim-labels', 'Easy', 'Trim labels', 'Implement trim_labels(labels). Return a new list with whitespace removed from each string. Keep empty results and preserve order.',
         'def trim_labels(labels):\n    pass', 'def trim_labels(labels):\n    return [label.strip() for label in labels]',
-        ['Call strip() on one string first.', 'The first expression in the comprehension should produce the trimmed label.'],
+        ['Direction: A list comprehension transforms each element: [expression for item in collection].', 'Specific Guidance: Call strip() on each string to remove surrounding whitespace.', 'Strong Hint: The first expression in the comprehension should produce the trimmed label: label.strip().'],
         'There is no filter clause because even an empty trimmed result belongs in the output.', [
           {name: 'Ordinary whitespace', check: 'trim_labels([" tea ", "milk  "]) == ["tea", "milk"]'},
           {name: 'Blank label retained', check: 'trim_labels([" ", "\\tA"]) == ["", "A"]'},
@@ -55,7 +55,7 @@ export const intermediate: Chapter[] = [
         ]),
       task(13, 'passing-scores', 'Medium', 'Select passing scores', 'Implement passing_scores(scores, minimum). Return the scores at or above minimum in their original order, including duplicates.',
         'def passing_scores(scores, minimum):\n    pass', 'def passing_scores(scores, minimum):\n    return [score for score in scores if score >= minimum]',
-        ['Use a comparison that includes the threshold.', 'A comprehension can keep the score unchanged and still filter it.'],
+        ['Direction: An if clause at the end of a list comprehension filters which items to keep.', 'Specific Guidance: Use a comparison that includes the threshold: score >= minimum.', 'Strong Hint: Keep the score unchanged in the expression and filter with if score >= minimum.'],
         'The if clause determines membership. A list keeps order and duplicate values.', [
           {name: 'Threshold and order', check: 'passing_scores([75, 41, 60, 60], 60) == [75, 60, 60]'},
           {name: 'No matches', check: 'passing_scores([0, 2], 3) == []'},
@@ -63,7 +63,7 @@ export const intermediate: Chapter[] = [
         ]),
       task(13, 'sort-orders', 'Challenge', 'Order the packing queue', 'Implement sort_orders(orders). Each record is (name, priority). Return a new list sorted by highest priority first, then name alphabetically. Keep all records.',
         'def sort_orders(orders):\n    pass', 'def sort_orders(orders):\n    return sorted(orders, key=lambda order: (-order[1], order[0]))',
-        ['Return a tuple as the key.', 'Negate the numeric priority so smaller keys represent more urgent orders.'],
+        ['Direction: sorted() accepts a key function returning what value or tuple to compare each item by.', 'Specific Guidance: Return a two-element tuple as the sort key to handle priority and tie-breaking.', 'Strong Hint: Negate the numeric priority so higher priorities sort first: (-order[1], order[0]).'],
         'Tuple comparison breaks equal-priority ties by name. sorted() returns a new list.', [
           {name: 'Priority and alphabetical tie', check: 'sort_orders([("Zed", 2), ("Uma", 4), ("Ada", 2)]) == [("Uma", 4), ("Ada", 2), ("Zed", 2)]'},
           {name: 'Empty queue', check: 'sort_orders([]) == []'},
@@ -117,7 +117,7 @@ export const intermediate: Chapter[] = [
     tasks: [
       task(14, 'read-count', 'Easy', 'Read a quantity', 'Implement read_count(text). Return int(text) when conversion succeeds and 0 when int raises ValueError. Inputs are strings.',
         'def read_count(text):\n    pass', 'def read_count(text):\n    try:\n        return int(text)\n    except ValueError:\n        return 0',
-        ['Try parsing before returning a fallback.', 'Catch ValueError from int().'],
+        ['Direction: Wrap risky conversions in a try...except block to handle errors gracefully.', 'Specific Guidance: Try parsing with int(text) before returning a fallback.', 'Strong Hint: Catch ValueError from int() and return 0 in the except branch.'],
         'int() handles surrounding whitespace and signed integers. A malformed number raises ValueError.', [
           {name: 'Ordinary integer', check: 'read_count(" 12 ") == 12'},
           {name: 'Malformed text', check: 'read_count("two") == 0'},
@@ -125,7 +125,7 @@ export const intermediate: Chapter[] = [
         ]),
       task(14, 'read-names', 'Medium', 'Read a names array', 'Implement read_names(text). Decode a JSON array of strings. Return [] if parsing fails, if the top-level value is not a list, or if any element is not a string.',
         'import json\n\ndef read_names(text):\n    pass', 'import json\n\ndef read_names(text):\n    try:\n        names = json.loads(text)\n    except json.JSONDecodeError:\n        return []\n    if isinstance(names, list) and all(isinstance(name, str) for name in names):\n        return names\n    return []',
-        ['Decode first, then inspect the returned value.', 'Use all() to validate every element of a list.'],
+        ['Direction: json.loads() converts a JSON string into Python lists and dictionaries.', 'Specific Guidance: Decode first, then verify the returned value is a list of strings.', 'Strong Hint: Use all(isinstance(x, str) for x in data) to validate every element of the list.'],
         'The type check distinguishes arrays from objects and strings. all() succeeds for an empty list, which is valid here.', [
           {name: 'Names in order', check: 'read_names(\'["Ada", "Noor"]\') == ["Ada", "Noor"]'},
           {name: 'Valid JSON with wrong shape', check: 'read_names(\'{"name": "Ada"}\') == []'},
@@ -134,7 +134,7 @@ export const intermediate: Chapter[] = [
         ]),
       task(14, 'load-stock', 'Challenge', 'Validate stock records', 'Implement load_stock(text). Return a dictionary mapping names to nonnegative integer counts. Return {} for malformed JSON or any invalid entry. Reject booleans even though bool is a subtype of int.',
         'import json\n\ndef load_stock(text):\n    pass', 'import json\n\ndef load_stock(text):\n    try:\n        stock = json.loads(text)\n    except json.JSONDecodeError:\n        return {}\n    if not isinstance(stock, dict):\n        return {}\n    for count in stock.values():\n        if type(count) is not int or count < 0:\n            return {}\n    return stock',
-        ['The JSON parser already guarantees object keys are strings.', 'Use type(count) is int to exclude True and False.'],
+        ['Direction: Validate both the structure of the decoded object and the types of its keys and values.', 'Specific Guidance: The JSON parser guarantees keys are strings; verify each count is a non-negative int.', 'Strong Hint: Use type(count) is int and count >= 0 to exclude booleans and negative counts.'],
         'Each entry must meet the contract before the original dictionary can be returned.', [
           {name: 'Valid object and zero', check: 'load_stock(\'{"tea": 4, "milk": 0}\') == {"tea": 4, "milk": 0}'},
           {name: 'Boolean is invalid', check: 'load_stock(\'{"tea": true}\') == {}'},
@@ -190,7 +190,7 @@ export const intermediate: Chapter[] = [
     tasks: [
       task(15, 'make-counter', 'Easy', 'Build a counter', 'Define Counter(start) with an instance attribute value equal to start. The attribute should work with negative and zero starting values.',
         'class Counter:\n    pass', 'class Counter:\n    def __init__(self, start):\n        self.value = start',
-        ['Use a constructor that receives start.', 'Assign the argument to self.value.'],
+        ['Direction: In Python, __init__(self, start) initializes instance attributes when an object is created.', 'Specific Guidance: Use a constructor that receives start and assigns it to self.value.', 'Strong Hint: Assign the argument to self.value in __init__: self.value = start.'],
         'The constructor assigns each instance its own value.', [
           {name: 'Positive start', check: 'Counter(4).value == 4'},
           {name: 'Negative start', check: 'Counter(-9).value == -9'},
@@ -198,7 +198,7 @@ export const intermediate: Chapter[] = [
         ]),
       task(15, 'counter-reset', 'Medium', 'Reset a counter', 'Define Counter(start) with a value attribute, increment() that adds 1, and reset() that restores the original start.',
         'class Counter:\n    pass', 'class Counter:\n    def __init__(self, start):\n        self.start = start\n        self.value = start\n\n    def increment(self):\n        self.value += 1\n\n    def reset(self):\n        self.value = self.start',
-        ['Store the original start separately.', 'Assign the original value back to self.value when resetting.'],
+        ['Direction: Methods on a class receive self as their first parameter to access and mutate instance state.', 'Specific Guidance: Store the original start separately so reset() can restore it.', 'Strong Hint: Assign the original value back to self.value when resetting.'],
         'An instance keeps both the starting value and the value changed by its operations.', [
           {name: 'Increment changes state', check: '(lambda counter: (counter.increment(), counter.value)[1])(Counter(6)) == 7'},
           {name: 'Reset uses the original start', check: '(lambda counter: (counter.increment(), counter.increment(), counter.reset(), counter.value)[3])(Counter(-2)) == -2'},
@@ -206,7 +206,7 @@ export const intermediate: Chapter[] = [
         ]),
       task(15, 'shopping-basket', 'Challenge', 'Build an independent basket', 'Define Basket() with an empty items list, add(name) that appends a string, and count() that returns the current length. Two baskets must never share items.',
         'class Basket:\n    pass', 'class Basket:\n    def __init__(self):\n        self.items = []\n\n    def add(self, name):\n        self.items.append(name)\n\n    def count(self):\n        return len(self.items)',
-        ['Initialize items inside __init__.', 'Mutate self.items in add() and return len(self.items) in count().'],
+        ['Direction: Create mutable containers like lists inside __init__ so each instance is independent.', 'Specific Guidance: Initialize self.items = [] inside __init__, not at the class level.', 'Strong Hint: Mutate self.items in add() and return len(self.items) in count().'],
         'The list belongs to the instance. Appending to one basket does not affect a second basket.', [
           {name: 'New basket is empty', check: 'Basket().count() == 0'},
           {name: 'Items retain insertion order', check: '(lambda basket: (basket.add("tea"), basket.add("rice"), basket.items, basket.count())[2:])(Basket()) == (["tea", "rice"], 2)'},

@@ -16,6 +16,7 @@ async function loadTs(relPath) {
 }
 
 const {explainError} = await loadTs('../src/lib/explainError.ts');
+const {diagnoseMismatch, diagnoseError} = await loadTs('../src/components/CodeLab.tsx');
 
 test('explainError provides beginner-friendly guidance for syntax and punctuation mistakes', () => {
   const colonErr = explainError("SyntaxError: expected ':'");
@@ -64,4 +65,31 @@ test('explainError gives clear, actionable tips for runtime errors', () => {
 
   const eofErr = explainError("EOFError: EOF when reading a line");
   assert.ok(eofErr.includes("Program Input"), 'EOFError tip missing');
+});
+
+test('diagnoseMismatch distinguishes empty output, casing, whitespace, and numeric formats', () => {
+  const empty = diagnoseMismatch('', 'Hello');
+  assert.ok(empty.includes('produced no output') && empty.includes('print()'), 'Empty output diagnostic');
+
+  const casing = diagnoseMismatch('even\n', 'Even\n');
+  assert.ok(casing.includes('letter casing') && casing.includes('case-sensitive'), 'Casing diagnostic');
+
+  const whitespace = diagnoseMismatch('Total:150', 'Total: 150');
+  assert.ok(whitespace.includes('spacing or line breaks differ'), 'Whitespace diagnostic');
+
+  const numeric = diagnoseMismatch('400', '400.0');
+  assert.ok(numeric.includes('matches the value') && numeric.includes('format'), 'Numeric float/int diagnostic');
+
+  const mismatch = diagnoseMismatch('10', '20');
+  assert.ok(mismatch.includes('Output differs'), 'General mismatch diagnostic');
+});
+
+test('diagnoseError categorizes error families with beginner-friendly feedback', () => {
+  assert.ok(diagnoseError('SyntaxError: invalid syntax').includes('Syntax error detected'));
+  assert.ok(diagnoseError("NameError: name 'totel' is not defined").includes('Name error detected'));
+  assert.ok(diagnoseError('TypeError: unsupported operand').includes('Type error detected'));
+  assert.ok(diagnoseError('IndexError: list index out of range').includes('Index error detected'));
+  assert.ok(diagnoseError("KeyError: 'price'").includes('Key error detected'));
+  assert.ok(diagnoseError('ValueError: invalid literal').includes('Value error detected'));
+  assert.ok(diagnoseError('IndentationError: unexpected indent').includes('Indentation error detected'));
 });

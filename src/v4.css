@@ -1444,3 +1444,438 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ==========================================================================
+   V23: Interactive Practice & Mastery Studio Styles
+   ========================================================================== */
+
+.practice-mastery-studio {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.studio-header {
+  padding: 24px;
+}
+
+.studio-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.studio-stats {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stat-pill.solved {
+  background: #edf8f0;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.stat-pill.in-progress {
+  background: #fff8e1;
+  color: #f57f17;
+  border: 1px solid #ffe082;
+}
+
+.studio-lead {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 12px 0 20px;
+  max-width: 720px;
+}
+
+.studio-format-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.studio-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.16s ease;
+}
+
+.studio-nav-btn:hover {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+
+.studio-nav-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.format-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.format-tag.predict-tag {
+  background: #ede7f6;
+  color: #5e35b1;
+}
+
+.format-tag.debug-tag {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.format-tag.code-tag {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.studio-section {
+  padding: 24px;
+}
+
+.studio-section h3 {
+  font-size: 20px;
+  margin: 8px 0 12px;
+}
+
+.predict-form {
+  margin: 18px 0;
+}
+
+.predict-input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.predict-input-row input {
+  flex: 1;
+  margin-top: 0;
+}
+
+.feedback-banner {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 14px 0;
+}
+
+.feedback-banner.success {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #c8e6c9;
+}
+
+.feedback-banner.warning {
+  background: #fff9c4;
+  color: #f57f17;
+  border: 1px solid #fff59d;
+}
+
+.concept-explanation {
+  background: var(--bg);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 14px;
+}
+
+.concept-explanation summary {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+.hinglish-note {
+  background: #fbf0f4;
+  color: #880e4f;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.code-display {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+.debug-hints-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.progressive-hint-bubble {
+  background: var(--soft);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.progressive-hint-bubble pre {
+  margin: 8px 0 0;
+  background: var(--card);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* TaskCard Status and Header */
+.task-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-chapter-tag {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.status-badge.solved {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.attempted {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.status-badge.not-attempted {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+/* Practice View Hero */
+.practice-stats-hero {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.practice-stats-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.practice-hero-metrics {
+  display: flex;
+  gap: 16px;
+}
+
+.hero-metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  min-width: 90px;
+}
+
+.hero-metric-item strong {
+  font-size: 22px;
+  color: var(--accent);
+}
+
+.hero-metric-item span {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.progress-bar-container {
+  height: 8px;
+  background: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 20px 0 12px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.practice-hero-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.task-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.task-status-tag.solved {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.task-status-tag.attempted {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.task-status-tag.not-attempted {
+  color: var(--muted);
+}
+
+.practice-toggle-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.practice-toggle-left small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.practice-item-content {
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 9px 9px;
+  padding: 16px;
+  background: var(--bg);
+}
+
+.practice-item-topbar {
+  margin-bottom: 12px;
+}
+
+.tasks-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.practice-mastery-studio {
+  max-width: 100%;
+}
+
+.practice-mastery-studio * {
+  box-sizing: border-box;
+}
+
+.practice-mastery-studio .two-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.practice-mastery-studio .two-columns > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.predict-left,
+.predict-right,
+.debug-left,
+.debug-right {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.python-symbols {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .practice-mastery-studio .two-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .code-display {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .practice-mastery-studio pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .predict-input-row {
+    flex-direction: column;
+  }
+  .practice-stats-main {
+    flex-direction: column;
+  }
+  .practice-hero-metrics {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .hero-metric-item {
+    flex: 1;
+    min-width: 0;
+  }
+}

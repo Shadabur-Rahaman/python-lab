@@ -230,9 +230,9 @@ const reportData = {
   },
 };
 
-const evidencePath = path.resolve(rootDir, 'docs', 'v22-test-evidence.json');
+const evidencePath = path.resolve(rootDir, 'docs', 'v23-test-evidence.json');
 fs.writeFileSync(evidencePath, JSON.stringify(reportData, null, 2), 'utf8');
-console.log(`\nMachine-readable evidence saved to: docs/v22-test-evidence.json`);
+console.log(`\nMachine-readable evidence saved to: docs/v23-test-evidence.json`);
 
 // 7. Print Generated Markdown Table for Documentation
 console.log('\n=====================================================');

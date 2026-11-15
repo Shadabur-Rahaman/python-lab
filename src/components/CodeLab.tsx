@@ -5,7 +5,7 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-python';
 import {Play, Square, RotateCcw, Copy, Trash2, CheckCircle2} from 'lucide-react';
 import type {TestCase} from '../data/types';
-import {matchesOutput} from '../lib/progress.mjs';
+import {matchesOutput, normalize} from '../lib/progress.mjs';
 import Snippets from './Snippets';
 
 class EditorFallback extends Component<{children: ReactNode; code: string; setCode: (code: string) => void}, {failed: boolean}> {
@@ -23,8 +23,53 @@ type Result = {name: string; passed: boolean; detail?: string};
 type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; stage?: number; cases?: Result[]; canRetry?: boolean; firstInit?: boolean};
 type Props = {
   initial: string; input?: string; expected?: string; tests?: string; cases?: TestCase[];
-  onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; verifyOutput?: boolean; onCodeChange?: (code: string) => void;
+  onPass?: () => void; onRun?: () => void; onAttempt?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; verifyOutput?: boolean; onCodeChange?: (code: string) => void;
 };
+
+export function diagnoseMismatch(actual: string, expected: string): string {
+  const actTrim = actual.trim();
+  const expTrim = expected.trim();
+  if (!actTrim) {
+    return 'Your code ran without error, but produced no output. Did you forget to call print() to display the result?';
+  }
+  if (normalize(actual).toLowerCase() === normalize(expected).toLowerCase()) {
+    return 'Output text matches except for letter casing. Python is case-sensitive: check your uppercase and lowercase letters.';
+  }
+  if (actual.replace(/\s+/g, '') === expected.replace(/\s+/g, '')) {
+    return 'The text and values match, but spacing or line breaks differ. Check for extra or missing spaces and newlines.';
+  }
+  const actNum = Number(actTrim);
+  const expNum = Number(expTrim);
+  if (!isNaN(actNum) && !isNaN(expNum) && actNum === expNum) {
+    return `Your calculated number (${actTrim}) matches the value, but check the format (e.g. integer vs decimal float).`;
+  }
+  return 'Output differs. Compare your output with the expected result.';
+}
+
+export function diagnoseError(errText: string): string {
+  if (errText.includes('SyntaxError')) {
+    return 'Syntax error detected. Check punctuation, matching colons (:), brackets, or unclosed quotes.';
+  }
+  if (errText.includes('NameError')) {
+    return 'Name error detected. Check for typos in variable/function names and ensure they are assigned before use.';
+  }
+  if (errText.includes('TypeError')) {
+    return 'Type error detected. Check data types and ensure you are not mixing incompatible types (e.g. text + number).';
+  }
+  if (errText.includes('IndexError')) {
+    return 'Index error detected. List or sequence index out of bounds (remember indexing starts at 0).';
+  }
+  if (errText.includes('KeyError')) {
+    return 'Key error detected. The requested dictionary key does not exist. Use .get() or check key spelling.';
+  }
+  if (errText.includes('ValueError')) {
+    return 'Value error detected. An operation received an inappropriate value or conversion format.';
+  }
+  if (errText.includes('IndentationError')) {
+    return 'Indentation error detected. Check that statements inside if, for, while, or def blocks are indented consistently.';
+  }
+  return 'Runtime error detected. Review the error message above to identify the issue.';
+}
 
 // Module-level warm worker pool across CodeLab instances
 let warmWorker: Worker | null = null;
@@ -42,7 +87,7 @@ import {explainError} from '../lib/explainError';
 export {explainError};
 
 export default function CodeLab({
-  initial, input = '', expected, tests, cases, onPass, onRun, label = 'Python editor', persist = false, draftId, workspace = false, verifyOutput = false, onCodeChange,
+  initial, input = '', expected, tests, cases, onPass, onRun, onAttempt, label = 'Python editor', persist = false, draftId, workspace = false, verifyOutput = false, onCodeChange,
 }: Props) {
   const editorId = useId();
   const editorRef = useRef<ComponentRef<typeof Editor>>(null);
@@ -159,6 +204,7 @@ export default function CodeLab({
 
   function run(check = false) {
     if (active.current) return;
+    onAttempt?.();
     active.current = true;
     setLastCheck(check);
     setBusy(true);
@@ -228,7 +274,7 @@ export default function CodeLab({
             finish();
             setStatus('Execution did not finish');
             setException(data.text);
-            if (check) setFeedback('Fix the error before checking your answer again.');
+            if (check) setFeedback(diagnoseError(data.text));
             break;
           case 'done': {
             finish();
@@ -249,11 +295,15 @@ export default function CodeLab({
               setFeedback('All checks passed.');
               onPass?.();
             } else if (verifyOutput && passedCount === checks.length) {
-              setFeedback('Output differs. Compare your output with the expected result.');
+              setFeedback(diagnoseMismatch(actual, expected ?? ''));
             } else if (hasTests) {
-              setFeedback(`${passedCount} passed · ${checks.length - passedCount} failed. Review the cases below.`);
+              if (passedCount > 0) {
+                setFeedback(`${passedCount} passed · ${checks.length - passedCount} failed. Review the cases below.`);
+              } else {
+                setFeedback(`0 passed · ${checks.length} failed. Review the cases below.`);
+              }
             } else {
-              setFeedback('Output differs. Compare your output with the expected result.');
+              setFeedback(diagnoseMismatch(actual, expected ?? ''));
             }
             break;
           }

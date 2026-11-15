@@ -2,12 +2,12 @@ export const LEGACY_KEY = 'python-lab.progress.v1';
 export const KEY = 'python-lab.progress.v2';
 
 /** @typedef {ReturnType<typeof import('../data/catalog.mjs').buildCatalog>} Catalog */
-/** @typedef {{version: number, visited: number[], completed: number[], solved: string[], projects: string[], scores: Record<string, number>, last: number, firstProgram: boolean, bookmarks: number[], recent: number[]}} Progress */
+/** @typedef {{version: number, visited: number[], completed: number[], solved: string[], attempted: string[], projects: string[], scores: Record<string, number>, last: number, firstProgram: boolean, bookmarks: number[], recent: number[]}} Progress */
 /** @typedef {{getItem: (key: string) => string | null, setItem: (key: string, value: string) => void}} StorageLike */
 
 /** @returns {Progress} */
 export function freshProgress() {
-  return {version: 2, visited: [], completed: [], solved: [], projects: [], scores: {},
+  return {version: 2, visited: [], completed: [], solved: [], attempted: [], projects: [], scores: {},
     last: 0, firstProgram: false, bookmarks: [], recent: []};
 }
 
@@ -25,6 +25,7 @@ function normalizeProgress(value, catalog) {
   progress.visited = known(record.visited, catalog.lessonIds);
   progress.completed = known(record.completed, catalog.lessonIds);
   progress.solved = known(record.solved, catalog.taskIds);
+  progress.attempted = [...new Set([...known(record.attempted, catalog.taskIds), ...progress.solved])];
   progress.projects = known(record.projects, catalog.projectIds);
   if (typeof record.last === 'number' && catalog.lessonIds.has(record.last)) {
     progress.last = record.last;
@@ -99,6 +100,7 @@ export function mergeProgress(current, incoming) {
     visited: union(current.visited, incoming.visited),
     completed: union(current.completed, incoming.completed),
     solved: union(current.solved, incoming.solved),
+    attempted: union(current.attempted || [], incoming.attempted || []),
     projects: union(current.projects, incoming.projects),
     bookmarks: union(current.bookmarks, incoming.bookmarks),
     recent: union(current.recent, incoming.recent).slice(0, 10),

@@ -1,8 +1,227 @@
 import type {Chapter,Example,Question,Task} from './types';
 const ex=(title:string,code:string,output:string,why:string,input?:string):Example=>({title,code,output,why,input});
 const q=(prompt:string,correct:string,wrong:string[],explanation:string):Question=>{const options=[...wrong];const answer=prompt.length%4;options.splice(answer,0,correct);return {prompt,options,answer,explanation};};
+const progressiveHints: Record<string, [string, string, string]> = {
+  "0-0": [
+    "Direction: Remember that statements in Python execute strictly in order from top to bottom.",
+    "Specific Guidance: Use three separate print() calls, one for each line of the recipe in sequence.",
+    "Strong Hint: Start with print(\"Boil water\"), followed by Add tea, and finally Serve on line 3."
+  ],
+  "0-1": [
+    "Direction: Multiplication in Python uses the asterisk * operator to multiply numbers.",
+    "Specific Guidance: Multiply the cups variable by the price variable and display the result using print().",
+    "Strong Hint: Use print(cups * price) on a new line after the variable definitions."
+  ],
+  "0-2": [
+    "Direction: Subtraction in Python uses the minus - operator to calculate differences.",
+    "Specific Guidance: Subtract absent from total to find the number of present students.",
+    "Strong Hint: Use print(total - absent) to compute and display the remaining count."
+  ],
+  "1-0": [
+    "Direction: The print() function displays text enclosed in quotation marks onto the screen.",
+    "Specific Guidance: Put \"Hello Python\" inside the parentheses of print().",
+    "Strong Hint: Write print(\"Hello Python\") with exact spelling and a space between words."
+  ],
+  "1-1": [
+    "Direction: Each print() statement automatically places its output on a new line.",
+    "Specific Guidance: Use one print() call for the name string and a second print() call for the age.",
+    "Strong Hint: print(\"My name is Ayaan\") on line 1, then print(\"Age:\", 20) on line 2."
+  ],
+  "1-2": [
+    "Direction: print() can take multiple items separated by commas and calculates unquoted math expressions first.",
+    "Specific Guidance: Pass \"Total:\" as the first item, and the addition 100 + 50 as the second.",
+    "Strong Hint: Use print(\"Total:\", 100 + 50) to evaluate 150 and print with a space."
+  ],
+  "2-0": [
+    "Direction: A variable is created by writing variable_name = value.",
+    "Specific Guidance: Assign 20 to the name age, then pass age to print() without quotation marks.",
+    "Strong Hint: age = 20 on the first line, then print(age) on the second line."
+  ],
+  "2-1": [
+    "Direction: Reassignment reads the current value on the right before saving the updated result on the left.",
+    "Specific Guidance: Write age = age + 1 to increment the stored number by 1.",
+    "Strong Hint: After age = 20, write age = age + 1, followed by print(age)."
+  ],
+  "2-2": [
+    "Direction: Standard operator precedence evaluates multiplication before subtraction.",
+    "Specific Guidance: Multiply price by quantity, then subtract discount from the product.",
+    "Strong Hint: Use print(price * quantity - discount) to calculate 40 * 3 - 15 = 105."
+  ],
+  "3-0": [
+    "Direction: The int() function converts a text string of digits into a whole number.",
+    "Specific Guidance: Pass the price variable to int(), and wrap that in print().",
+    "Strong Hint: Use print(int(price)) to convert \"50\" into integer 50."
+  ],
+  "3-1": [
+    "Direction: Decimal numbers in Python are floats; use float() to convert text with a decimal point.",
+    "Specific Guidance: Convert price with float(price), multiply by 2, and print the resulting float.",
+    "Strong Hint: Use print(float(price) * 2) to compute and display 25.0."
+  ],
+  "3-2": [
+    "Direction: Adding strings with + concatenates text (\"1020\"). Convert both to integers first.",
+    "Specific Guidance: Apply int() to a and int() to b before using the + addition operator.",
+    "Strong Hint: Use print(int(a) + int(b)) to produce numeric 30 instead of text 1020."
+  ],
+  "4-0": [
+    "Direction: input() pauses the program and reads one line of text supplied by the user.",
+    "Specific Guidance: Store input() in a variable named name, then print \"Hello\" and name separated by a comma.",
+    "Strong Hint: name = input(), then print(\"Hello\", name)."
+  ],
+  "4-1": [
+    "Direction: User input always arrives as text. Wrap input() with int() to do arithmetic.",
+    "Specific Guidance: Convert the input string using int(input()), then add 1 in print().",
+    "Strong Hint: age = int(input()), followed by print(age + 1)."
+  ],
+  "4-2": [
+    "Direction: Convert the incoming string quantity into an integer before multiplying by the unit price.",
+    "Specific Guidance: Read quantity with int(input()), then multiply quantity by 40.",
+    "Strong Hint: quantity = int(input()), followed by print(quantity * 40)."
+  ],
+  "5-0": [
+    "Direction: The modulo % operator calculates the remainder left over after integer division.",
+    "Specific Guidance: Use 17 % 5 inside print() to find the leftover sweets.",
+    "Strong Hint: print(17 % 5) produces 2 (since 17 // 5 is 3 full groups with 2 remaining)."
+  ],
+  "5-1": [
+    "Direction: A percentage discount is calculated as price * discount / 100.",
+    "Specific Guidance: Subtract the discount amount from the original price to find the final price.",
+    "Strong Hint: Use print(price - price * discount / 100) to output 400.0."
+  ],
+  "5-2": [
+    "Direction: A number is even if dividing by 2 leaves a remainder of 0: number % 2 == 0.",
+    "Specific Guidance: Write an if block testing number % 2 == 0 to print \"Even\", and an else block to print \"Odd\".",
+    "Strong Hint: if number % 2 == 0: print(\"Even\") else: print(\"Odd\") with proper 4-space indentation."
+  ],
+  "6-0": [
+    "Direction: An if statement evaluates a comparison. Statements inside the branch must be indented 4 spaces.",
+    "Specific Guidance: Test age >= 18 to print \"Eligible\", and use else: to print \"Not yet\".",
+    "Strong Hint: if age >= 18: print(\"Eligible\") else: print(\"Not yet\") with a colon after each clause."
+  ],
+  "6-1": [
+    "Direction: Use elif to test subsequent conditions from highest score threshold to lowest.",
+    "Specific Guidance: Check marks >= 90 first, elif marks >= 75 second, and else: for remaining scores.",
+    "Strong Hint: Structure: if marks >= 90: print(\"A\") elif marks >= 75: print(\"B\") else: print(\"C\")."
+  ],
+  "6-2": [
+    "Direction: Use the and operator when two conditions must both be True for approval.",
+    "Specific Guidance: Ensure amount > 0 and amount <= balance before approving the transaction.",
+    "Strong Hint: if amount > 0 and amount <= balance: print(\"Approved\") else: print(\"Declined\")."
+  ],
+  "7-0": [
+    "Direction: A for loop repeats code for each number generated by range(start, stop).",
+    "Specific Guidance: range(1, 4) visits 1, 2, and 3 because the stop bound is excluded.",
+    "Strong Hint: for n in range(1, 4): print(n) with 4-space indentation under the loop header."
+  ],
+  "7-1": [
+    "Direction: Create an accumulator variable outside the loop to keep a running total.",
+    "Specific Guidance: Loop over range(1, 6) and write total += n on each pass. Print total after the loop.",
+    "Strong Hint: total = 0, for n in range(1, 6): total += n, then print(total) outside the loop."
+  ],
+  "7-2": [
+    "Direction: continue skips the remainder of the current loop iteration and proceeds to the next.",
+    "Specific Guidance: Inside for n in range(1, 6): check if n == 3: continue before calling print(n).",
+    "Strong Hint: if n == 3: continue on the line above print(n) inside the loop body."
+  ],
+  "8-0": [
+    "Direction: Python sequences use zero-based indexing. The very first character is at index 0.",
+    "Specific Guidance: Use square brackets word[0] to access the first character of the string.",
+    "Strong Hint: print(word[0]) accesses and prints \"P\"."
+  ],
+  "8-1": [
+    "Direction: String methods can be chained together: .strip() cleans spaces, .title() capitalizes words.",
+    "Specific Guidance: Call name.strip().title() to remove outside spaces and format words.",
+    "Strong Hint: print(name.strip().title()) outputs \"Ayaan Khan\"."
+  ],
+  "8-2": [
+    "Direction: In f-strings, format specifiers like :.2f format float values to two decimal places.",
+    "Specific Guidance: Write f\"Total: ₹{total:.2f}\" inside print() to include currency symbol and decimal places.",
+    "Strong Hint: print(f\"Total: ₹{total:.2f}\") evaluates to \"Total: ₹125.50\"."
+  ],
+  "9-0": [
+    "Direction: List items are ordered and zero-indexed. The first item is at index 0.",
+    "Specific Guidance: Use square brackets marks[0] to retrieve the first score.",
+    "Strong Hint: print(marks[0]) outputs 80 from the list [80, 90, 70]."
+  ],
+  "9-1": [
+    "Direction: The .append() method adds a new item to the end of an existing list in-place.",
+    "Specific Guidance: Call marks.append(100), then print the updated marks list.",
+    "Strong Hint: marks.append(100) followed by print(marks) on the next line."
+  ],
+  "9-2": [
+    "Direction: The average of numbers in a list is sum(marks) / len(marks).",
+    "Specific Guidance: Compute the average and format it with :.1f in an f-string to show one decimal place.",
+    "Strong Hint: print(f\"{sum(marks) / len(marks):.1f}\") evaluates to \"80.0\"."
+  ],
+  "10-0": [
+    "Direction: Dictionary values are retrieved using square brackets contacts[key] or .get(key).",
+    "Specific Guidance: Use contacts[\"Ayaan\"] to look up Ayaan’s phone number.",
+    "Strong Hint: print(contacts[\"Ayaan\"]) outputs \"1234\"."
+  ],
+  "10-1": [
+    "Direction: Assigning to a new key in a dictionary creates that key-value pair.",
+    "Specific Guidance: Write contacts[\"Sara\"] = \"5678\", then print the new dictionary size using len(contacts).",
+    "Strong Hint: contacts[\"Sara\"] = \"5678\" followed by print(len(contacts))."
+  ],
+  "10-2": [
+    "Direction: A set automatically discards duplicate items, leaving only unique values.",
+    "Specific Guidance: Pass the list to set(tags) to remove duplicate tags, then call len().",
+    "Strong Hint: print(len(set(tags))) calculates 2 distinct tags."
+  ],
+  "11-0": [
+    "Direction: A function is defined with def function_name(param): and sends back a value using return.",
+    "Specific Guidance: Define square(n) and return n * n. Do not use print() inside the function.",
+    "Strong Hint: def square(n): return n * n with proper indentation."
+  ],
+  "11-1": [
+    "Direction: Functions can accept multiple parameters separated by commas.",
+    "Specific Guidance: Define add(a, b) and return the expression a + b.",
+    "Strong Hint: def add(a, b): return a + b with an indented body."
+  ],
+  "11-2": [
+    "Direction: Default parameter values are set with param=value in the function header.",
+    "Specific Guidance: Define bill(price, quantity=1) and return price * quantity.",
+    "Strong Hint: def bill(price, quantity=1): return price * quantity."
+  ],
+  "12-0": [
+    "Direction: Use conditional checks to handle out-of-range boundary cases first, then check passing marks.",
+    "Specific Guidance: Return \"Invalid\" if marks < 0 or marks > 100; return \"Pass\" if marks >= 40; otherwise \"Retry\".",
+    "Strong Hint: if marks < 0 or marks > 100: return \"Invalid\" elif marks >= 40: return \"Pass\" else: return \"Retry\"."
+  ],
+  "12-1": [
+    "Direction: Iterate through the list of dictionaries and add the \"amount\" value from each item to a total.",
+    "Specific Guidance: Initialize total = 0, loop for item in expenses: total += item[\"amount\"], and return total.",
+    "Strong Hint: def total_expenses(expenses): return sum(item[\"amount\"] for item in expenses)."
+  ],
+  "12-2": [
+    "Direction: Compare guess with target using ==, <, and > to provide user feedback.",
+    "Specific Guidance: If guess == target return \"Correct\"; if guess < target return \"Too low\"; otherwise return \"Too high\".",
+    "Strong Hint: if guess == target: return \"Correct\" elif guess < target: return \"Too low\" else: return \"Too high\"."
+  ]
+};
 type TaskSeed=[string,string,string,string,string,string?];
-function tasks(chapter:number,seeds:TaskSeed[]):Task[]{return seeds.map(([title,prompt,starter,solution,expected,tests],i)=>({id:`${chapter}-${i}`,chapter,title,difficulty:['Easy','Medium','Challenge'][i],prompt,starter,solution,expected,tests,hints:['Read the expected output carefully. Work out the result by hand first.',`Useful starting point: ${solution.split('\n')[0]}`],explanation:`${prompt} The solution processes the given values and produces ${JSON.stringify(expected)}. Try changing the values after passing the check.`}));}
+function tasks(chapter:number,seeds:TaskSeed[]):Task[]{
+  return seeds.map(([title,prompt,starter,solution,expected,tests],i)=>{
+    const id=`${chapter}-${i}`;
+    const taskHint = progressiveHints[id] || [
+      'Direction: Review the core concept of this chapter before writing your code.',
+      `Specific Guidance: Focus on the required operations for ${title.toLowerCase()}.`,
+      `Strong Hint: A helpful starting pattern is: ${solution.split('\n')[0]}`
+    ];
+    return {
+      id,
+      chapter,
+      title,
+      difficulty:['Easy','Medium','Challenge'][i],
+      prompt,
+      starter,
+      solution,
+      expected,
+      tests,
+      hints: taskHint,
+      explanation:`${prompt} The solution processes the given values and produces ${JSON.stringify(expected)}. Try changing the values after passing the check.`
+    };
+  });
+}
 const chapters:Chapter[]=[
 {id:0,title:'Before Python',subtitle:'Understand what programming really is',story:'You ask a friend to make chai. Saying “make tea” leaves dozens of questions unanswered: how much water? which tea leaves? how much milk? A recipe with clear, ordered steps is much easier to follow. A computer is like a helpful assistant who has zero common sense: it needs exact instructions in the right sequence to produce the result you expect.',objectives:['Explain computers, programs and programming languages','Trace input → process → output','Arrange a simple algorithm in order'],concepts:[['What is a program?','A computer is powerful, but it cannot guess what you want. A program is simply a step-by-step recipe of instructions telling the computer what to do. As a programmer, you design these steps, test them with real examples, and fix surprises when things do not go as planned.'],['Why learn Python?','Computers work with electrical signals and numbers. Python is a friendly programming language created by Guido van Rossum in 1991 so people could write instructions that read almost like plain English. It is popular worldwide for building apps, analyzing data, and automating repetitive tasks.'],['Computers follow order strictly','A human making chai knows not to drink before boiling the water. A computer cannot use common sense: it executes your instructions strictly from top to bottom, exactly as written. If instructions are placed in the wrong order, the computer will faithfully produce the wrong result without complaining.'],['The Input → Process → Output rhythm','Almost every useful program follows a three-step rhythm: 1. Input (the raw values, like 3 cups of tea), 2. Process (doing the calculation, like multiplying 3 by ₹10), and 3. Output (displaying the result on screen, like ₹30). Source code is the text file where you write these steps for Python to execute.']],visual:['Input: milk, water, tea','Process: follow the recipe','Output: a cup of chai'],examples:[ex('Instructions in order','print("Boil water")\nprint("Add tea")\nprint("Serve")','Boil water\nAdd tea\nServe','Statements run from top to bottom. Printing a step describes it; this code does not actually boil water.'),ex('Input → process → output','cups = 3\nprice = 10\nprint(cups * price)','30','Three cups at ₹10 each cost ₹30. The asterisk means multiplication.')],mistake:{code:'print("Serve")\nprint("Boil water")',fix:'print("Boil water")\nprint("Serve")',why:'Code can run without an error and still have the wrong order. Logical mistakes require checking meaning.'},application:'A shop billing program receives quantities, calculates a total, and displays a bill. Start by writing its steps in plain language.',tasks:tasks(0,[['Order the recipe','Print Boil water, Add tea, Serve on separate lines in that order.','# Write three steps','print("Boil water")\nprint("Add tea")\nprint("Serve")','Boil water\nAdd tea\nServe'],['Process a bill','Print the cost of 4 cups at ₹10 each.','cups = 4\nprice = 10','cups = 4\nprice = 10\nprint(cups * price)','40'],['Plan attendance','There are 30 students and 4 absent. Print how many are present.','total = 30\nabsent = 4','total = 30\nabsent = 4\nprint(total - absent)','26']]),quiz:[q('What is a program?','A set of instructions',['A monitor','Only a game','A person'],'Programs describe work for computers to perform.'),q('What does an interpreter do?','Executes source instructions',['Designs monitors','Writes every program for you','Only saves pictures'],'Python processes source code and executes it.'),q('Who created Python?','Guido van Rossum',['Ada Lovelace','Dennis Ritchie','Brendan Eich'],'Guido van Rossum created Python; the first public release was in 1991.'),q('Which sequence models a bill?','Input → process → output',['Output → tea → input','Print → monitor → keyboard','No processing needed'],'Quantities enter, a total is calculated, then displayed.'),q('What is source code?','The program text you write',['Only the result','Computer hardware','An internet connection'],'Source is the human-readable program text.'),q('Can code run but produce the wrong result?','Yes, due to a logical mistake',['No, never','Only in JavaScript','Only without a computer'],'A valid instruction can still solve the wrong problem.'),q('Where is Python useful?','Automation and data analysis',['Only web styling','Only typing documents','Only changing screen brightness'],'Python is general purpose and useful in many fields.')]},
 {id:1,title:'Your First Python Program',subtitle:'Make the computer say hello',story:'A classroom notice board shares announcements with everyone who walks past. Your code needs a way to speak and display results too. In Python, print() is your digital notice board: whatever you place inside its parentheses is sent straight to your screen.',objectives:['Display text, numbers and multiple values','Read punctuation and comments','Recognize syntax and indentation errors'],concepts:[['Say it with print()','print is Python’s built-in tool for speaking. Parentheses () hold the message you want to display. Quotation marks tell Python you are writing text, called a string. When you write print("Hello"), Python displays Hello on the screen without the quotation marks.'],['Numbers vs text in quotes','print(10) and print("10") look identical on screen, but Python treats them very differently. 10 is an actual number, so 10 + 20 calculates 30. But "10" is literal text, so "10" + "20" glues the characters together into 1020. You can separate multiple items with commas; print adds a space between them automatically.'],['Lines of code and friendly notes','Each instruction in Python is called a statement, and you write one per line. Whenever you write the # symbol, Python ignores everything else on that line. These are comments: friendly notes written by programmers to explain their thoughts to other humans.'],['Errors are helpful clues','Python is strictly case-sensitive: print works, but Print or PRINT causes a NameError. Always close your quotes and parentheses in pairs. If an error appears, do not panic—it is simply Python pointing out the line where it got confused so you can fix it.']],visual:['Source: print("Hello")','Python interpreter','Output: Hello'],examples:[ex('Your first message','print("Hello World")\nprint("Welcome to Python Lab")\nprint(10 + 20)','Hello World\nWelcome to Python Lab\n30','Quotes create strings; the unquoted expression 10 + 20 is calculated before printing.'),ex('A personal introduction','# This is a comment\nprint("My name is", "Ayaan")\nprint("Age:", 20)','My name is Ayaan\nAge: 20','A comma separates arguments and print inserts a space. The comment produces no output.')],mistake:{code:'Print("Hello")',fix:'print("Hello")',why:'Names are case sensitive. A NameError means Python could not find the name you used.'},application:'Print an order receipt, a welcome message, or a short personal introduction.',tasks:tasks(1,[['Hello, Python','Print Hello Python exactly.','# Start here','print("Hello Python")','Hello Python'],['Introduce yourself','Print My name is Ayaan and Age: 20 on separate lines.','# Use two print calls','print("My name is Ayaan")\nprint("Age:", 20)','My name is Ayaan\nAge: 20'],['Receipt total','Print Total: 150 using a calculation of 100 + 50.','# Calculate before printing','print("Total:", 100 + 50)','Total: 150']]),quiz:[q('What does print("Hello") display?','Hello',['"Hello"','print Hello','Nothing'],'Quotes delimit text; they are not part of this string.'),q('What does # begin outside a string?','A comment',['A loop','A number','An error every time'],'The rest of that line is ignored by Python.'),q('Which name is the built-in output function?','print',['Print','PRINT','outputText'],'Python distinguishes lowercase and uppercase names.'),q('What does print(10 + 20) show?','30',['1020','10 + 20','An empty line'],'Numeric addition is evaluated first.'),q('What does print("10" + "20") show?','1020',['30','10 20','A type error'],'Adding strings concatenates them.'),q('Why use parentheses in print()?','They contain the arguments to the call',['They create a comment','They always mean multiplication','They hide errors'],'Parentheses call a function with its arguments.'),q('What does print("Age", 20) show?','Age 20',['Age20','Age,20','"Age" 20'],'print separates arguments with a space by default.')]},
