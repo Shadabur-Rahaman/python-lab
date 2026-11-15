@@ -17,7 +17,9 @@ import {
   Check,
   Compass,
   AlertTriangle,
-  Play
+  Play,
+  ArrowUpRight,
+  Cpu
 } from 'lucide-react';
 import {studioProjects, type StudioProject, type ProjectMilestone, generateProjectReadme} from '../data/projectStudioData';
 import {projects as foundationalProjects} from '../data/projects';
@@ -141,6 +143,17 @@ export default function ProjectStudioView({selectedProjectId, onSelectProject}: 
               <span>Project Studio & Portfolio</span>
             </div>
           </div>
+
+          <div className="journey-arrow">→</div>
+
+          <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="journey-node future-node ecosystem-node">
+            <span className="node-icon"><Cpu size={14} /></span>
+            <div className="node-text">
+              <small>STAGE 4 · ECOSYSTEM</small>
+              <strong>DS LAB</strong>
+              <span>NumPy, Pandas & ML ↗</span>
+            </div>
+          </a>
         </div>
       </nav>
 
@@ -506,6 +519,29 @@ export default function ProjectStudioView({selectedProjectId, onSelectProject}: 
               <div className="portfolio-card-actions">
                 <a href="#/projects/student-marks-analyzer" className="button primary small">
                   Open Capstone Studio <ArrowRight size={13} />
+                </a>
+              </div>
+            </div>
+
+            {/* Next Destination Bridge: Continue to DS LAB */}
+            <div className="card ds-lab-bridge-card" style={{gridColumn: '1 / -1'}}>
+              <div className="ds-bridge-badge">CONTINUE YOUR LEARNING JOURNEY</div>
+              <div className="ds-bridge-body">
+                <div className="ds-bridge-icon">
+                  <span>DS</span>
+                </div>
+                <div className="ds-bridge-copy">
+                  <h3>Ready for Data Science? Continue to DS LAB</h3>
+                  <p>You have mastered Python programming fundamentals and built real-world software applications. Take the next natural step into Data Science with statistics, SQL, interactive NumPy tables, Pandas DataFrames, and Machine Learning.</p>
+                  <div className="ds-bridge-tags">
+                    <span>NumPy Arrays</span>
+                    <span>Pandas Data Cleaning</span>
+                    <span>Retail Sales Analysis</span>
+                    <span>Iris Classification</span>
+                  </div>
+                </div>
+                <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="button primary ds-bridge-action">
+                  Explore DS LAB <ArrowUpRight size={16} />
                 </a>
               </div>
             </div>

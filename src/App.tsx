@@ -1,7 +1,7 @@
 import BeginnerHome from './components/BeginnerHome';
 import {ReceiptEditor,ReceiptLesson} from './components/ReceiptWorkspace';
 import {lazy,Suspense,useEffect,useState} from 'react';
-import {ArrowRight,BookOpen,Code2,FlaskConical,Home,Menu,Moon,Sun,Target,Trophy,FolderOpen,Search,Check,ChevronRight,Terminal,Compass,Download} from 'lucide-react';
+import {ArrowRight,ArrowUpRight,BookOpen,Code2,FlaskConical,Home,Menu,Moon,Sun,Target,Trophy,FolderOpen,Search,Check,ChevronRight,Terminal,Compass,Download} from 'lucide-react';
 import {chapters as beginner,allTasks,revisionQuiz} from './data/curriculum';
 import {buildCatalog,lessonNeighbors} from './data/catalog.mjs';
 import {projects} from './data/projects';
@@ -179,6 +179,17 @@ export default function App(){
        <div className="progress-track" role="progressbar" aria-valuenow={coursePercent} aria-valuemin={0} aria-valuemax={100} aria-label="Course completion"><span style={{width:coursePercent+'%'}}/></div>
        <small>{progress.completed.length} of {chapters.length} chapters completed</small>
      </div>
+     <div className="sidebar-ecosystem">
+       <div className="nav-group-title">Learning Ecosystem</div>
+       <a href="https://shadabur-rahaman.github.io/ds-lab/" className="ecosystem-badge-link" target="_blank" rel="noreferrer">
+         <span className="ecosystem-badge-icon">DS</span>
+         <div className="ecosystem-badge-text">
+           <strong>DS LAB</strong>
+           <small>Data Science & ML</small>
+         </div>
+         <ArrowUpRight size={14} className="ecosystem-external-icon"/>
+       </a>
+     </div>
    </aside>
    {menu&&<button className="menu-shade" aria-label="Close navigation" onClick={()=>setMenu(false)}/>}
    <div className="main-shell"><header className="topbar">
@@ -211,7 +222,14 @@ export default function App(){
          </> : <span aria-current="page">{nav.find(([path])=>path===page)?.[1]||(page==='search'?'Search':'Home')}</span>}
        </nav>
      </div>
-     <div className="topbar-actions"><a className="search-shortcut" href={link('search')} aria-label="Search Python Lab"><Search size={17}/><span>Search</span><kbd>{navigator.platform.includes('Mac')?'⌘':'Ctrl'} K</kbd></a>{themeButton}</div>
+     <div className="topbar-actions">
+       <a className="ecosystem-pill" href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" title="Open DS LAB (Data Science, NumPy, Pandas, ML)">
+         <span className="ecosystem-pill-tag">DS LAB</span>
+         <span className="ecosystem-pill-sub">Data Science</span>
+         <ArrowUpRight size={13}/>
+       </a>
+       <a className="search-shortcut" href={link('search')} aria-label="Search Python Lab"><Search size={17}/><span>Search</span><kbd>{navigator.platform.includes('Mac')?'⌘':'Ctrl'} K</kbd></a>{themeButton}
+     </div>
    </header>
  <main id="main" tabIndex={-1}>{notice&&<p className="feedback" role="alert">{notice}</p>}
  {page==='home'?<BeginnerHome next={next} completed={progress.completed.length} total={chapters.length}

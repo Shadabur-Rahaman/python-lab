@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-11-15T20:16:08.411Z",
+  "timestamp": "2026-11-15T22:27:13.479Z",
   "git": {
-    "head": "10b6d090a0a1d1b8aa13ed76ef9f69558eb6cfcc",
+    "head": "648bdf05f6ab2ea71ca7b4d65c45e8823fccae52",
     "branch": "main",
     "dirty": true
   },
@@ -14,21 +14,21 @@
   "unitTests": {
     "runner": "node:test (Node.js built-in)",
     "command": "node --test tests/*.test.mjs",
-    "total": 56,
-    "passed": 56,
+    "total": 58,
+    "passed": 58,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 38087.1517
+    "durationMs": 42459.924
   },
   "browserTests": {
     "runner": "@playwright/test",
     "command": "npx playwright test --reporter=json",
-    "fileCount": 19,
-    "totalDiscovered": 98,
-    "passed": 98,
+    "fileCount": 20,
+    "totalDiscovered": 102,
+    "passed": 102,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 478296,
+    "durationMs": 408831,
     "files": [
       {
         "file": "beginner-visuals.spec.ts",
@@ -41,6 +41,13 @@
         "file": "course.spec.ts",
         "tests": 8,
         "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "cross-platform-ecosystem.spec.ts",
+        "tests": 4,
+        "passed": 4,
         "failed": 0,
         "skipped": 0
       },

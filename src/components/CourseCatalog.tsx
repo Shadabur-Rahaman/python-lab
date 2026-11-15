@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {ArrowRight, Bookmark, Search, Compass, Sparkles} from 'lucide-react';
+import {ArrowRight, ArrowUpRight, Bookmark, Search, Compass, Sparkles} from 'lucide-react';
 import {levels, tracks, type buildCatalog} from '../data/catalog.mjs';
 import type {Progress} from '../lib/progress.mjs';
 
@@ -22,6 +22,18 @@ export default function CourseCatalog({catalog, progress}: {
       </div>
       <a href="#/intermediate" className="button primary large">
         Explore Intermediate Path <ArrowRight size={15} />
+      </a>
+    </div>
+
+    {/* Connected Data Science Journey Extension */}
+    <div className="card catalog-dslab-banner">
+      <div className="banner-content">
+        <span className="eyebrow"><Sparkles size={14} /> LEARNING ECOSYSTEM</span>
+        <h3>Data Science Lab (DS LAB)</h3>
+        <p>Take your Python skills into Data Science: Learn statistics, SQL, NumPy arrays, Pandas DataFrames, and Machine Learning on real datasets.</p>
+      </div>
+      <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="button large">
+        Open DS LAB <ArrowUpRight size={15} />
       </a>
     </div>
 

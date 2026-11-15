@@ -13,7 +13,8 @@ import {
   Layers,
   Download,
   BookOpen,
-  Code2
+  Code2,
+  ArrowUpRight
 } from 'lucide-react';
 import CodeLab from './CodeLab';
 import {studentMarksAnalyzerProject} from '../data/intermediatePath';
@@ -354,6 +355,28 @@ python student_marks_analyzer.py
               <small>Mark this capstone complete to record your Intermediate Python mastery.</small>
             </span>
           </label>
+        </div>
+
+        {/* Transition to Data Science Lab */}
+        <div className="card ds-lab-bridge-card" style={{marginTop: '20px'}}>
+          <div className="ds-bridge-badge">RECOMMENDED NEXT DESTINATION</div>
+          <div className="ds-bridge-body">
+            <div className="ds-bridge-icon">
+              <span>DS</span>
+            </div>
+            <div className="ds-bridge-copy">
+              <h3>Transition from CSV Ingestion to Pandas in DS LAB</h3>
+              <p>You built an in-memory CSV parser and aggregator in pure Python. In <strong>DS LAB</strong>, discover how industry standard <code>pandas</code> and <code>numpy</code> clean, reshape, and analyze structured datasets with high performance.</p>
+              <div className="ds-bridge-tags">
+                <span>Pandas Data Cleaning</span>
+                <span>Retail Sales Capstone</span>
+                <span>Data Visualization Lab</span>
+              </div>
+            </div>
+            <a href="https://shadabur-rahaman.github.io/ds-lab/#/courses" target="_blank" rel="noreferrer" className="button primary ds-bridge-action">
+              Open DS LAB <ArrowUpRight size={16} />
+            </a>
+          </div>
         </div>
       </div>
     </div>

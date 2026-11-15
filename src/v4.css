@@ -3278,3 +3278,247 @@
     gap: 10px;
   }
 }
+
+/* ==========================================================================
+   V26: Unified Learning Ecosystem Styles (Python Lab <-> DS LAB)
+   ========================================================================== */
+
+.sidebar-ecosystem {
+  margin-top: 14px;
+  padding: 12px 14px 16px;
+  border-top: 1px solid var(--line);
+}
+.sidebar-ecosystem .nav-group-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.ecosystem-badge-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.ecosystem-badge-link:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+}
+.ecosystem-badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.ecosystem-badge-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ecosystem-badge-text strong {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.2;
+}
+.ecosystem-badge-text small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.ecosystem-external-icon {
+  color: var(--muted);
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+/* Topbar Ecosystem Pill */
+.ecosystem-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  margin-right: 6px;
+}
+.ecosystem-pill:hover {
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+.ecosystem-pill-tag {
+  background: #7c3aed;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.ecosystem-pill-sub {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+@media (max-width: 640px) {
+  .ecosystem-pill {
+    display: none;
+  }
+}
+
+/* Catalog DS LAB Extension Banner */
+.catalog-dslab-banner {
+  margin-top: 14px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(59, 130, 246, 0.04) 100%);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  gap: 20px;
+  border-radius: 12px;
+}
+.catalog-dslab-banner .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #7c3aed;
+  margin-bottom: 6px;
+}
+.catalog-dslab-banner h3 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+.catalog-dslab-banner p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+@media (max-width: 768px) {
+  .catalog-dslab-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Cross-Platform Bridge Card */
+.ds-lab-bridge-card {
+  margin-top: 24px;
+  padding: 22px 24px;
+  border-radius: 12px;
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(99, 102, 241, 0.03) 100%);
+}
+.ds-bridge-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.12);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.ds-bridge-body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.ds-bridge-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ds-bridge-copy {
+  flex: 1;
+}
+.ds-bridge-copy h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.ds-bridge-copy p {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.ds-bridge-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ds-bridge-tags span {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.ds-bridge-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.ds-bridge-action:hover {
+  opacity: 0.9;
+}
+@media (max-width: 768px) {
+  .ds-bridge-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ds-bridge-action {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
