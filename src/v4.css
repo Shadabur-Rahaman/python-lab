@@ -698,6 +698,23 @@
 .runtime-retry-row {
   margin-top: 10px;
 }
+.runtime-slow-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 6px 0 10px;
+  line-height: 1.4;
+  padding: 6px 10px;
+  background: var(--soft);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+.runtime-ready-note {
+  font-size: 11px;
+  color: var(--accent);
+  margin: 6px 0 10px;
+  line-height: 1.4;
+  font-weight: 600;
+}
 
 /* Version 17 Premium UX & Learning Journey Refinements */
 

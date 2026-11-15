@@ -3,14 +3,16 @@ let runtime;
 
 self.onmessage = async ({data}) => {
   const send = (kind, text, details = {}) => self.postMessage({kind, text, ...details});
+  let isFirstInit = false;
   try {
     if (!runtime) {
-      send('status', 'Preparing Python…', {stage: 1});
-      send('status', 'Loading required files…', {stage: 2});
+      isFirstInit = true;
+      send('status', 'Preparing Python…', {stage: 1, firstInit: true});
+      send('status', 'Loading required files…', {stage: 2, firstInit: true});
       importScripts(distribution + 'pyodide.js');
-      send('status', 'Starting Python…', {stage: 3});
+      send('status', 'Starting Python…', {stage: 3, firstInit: true});
       runtime = await loadPyodide({indexURL: distribution});
-      send('status', 'Ready to run.', {stage: 4});
+      send('status', 'Ready to run.', {stage: 4, firstInit: true});
     }
   } catch (error) {
     runtime = null;
@@ -18,7 +20,7 @@ self.onmessage = async ({data}) => {
     return;
   }
 
-  send('status', 'Running Python…');
+  send('status', 'Running Python…', {firstInit: isFirstInit});
   let outputLength = 0;
   let limitReached = false;
   function emit(kind, text) {

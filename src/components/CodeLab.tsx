@@ -20,7 +20,7 @@ class EditorFallback extends Component<{children: ReactNode; code: string; setCo
 }
 
 type Result = {name: string; passed: boolean; detail?: string};
-type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; stage?: number; cases?: Result[]; canRetry?: boolean};
+type Message = {kind: 'status' | 'stdout' | 'stderr' | 'error' | 'done'; text: string; stage?: number; cases?: Result[]; canRetry?: boolean; firstInit?: boolean};
 type Props = {
   initial: string; input?: string; expected?: string; tests?: string; cases?: TestCase[];
   onPass?: () => void; onRun?: () => void; label?: string; persist?: boolean; draftId?: string; workspace?: boolean; verifyOutput?: boolean; onCodeChange?: (code: string) => void;
@@ -104,13 +104,19 @@ export default function CodeLab({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active = useRef(false);
   const [stage, setStage] = useState<number | null>(null);
+  const [slowNotice, setSlowNotice] = useState(false);
+  const [readyNotice, setReadyNotice] = useState(false);
+  const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const firstInitRef = useRef(false);
   const [lastCheck, setLastCheck] = useState(false);
 
   function finish() {
     if (timer.current) clearTimeout(timer.current);
+    if (slowTimer.current) clearTimeout(slowTimer.current);
     active.current = false;
     setBusy(false);
     setStage(null);
+    setSlowNotice(false);
     warmWorkerInUse = false;
   }
 
@@ -124,6 +130,7 @@ export default function CodeLab({
     }
     finish();
     setStatus(message);
+    setReadyNotice(false);
   }
 
   useEffect(() => () => {
@@ -133,6 +140,7 @@ export default function CodeLab({
       worker.current = null;
     }
     if (timer.current) clearTimeout(timer.current);
+    if (slowTimer.current) clearTimeout(slowTimer.current);
   }, []);
 
   function update(value: string) {
@@ -146,6 +154,7 @@ export default function CodeLab({
     setException('');
     setResults([]);
     setFeedback('');
+    setReadyNotice(false);
   }
 
   function run(check = false) {
@@ -155,6 +164,14 @@ export default function CodeLab({
     setBusy(true);
     setStage(1);
     setStatus('Preparing Python…');
+    setSlowNotice(false);
+    setReadyNotice(false);
+    if (slowTimer.current) clearTimeout(slowTimer.current);
+    slowTimer.current = setTimeout(() => {
+      if (active.current) {
+        setSlowNotice(true);
+      }
+    }, 4000);
     clearOutput();
     let actual = '';
     try {
@@ -179,11 +196,16 @@ export default function CodeLab({
         switch (data.kind) {
           case 'status':
             setStatus(data.text);
+            if (data.firstInit) {
+              firstInitRef.current = true;
+            }
             if (typeof data.stage === 'number') {
               setStage(data.stage);
             }
             if (data.text === 'Running Python…') {
               setStage(null);
+              setSlowNotice(false);
+              if (slowTimer.current) clearTimeout(slowTimer.current);
               if (timer.current) clearTimeout(timer.current);
               timer.current = setTimeout(() => stop('Stopped after 12 seconds. Check your loop condition, then run again.'), 12_000);
             }
@@ -196,6 +218,13 @@ export default function CodeLab({
             setStderr(previous => previous + data.text);
             break;
           case 'error':
+            if (data.canRetry || data.text.includes('could not download') || data.text.includes('could not start')) {
+              if (worker.current) {
+                try { worker.current.terminate(); } catch {}
+                if (warmWorker === worker.current) warmWorker = null;
+                worker.current = null;
+              }
+            }
             finish();
             setStatus('Execution did not finish');
             setException(data.text);
@@ -204,6 +233,9 @@ export default function CodeLab({
           case 'done': {
             finish();
             setStatus('Finished');
+            if (firstInitRef.current) {
+              setReadyNotice(true);
+            }
             onRun?.();
             if (!check) break;
             const checks = data.cases ?? [];
@@ -321,6 +353,12 @@ export default function CodeLab({
           <span className="stage-sep">→</span>
           <span className={`stage-step ${stage >= 4 ? 'active' : ''}`}>4. Ready</span>
         </div>
+      )}
+      {busy && slowNotice && (
+        <p className="runtime-slow-note" role="note">Preparing Python for your first run. This may take longer on slower connections.</p>
+      )}
+      {!busy && readyNotice && (
+        <p className="runtime-ready-note" role="status">Python is ready. Your next runs in this session should be much faster.</p>
       )}
       <pre>{stdout || (status === 'Finished' ? 'No standard output.' : 'Your output will appear here.')}</pre>
       {stderr && <details open><summary>Standard error</summary><pre>{stderr}</pre></details>}
