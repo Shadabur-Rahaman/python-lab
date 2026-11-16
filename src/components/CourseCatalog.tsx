@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {ArrowRight, ArrowUpRight, Bookmark, Search, Compass, Sparkles} from 'lucide-react';
+import {ArrowRight, ArrowUpRight, Bookmark, Search, Compass, Sparkles, Code2} from 'lucide-react';
 import {levels, tracks, type buildCatalog} from '../data/catalog.mjs';
 import type {Progress} from '../lib/progress.mjs';
 
@@ -34,6 +34,18 @@ export default function CourseCatalog({catalog, progress}: {
       </div>
       <a href="#/advanced" className="button primary large">
         Explore Advanced Studio <ArrowRight size={15} />
+      </a>
+    </div>
+
+    {/* DSA Problem-Solving Arena Progression Banner */}
+    <div className="card catalog-dsa-banner">
+      <div className="banner-content">
+        <span className="eyebrow"><Code2 size={14} /> STAGE 4 · PROBLEM-SOLVING ARENA</span>
+        <h3>Data Structures, Algorithms & Problem-Solving Arena</h3>
+        <p>Progress from syntax to algorithmic mastery: Two pointers, sliding windows, binary search invariants, stacks, and 24 defensively tested coding challenges.</p>
+      </div>
+      <a href="#/arena" className="button primary large">
+        Enter Problem-Solving Arena <ArrowRight size={15} />
       </a>
     </div>
 

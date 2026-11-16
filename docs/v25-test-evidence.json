@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-11-16T19:49:04.374Z",
+  "timestamp": "2026-11-16T20:22:49.541Z",
   "git": {
-    "head": "7190403dea0d19ec15e86e32db30d7ffc43f13b7",
+    "head": "09c1fcb54991c6dc5900caa46313f8941accde83",
     "branch": "main",
     "dirty": true
   },
@@ -14,21 +14,21 @@
   "unitTests": {
     "runner": "node:test (Node.js built-in)",
     "command": "node --test tests/*.test.mjs",
-    "total": 68,
-    "passed": 68,
+    "total": 75,
+    "passed": 75,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 33310.7353
+    "durationMs": 37979.2203
   },
   "browserTests": {
     "runner": "@playwright/test",
     "command": "npx playwright test --reporter=json",
-    "fileCount": 21,
-    "totalDiscovered": 108,
-    "passed": 108,
+    "fileCount": 22,
+    "totalDiscovered": 113,
+    "passed": 113,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 376465,
+    "durationMs": 385974,
     "files": [
       {
         "file": "advanced-path.spec.ts",
@@ -53,6 +53,13 @@
       },
       {
         "file": "cross-platform-ecosystem.spec.ts",
+        "tests": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "dsa-arena.spec.ts",
         "tests": 5,
         "passed": 5,
         "failed": 0,

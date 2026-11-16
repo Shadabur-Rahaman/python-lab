@@ -575,9 +575,14 @@ export default function AdvancedPathView({initialModuleId, onNavigate}: Props) {
               Next: {advancedModules[currentIndex + 1].title} <ArrowRight size={15} />
             </button>
           ) : (
-            <a href="#/projects/event-scheduler-pro" className="button primary large">
-              Advance to Capstone Project <Trophy size={16} />
-            </a>
+            <div style={{display: 'flex', gap: '0.75rem', flexWrap: 'wrap'}}>
+              <a href="#/arena" className="button primary large">
+                Enter Problem-Solving Arena <Code2 size={16} />
+              </a>
+              <a href="#/projects/event-scheduler-pro" className="button large">
+                Capstone Project <Trophy size={16} />
+              </a>
+            </div>
           )}
         </div>
       </div>
