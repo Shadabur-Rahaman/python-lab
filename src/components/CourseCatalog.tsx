@@ -16,12 +16,24 @@ export default function CourseCatalog({catalog, progress}: {
     {/* Intermediate Learning Path Progression Banner */}
     <div className="card catalog-intermediate-banner">
       <div className="banner-content">
-        <span className="eyebrow"><Compass size={14} /> NEW STAGE AVAILABLE</span>
+        <span className="eyebrow"><Compass size={14} /> STAGE 2 · INTERMEDIATE</span>
         <h3>Intermediate Python Learning Path</h3>
         <p>Master standard library modules, better functions, iterators, CSV data processing, defensive assertions, and build the Student Marks Analyzer capstone.</p>
       </div>
       <a href="#/intermediate" className="button primary large">
         Explore Intermediate Path <ArrowRight size={15} />
+      </a>
+    </div>
+
+    {/* Advanced Learning Path Progression Banner */}
+    <div className="card catalog-advanced-banner">
+      <div className="banner-content">
+        <span className="eyebrow"><Sparkles size={14} /> STAGE 3 · ADVANCED</span>
+        <h3>Advanced Python & Software Engineering Studio</h3>
+        <p>Master decoupled object models, functional decorators, robust custom exception hierarchies, O(1) specialized collections, and maintainable unit-tested architectures.</p>
+      </div>
+      <a href="#/advanced" className="button primary large">
+        Explore Advanced Studio <ArrowRight size={15} />
       </a>
     </div>
 

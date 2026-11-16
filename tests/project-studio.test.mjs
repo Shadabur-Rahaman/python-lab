@@ -43,9 +43,9 @@ function python(code, input = '') {
   return JSON.parse(result.stdout);
 }
 
-test('Project Studio: Exactly 2 new flagship projects with complete milestone fields', () => {
-  assert.equal(studioProjects.length, 2);
-  const ids = ['expense-tracker-pro', 'inventory-management-pro'];
+test('Project Studio: Flagship projects with complete milestone fields', () => {
+  assert.equal(studioProjects.length, 3);
+  const ids = ['expense-tracker-pro', 'inventory-management-pro', 'event-scheduler-pro'];
   studioProjects.forEach((p, idx) => {
     assert.equal(p.id, ids[idx]);
     assert.ok(p.title.length > 10);
@@ -55,7 +55,7 @@ test('Project Studio: Exactly 2 new flagship projects with complete milestone fi
     assert.ok(p.brief.whatYouWillBuild.length > 20);
     assert.ok(p.brief.requiredKnowledge.length >= 3);
     assert.ok(p.brief.sampleInputOutput.output.length > 10);
-    assert.equal(p.milestones.length, 3);
+    assert.ok(p.milestones.length >= 3);
     assert.ok(p.finalSolution.length > 50);
     assert.ok(p.readmeTemplate.length > 30);
   });
@@ -113,12 +113,28 @@ test('Project Studio: Inventory Management Pro milestone reference solutions pas
   assert.ok(finalRes.output.includes('Stock Report') && finalRes.output.includes('Total Valuation: ₹555.00'));
 });
 
+test('Project Studio: Event Scheduling Pro milestone reference solutions pass automated tests', () => {
+  const eventProj = studioProjects.find(p => p.id === 'event-scheduler-pro');
+  assert.ok(eventProj);
+
+  let cumulative = '';
+  for (const m of eventProj.milestones) {
+    cumulative += '\n' + m.solution;
+    const res = python(cumulative + '\n' + m.testSuite);
+    assert.ok(!res.error, `Event Scheduler Milestone ${m.index} failed: ${res.error}`);
+  }
+
+  const finalRes = python(eventProj.finalSolution);
+  assert.ok(!finalRes.error, `Event Scheduler final script error: ${finalRes.error}`);
+  assert.ok(finalRes.output.includes('SCHEDULE REPORT') && finalRes.output.includes('Total Events'));
+});
+
 test('Project Studio: Starter code fails milestone assertions (no fake passes)', () => {
   for (const p of studioProjects) {
     for (const m of p.milestones) {
       const res = python(m.starter + '\n' + m.testSuite);
       assert.ok(
-        res.error && (res.error.includes('AssertionError') || res.error.includes('NameError') || res.error.includes('TypeError')),
+        res.error && (res.error.includes('AssertionError') || res.error.includes('NameError') || res.error.includes('TypeError') || res.error.includes('AttributeError')),
         `${p.id} milestone ${m.index} starter should have failed test suite`
       );
     }

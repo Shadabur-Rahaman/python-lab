@@ -1,7 +1,7 @@
 import BeginnerHome from './components/BeginnerHome';
 import {ReceiptEditor,ReceiptLesson} from './components/ReceiptWorkspace';
 import {lazy,Suspense,useEffect,useState} from 'react';
-import {ArrowRight,ArrowUpRight,BookOpen,Code2,FlaskConical,Home,Menu,Moon,Sun,Target,Trophy,FolderOpen,Search,Check,ChevronRight,Terminal,Compass,Download} from 'lucide-react';
+import {ArrowRight,ArrowUpRight,BookOpen,Code2,FlaskConical,Home,Menu,Moon,Sun,Target,Trophy,FolderOpen,Search,Check,ChevronRight,Terminal,Compass,Download,Sparkles} from 'lucide-react';
 import {chapters as beginner,allTasks,revisionQuiz} from './data/curriculum';
 import {buildCatalog,lessonNeighbors} from './data/catalog.mjs';
 import {projects} from './data/projects';
@@ -17,6 +17,7 @@ import CourseCatalog from './components/CourseCatalog';
 import PracticeView from './components/PracticeView';
 import ProgressBackup from './components/ProgressBackup';
 import IntermediatePathView from './components/IntermediatePathView';
+import AdvancedPathView from './components/AdvancedPathView';
 import StudentMarksAnalyzerView from './components/StudentMarksAnalyzerView';
 import ProjectStudioView from './components/ProjectStudioView';
 import {studioProjects} from './data/projectStudioData';
@@ -31,7 +32,7 @@ const SyntaxAcademy = lazy(() => import('./components/SyntaxAcademy'));
 const catalog = buildCatalog(beginner, projects);
 const chapters = catalog.lessons;
 const groups = [
- ['Course', [['home','Home',Home],['chapters','Learn',BookOpen],['intermediate','Intermediate',Compass],['practice','Practice',Code2],
+ ['Course', [['home','Home',Home],['chapters','Learn',BookOpen],['intermediate','Intermediate',Compass],['advanced','Advanced',Sparkles],['practice','Practice',Code2],
    ['syntax','Syntax',Code2],['projects','Projects',FolderOpen],['progress','Progress',Trophy]]],
  ['Learning tools', [['playground','Python Playground',Terminal],['lab','Experiment Lab',FlaskConical],['quiz','Quiz Arena',Target],
    ['keywords','Python Keywords',Code2],['glossary','Bilingual Glossary',BookOpen],['resources','Study Materials',FolderOpen]]],
@@ -154,7 +155,7 @@ export default function App(){
  const selectedQuiz=quizTopic==='applied'?checkpoints.map(item=>item.question):quizTopic==='revision'?revisionQuiz:
    (beginner.find(item=>String(item.id)===quizTopic)??expanded?.find(item=>String(item.id)===quizTopic))?.quiz;
  const waiting=needsExpanded&&!expanded;
- const titles:Record<string,string>={playground:'Python Playground',keywords:'Python Keywords',home:'Your learning dashboard',chapters:'Your Python roadmap',intermediate:'Intermediate Python Learning Path',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||studioProject?.title||'Real-World Project Studio',progress:'Look how far you’ve come.'};
+ const titles:Record<string,string>={playground:'Python Playground',keywords:'Python Keywords',home:'Your learning dashboard',chapters:'Your Python roadmap',intermediate:'Intermediate Python Learning Path',advanced:'Advanced Python & Software Engineering Studio',syntax:'Python Syntax Academy',glossary:'Bilingual Glossary',search:'Search Python Lab',resources:'Study Materials',chapter:metadata?.title||'Chapter',practice:'A little practice. A lot of progress.',lab:'Experiment Lab',quiz:'Quiz Arena',projects:project?.title||studioProject?.title||'Real-World Project Studio',progress:'Look how far you’ve come.'};
  const themeButton=<button className="icon-button" onClick={()=>setDark(!dark)} aria-label={dark?'Switch to light mode':'Switch to dark mode'}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>;
  if(teacherRoute) return <div className="studio-shell">
    <header className="studio-header"><a href={link('home')} className="studio-brand"><Code2 size={22}/> Python Lab</a>{themeButton}</header>
@@ -207,6 +208,10 @@ export default function App(){
            <a href={link('chapters')}>Learn</a>
            <ChevronRight size={14} aria-hidden="true"/>
            <span aria-current="page">Intermediate Python{id ? ` · Module ${id}` : ''}</span>
+         </> : page==='advanced' ? <>
+           <a href={link('chapters')}>Learn</a>
+           <ChevronRight size={14} aria-hidden="true"/>
+           <span aria-current="page">Advanced Python{id ? ` · Module ${id}` : ''}</span>
          </> : page==='projects' && id==='student-marks-analyzer' ? <>
            <a href={link('projects')}>Projects</a>
            <ChevronRight size={14} aria-hidden="true"/>
@@ -234,9 +239,10 @@ export default function App(){
  <main id="main" tabIndex={-1}>{notice&&<p className="feedback" role="alert">{notice}</p>}
  {page==='home'?<BeginnerHome next={next} completed={progress.completed.length} total={chapters.length}
    percent={coursePercent} returning={progress.visited.length>0} onRun={firstProgram}/>:
- <><div className="page-heading"><span className="eyebrow">PYTHON LAB / {page==='chapter'?`CHAPTER ${metadata?.id ?? ""}`:page.toUpperCase()}</span><h1>{titles[page]||'Find your next step'}</h1><p>{page==='chapters'?'A clear path from your first line of code to your first real project. Every chapter is open to explore.':page==='practice'?'Run to experiment. Check Answer to verify your solution. Mistakes are part of the process.':page==='lab'?'A safe place to ask “what if?”. This is real Python, right in your browser.':page==='quiz'?'Strengthen your understanding, one good question at a time.':page==='projects'?'Useful skills become useful things. Build real-world Python applications with guided milestones and file exports.':page==='progress'?'Track the chapters, exercises and projects you’ve completed.':page==='resources'?'Notes, presentations, exercises, reference sheets and downloadable resources for your Python course.':metadata?.subtitle}</p></div>
+ <><div className="page-heading"><span className="eyebrow">PYTHON LAB / {page==='chapter'?`CHAPTER ${metadata?.id ?? ""}`:page.toUpperCase()}</span><h1>{titles[page]||'Find your next step'}</h1><p>{page==='chapters'?'A clear path from your first line of code to your first real project. Every chapter is open to explore.':page==='practice'?'Run to experiment. Check Answer to verify your solution. Mistakes are part of the process.':page==='lab'?'A safe place to ask “what if?”. This is real Python, right in your browser.':page==='quiz'?'Strengthen your understanding, one good question at a time.':page==='projects'?'Useful skills become useful things. Build real-world Python applications with guided milestones and file exports.':page==='progress'?'Track the chapters, exercises and projects you’ve completed.':page==='intermediate'?'Bridging fundamentals and production-grade Python with five practical modules.':page==='advanced'?'Master software architecture, functional metaprogramming, exception hierarchies, and maintainable systems.':page==='resources'?'Notes, presentations, exercises, reference sheets and downloadable resources for your Python course.':metadata?.subtitle}</p></div>
  {page==='chapters'&&<CourseCatalog catalog={catalog} progress={progress}/>}
  {page==='intermediate'&&<IntermediatePathView initialModuleId={id}/>}
+ {page==='advanced'&&<AdvancedPathView initialModuleId={id}/>}
  {page==='resources'&&<Suspense fallback={<p role="status">Loading library…</p>}><ResourceLibrary key={route} lessons={chapters}/></Suspense>}
  {page==='keywords'&&<Suspense fallback={<p role="status">Loading keywords…</p>}><Keywords/></Suspense>}
  {page==='glossary'&&<Suspense fallback={<p role="status">Loading glossary…</p>}><GlossaryPage id={id}/></Suspense>}

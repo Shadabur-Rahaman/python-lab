@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-11-16T13:45:04.887Z",
+  "timestamp": "2026-11-16T19:49:04.374Z",
   "git": {
-    "head": "034bc23b41480a403fdd92882ccf10bd698b1442",
+    "head": "7190403dea0d19ec15e86e32db30d7ffc43f13b7",
     "branch": "main",
     "dirty": true
   },
@@ -14,22 +14,29 @@
   "unitTests": {
     "runner": "node:test (Node.js built-in)",
     "command": "node --test tests/*.test.mjs",
-    "total": 58,
-    "passed": 58,
+    "total": 68,
+    "passed": 68,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 36457.3671
+    "durationMs": 33310.7353
   },
   "browserTests": {
     "runner": "@playwright/test",
     "command": "npx playwright test --reporter=json",
-    "fileCount": 20,
-    "totalDiscovered": 103,
-    "passed": 103,
+    "fileCount": 21,
+    "totalDiscovered": 108,
+    "passed": 108,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 452276,
+    "durationMs": 376465,
     "files": [
+      {
+        "file": "advanced-path.spec.ts",
+        "tests": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
       {
         "file": "beginner-visuals.spec.ts",
         "tests": 6,

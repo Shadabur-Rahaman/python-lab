@@ -485,6 +485,476 @@ python inventory_manager.py
 \`\`\`
 `,
   },
+  {
+    id: 'event-scheduler-pro',
+    title: 'Event Scheduling & Conflict Detection System',
+    difficulty: 'Advanced',
+    estimatedMinutes: 40,
+    chapters: [11, 14, 15, 16],
+    category: 'Application Logic',
+    brief: {
+      scenario: 'You are tasked with building the core scheduling engine for a conference and co-working hub. Organizers submit room reservations, tech talks, and client meetings. Without automated verification, double-booked rooms and overlapping intervals cause chaos. This system models events with defensive object validation, detects temporal collisions, sorts schedules chronologically, resolves conflicts via greedy interval scheduling, and generates formatted reports.',
+      whatYouWillBuild: 'A robust scheduling engine featuring custom exceptions, encapsulated event models, interval overlap algorithms, greedy conflict-free schedule resolvers, and automated test coverage.',
+      requiredKnowledge: [
+        'Custom Exception Hierarchies (InvalidEventError)',
+        'Class Modeling & @property getters (duration)',
+        'Algorithmic Interval Overlap Math: max(start1, start2) < min(end1, end2)',
+        'Sorting with Multi-Key Lambdas',
+        'Greedy Earliest-End-Time Interval Scheduling',
+        'Automated Test Verification with unittest',
+      ],
+      expectedOutcome: 'A complete Python application that models validated events, detects overlapping schedules, eliminates double bookings, and formats human-readable agenda reports.',
+      sampleInputOutput: {
+        output: '=== SCHEDULE REPORT ===\n09.0 - 10.0 | Keynote (Main Hall) [1.0h]\n11.0 - 12.0 | Lunch & Networking (Cafeteria) [1.0h]\nTotal Events: 2 | Conflicts Detected: 0',
+      },
+    },
+    sampleData: {
+      filename: 'events.json',
+      content: '[\n  {"id": "e1", "title": "Opening Keynote", "start": 9.0, "end": 10.0, "location": "Auditorium"},\n  {"id": "e2", "title": "AI Workshop", "start": 9.5, "end": 11.0, "location": "Lab 1"},\n  {"id": "e3", "title": "Networking Lunch", "start": 11.0, "end": 12.0, "location": "Dining Hall"}\n]',
+    },
+    milestones: [
+      {
+        index: 1,
+        title: 'Milestone 1: Event Data Modeling & Defensive Validation',
+        objective: 'Define InvalidEventError and the Event class with validated fields and duration property.',
+        instructions: 'Define InvalidEventError(ValueError). Define Event(id, title, start_time, end_time, location="TBD"). Verify id and title are non-empty strings. Cast start_time and end_time to float; verify start_time >= 0 and end_time > start_time. If any check fails, raise InvalidEventError. Store location stripped (defaulting to "TBD" if blank). Provide @property duration returning round(end_time - start_time, 2). Provide __repr__ returning f"Event(id={self.id!r}, title={self.title!r}, start={self.start_time}, end={self.end_time})".',
+        starter: `class InvalidEventError(ValueError):
+    pass
+
+class Event:
+    def __init__(self, id: str, title: str, start_time: float, end_time: float, location: str = "TBD"):
+        # Validate inputs and initialize attributes
+        pass
+
+    @property
+    def duration(self) -> float:
+        pass
+
+    def __repr__(self) -> str:
+        pass`,
+        solution: `class InvalidEventError(ValueError):
+    pass
+
+class Event:
+    def __init__(self, id: str, title: str, start_time: float, end_time: float, location: str = "TBD"):
+        if not isinstance(id, str) or not id.strip():
+            raise InvalidEventError("Event ID must be a non-empty string")
+        if not isinstance(title, str) or not title.strip():
+            raise InvalidEventError("Event title must be a non-empty string")
+        try:
+            start = float(start_time)
+            end = float(end_time)
+        except (TypeError, ValueError):
+            raise InvalidEventError("Times must be numbers")
+        if start < 0:
+            raise InvalidEventError("Start time cannot be negative")
+        if end <= start:
+            raise InvalidEventError("End time must be strictly greater than start time")
+
+        self.id = id.strip()
+        self.title = title.strip()
+        self.start_time = start
+        self.end_time = end
+        self.location = str(location).strip() or "TBD"
+
+    @property
+    def duration(self) -> float:
+        return round(self.end_time - self.start_time, 2)
+
+    def __repr__(self) -> str:
+        return f"Event(id={self.id!r}, title={self.title!r}, start={self.start_time}, end={self.end_time})"`,
+        expectedBehavior: 'Creates validated Event instances with duration calculation; raises InvalidEventError on invalid bounds.',
+        testSuite: `
+e = Event("e1", "Sprint Planning", 9.0, 10.5, "Room 101")
+assert e.id == "e1"
+assert e.title == "Sprint Planning"
+assert e.start_time == 9.0
+assert e.end_time == 10.5
+assert e.duration == 1.5
+assert e.location == "Room 101"
+assert repr(e) == "Event(id='e1', title='Sprint Planning', start=9.0, end=10.5)"
+
+# Test default location
+e_default = Event("e2", "Quick Sync", 14.0, 14.5)
+assert e_default.location == "TBD"
+
+# Test defensive validations
+try:
+    Event("", "Bad ID", 9.0, 10.0)
+    assert False, "Should raise on empty ID"
+except InvalidEventError:
+    pass
+
+try:
+    Event("e3", "Bad Time", 10.0, 9.0)
+    assert False, "Should raise when end <= start"
+except InvalidEventError:
+    pass
+
+try:
+    Event("e4", "Zero Duration", 10.0, 10.0)
+    assert False, "Should raise on zero duration"
+except InvalidEventError:
+    pass
+
+try:
+    Event("e5", "Negative Start", -1.0, 2.0)
+    assert False, "Should raise on negative start time"
+except InvalidEventError:
+    pass
+
+assert issubclass(InvalidEventError, ValueError)
+print("Milestone 1 tests passed!")
+`,
+        testCasesDescription: [
+          'Instantiates valid Event with accurate duration and string representation',
+          'Defaults location to TBD when omitted or whitespace',
+          'Raises InvalidEventError when end_time <= start_time or start_time is negative',
+          'Raises InvalidEventError when id or title is empty or not a string',
+        ],
+        hints: [
+          'Derive InvalidEventError from ValueError: class InvalidEventError(ValueError): pass.',
+          'Convert start and end using float(), then check start < 0 or end <= start.',
+          'Compute duration as round(self.end_time - self.start_time, 2) under @property.',
+        ],
+        explanation: 'Enforcing invariant bounds (start >= 0 and end > start) directly inside __init__ guarantees that corrupt or backward intervals never enter the scheduling system.',
+        hinglishTip: 'Event create karte waqt end_time hamesha start_time se bada hona chahiye, warna InvalidEventError raise karo.',
+      },
+      {
+        index: 2,
+        title: 'Milestone 2: Chronological Ordering & Conflict Detection',
+        objective: 'Implement is_overlapping(a, b) and find_conflicts(events) to identify overlapping schedules.',
+        instructions: 'Define is_overlapping(event_a: Event, event_b: Event) -> bool. Two events overlap if and only if max(a.start_time, b.start_time) < min(a.end_time, b.end_time). Note: adjacent events where event_a.end_time == event_b.start_time do NOT overlap. Define find_conflicts(events: list[Event]) -> list[tuple[Event, Event]]. Compare all unique pairs in events. If two events overlap, include them as a tuple (event_i, event_j). Return the list of conflicting pairs.',
+        starter: `def is_overlapping(event_a: Event, event_b: Event) -> bool:
+    # Return True if intervals overlap
+    pass
+
+def find_conflicts(events: list[Event]) -> list[tuple[Event, Event]]:
+    # Find all pairs of overlapping events
+    pass`,
+        solution: `def is_overlapping(event_a: Event, event_b: Event) -> bool:
+    return max(event_a.start_time, event_b.start_time) < min(event_a.end_time, event_b.end_time)
+
+def find_conflicts(events: list[Event]) -> list[tuple[Event, Event]]:
+    conflicts = []
+    n = len(events)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if is_overlapping(events[i], events[j]):
+                conflicts.append((events[i], events[j]))
+    return conflicts`,
+        expectedBehavior: 'Accurately flags interval overlaps while correctly treating adjacent back-to-back events as non-conflicting.',
+        testSuite: `
+a = Event("1", "Keynote", 9.0, 10.0)
+b = Event("2", "Workshop", 9.5, 11.0)
+c = Event("3", "Lunch", 10.0, 11.0)
+d = Event("4", "Closing", 11.5, 12.5)
+
+# a (9-10) and b (9.5-11) overlap
+assert is_overlapping(a, b) is True
+
+# a (9-10) and c (10-11) are adjacent; they do NOT overlap
+assert is_overlapping(a, c) is False
+
+# b (9.5-11) and c (10-11) overlap
+assert is_overlapping(b, c) is True
+
+# a and d do not overlap
+assert is_overlapping(a, d) is False
+
+conflicts = find_conflicts([a, b, c, d])
+assert len(conflicts) == 2
+assert (a, b) in conflicts
+assert (b, c) in conflicts
+assert (a, c) not in conflicts
+
+# No conflicts in disjoint set
+clean_conflicts = find_conflicts([a, c, d])
+assert len(clean_conflicts) == 0
+
+print("Milestone 2 tests passed!")
+`,
+        testCasesDescription: [
+          'Correctly identifies partial and full overlaps between two events',
+          'Recognizes that adjacent events touching at the boundary do not conflict',
+          'Detects all conflicting pairs in a multi-event list',
+          'Returns an empty list when all events are disjoint',
+        ],
+        hints: [
+          'Mathematical formula for overlap: max(a.start_time, b.start_time) < min(a.end_time, b.end_time).',
+          'Adjacent check: If a ends at 10.0 and b starts at 10.0, max(9, 10) < min(10, 11) -> 10 < 10 is False.',
+          'Loop with nested index: for i in range(n): for j in range(i + 1, n): to check each pair once.',
+        ],
+        explanation: 'Using max(starts) < min(ends) is the canonical interval intersection test in computational geometry and calendar systems.',
+        hinglishTip: 'Do events tab overlap hote hain jab max(start1, start2) < min(end1, end2). Agar start2 == end1 ho toh overlap nahi maana jata!',
+      },
+      {
+        index: 3,
+        title: 'Milestone 3: Schedule Manager & Greedy Conflict Resolver',
+        objective: 'Implement ScheduleManager with sorted event queries and greedy conflict-free scheduling.',
+        instructions: 'Define ScheduleManager class:\n1. __init__(self): initializes an internal empty list of events.\n2. add_event(self, event: Event): validates that event is an instance of Event (raise InvalidEventError otherwise) and appends it.\n3. get_events(self) -> list[Event]: returns events sorted chronologically by (start_time, end_time, title).\n4. get_conflicts(self) -> list[tuple[Event, Event]]: returns all conflicting pairs among stored events.\n5. resolve_conflicts_greedy(self) -> list[Event]: returns a maximum-size subset of mutually non-overlapping events using the greedy earliest-end-time algorithm: sort all events by end_time, then start_time; greedily select each event whose start_time >= last_selected.end_time. Return the selected events sorted by start_time.',
+        starter: `class ScheduleManager:
+    def __init__(self):
+        # Initialize internal storage
+        pass
+
+    def add_event(self, event: Event):
+        pass
+
+    def get_events(self) -> list[Event]:
+        pass
+
+    def get_conflicts(self) -> list[tuple[Event, Event]]:
+        pass
+
+    def resolve_conflicts_greedy(self) -> list[Event]:
+        pass`,
+        solution: `class ScheduleManager:
+    def __init__(self):
+        self._events = []
+
+    def add_event(self, event: Event):
+        if not isinstance(event, Event):
+            raise InvalidEventError("Expected an Event instance")
+        self._events.append(event)
+
+    def get_events(self) -> list[Event]:
+        return sorted(self._events, key=lambda e: (e.start_time, e.end_time, e.title))
+
+    def get_conflicts(self) -> list[tuple[Event, Event]]:
+        return find_conflicts(self.get_events())
+
+    def resolve_conflicts_greedy(self) -> list[Event]:
+        if not self._events:
+            return []
+        # Sort by earliest finish time
+        ordered = sorted(self._events, key=lambda e: (e.end_time, e.start_time))
+        selected = []
+        last_end = -1.0
+        for e in ordered:
+            if e.start_time >= last_end:
+                selected.append(e)
+                last_end = e.end_time
+        return sorted(selected, key=lambda e: (e.start_time, e.end_time))`,
+        expectedBehavior: 'Organizes schedule records, sorts chronologically, and resolves overlapping schedules via greedy interval selection.',
+        testSuite: `
+sm = ScheduleManager()
+e1 = Event("1", "Morning Keynote", 9.0, 10.0, "Auditorium")
+e2 = Event("2", "AI Deep Dive", 9.5, 11.5, "Hall A")
+e3 = Event("3", "DevOps Talk", 10.0, 11.0, "Hall B")
+e4 = Event("4", "Closing Remarks", 11.0, 12.0, "Auditorium")
+
+sm.add_event(e4)
+sm.add_event(e1)
+sm.add_event(e2)
+sm.add_event(e3)
+
+# Chronological sorting check
+all_evs = sm.get_events()
+assert [e.id for e in all_evs] == ["1", "2", "3", "4"]
+
+# Conflict check: e2 (9.5-11.5) overlaps with e1 (9-10) and e3 (10-11) and e4 (11-12)
+conflicts = sm.get_conflicts()
+assert len(conflicts) >= 2
+
+# Greedy resolver: should select e1 (9-10), e3 (10-11), and e4 (11-12)
+optimal = sm.resolve_conflicts_greedy()
+assert [e.id for e in optimal] == ["1", "3", "4"]
+assert len(find_conflicts(optimal)) == 0
+
+# Test invalid event insertion
+try:
+    sm.add_event({"title": "Not an event"})
+    assert False, "Should raise InvalidEventError on dict"
+except InvalidEventError:
+    pass
+
+print("Milestone 3 tests passed!")
+`,
+        testCasesDescription: [
+          'Appends valid events and returns chronologically sorted listings',
+          'Identifies all pairwise conflicts within the manager',
+          'Applies greedy interval scheduling to pick optimal non-conflicting subset',
+          'Rejects non-Event objects with InvalidEventError',
+        ],
+        hints: [
+          'Sort events in get_events() using key=lambda e: (e.start_time, e.end_time, e.title).',
+          'In resolve_conflicts_greedy, sort by e.end_time first. Keep track of last_end; if e.start_time >= last_end, select it.',
+          'Remember to check isinstance(event, Event) in add_event.',
+        ],
+        explanation: 'The greedy interval scheduling algorithm is proven optimal: by choosing events that finish earliest, it leaves maximum remaining time for subsequent events.',
+        hinglishTip: 'Greedy conflict resolution me hamesha end_time ke hisaab se sort karo. Jo pehle khatam hoga, use pehle select karo taaki aage ke events ke liye time bache.',
+      },
+      {
+        index: 4,
+        title: 'Milestone 4: Formatted Reporting & Automated Verification',
+        objective: 'Implement generate_schedule_report(events) and write an automated verification test suite.',
+        instructions: 'Define generate_schedule_report(events: list[Event]) -> str:\n1. If events is empty, return "No events scheduled."\n2. Otherwise, produce a clean multi-line string starting with "=== SCHEDULE REPORT ===".\n3. For each event (sorted chronologically), print a line: f"{e.start_time:04.1f} - {e.end_time:04.1f} | {e.title} ({e.location}) [{e.duration}h]".\n4. Followed by a summary line: f"Total Events: {len(events)} | Conflicts Detected: {len(find_conflicts(events))}".\n5. Implement a complete demonstration and automated test verification.',
+        starter: `def generate_schedule_report(events: list[Event]) -> str:
+    # Format readable schedule with metrics and conflicts
+    pass`,
+        solution: `def generate_schedule_report(events: list[Event]) -> str:
+    if not events:
+        return "No events scheduled."
+    sorted_events = sorted(events, key=lambda e: (e.start_time, e.end_time, e.title))
+    lines = ["=== SCHEDULE REPORT ==="]
+    for e in sorted_events:
+        lines.append(f"{e.start_time:04.1f} - {e.end_time:04.1f} | {e.title} ({e.location}) [{e.duration}h]")
+    conflicts = find_conflicts(sorted_events)
+    lines.append(f"Total Events: {len(sorted_events)} | Conflicts Detected: {len(conflicts)}")
+    return "\\n".join(lines)`,
+        expectedBehavior: 'Generates structured schedule reports with time blocks, durations, locations, and conflict totals.',
+        testSuite: `
+events = [
+    Event("1", "Keynote", 9.0, 10.0, "Auditorium"),
+    Event("2", "Workshop", 10.0, 11.5, "Lab 2"),
+]
+
+report = generate_schedule_report(events)
+assert "=== SCHEDULE REPORT ===" in report
+assert "09.0 - 10.0 | Keynote (Auditorium) [1.0h]" in report
+assert "10.0 - 11.5 | Workshop (Lab 2) [1.5h]" in report
+assert "Total Events: 2 | Conflicts Detected: 0" in report
+
+empty_rep = generate_schedule_report([])
+assert empty_rep == "No events scheduled."
+
+conflicting = [
+    Event("1", "A", 9.0, 10.0),
+    Event("2", "B", 9.5, 10.5),
+]
+conf_rep = generate_schedule_report(conflicting)
+assert "Total Events: 2 | Conflicts Detected: 1" in conf_rep
+
+print("Milestone 4 tests passed!")
+`,
+        testCasesDescription: [
+          'Generates formatted text report with exact start, end, location, and duration',
+          'Includes accurate count of total events and detected conflicts',
+          'Handles empty schedule list gracefully',
+        ],
+        hints: [
+          'Sort events before formatting: sorted(events, key=lambda e: (e.start_time, e.end_time, e.title)).',
+          'Format hours with :04.1f (e.g. f"{e.start_time:04.1f}").',
+          'Call find_conflicts(sorted_events) to calculate the conflict count.',
+        ],
+        explanation: 'Clean report generators provide operators with instantaneous visibility into schedule sanity, venue utilization, and double-booking risks.',
+        hinglishTip: 'Report me empty list pe "No events scheduled." return karo, aur formatted lines ko "\\n".join(lines) se combine karo.',
+      },
+    ],
+    finalSolution: `class InvalidEventError(ValueError):
+    pass
+
+class Event:
+    def __init__(self, id: str, title: str, start_time: float, end_time: float, location: str = "TBD"):
+        if not isinstance(id, str) or not id.strip():
+            raise InvalidEventError("Event ID must be a non-empty string")
+        if not isinstance(title, str) or not title.strip():
+            raise InvalidEventError("Event title must be a non-empty string")
+        try:
+            start = float(start_time)
+            end = float(end_time)
+        except (TypeError, ValueError):
+            raise InvalidEventError("Times must be numbers")
+        if start < 0:
+            raise InvalidEventError("Start time cannot be negative")
+        if end <= start:
+            raise InvalidEventError("End time must be strictly greater than start time")
+
+        self.id = id.strip()
+        self.title = title.strip()
+        self.start_time = start
+        self.end_time = end
+        self.location = str(location).strip() or "TBD"
+
+    @property
+    def duration(self) -> float:
+        return round(self.end_time - self.start_time, 2)
+
+    def __repr__(self) -> str:
+        return f"Event(id={self.id!r}, title={self.title!r}, start={self.start_time}, end={self.end_time})"
+
+    def __str__(self) -> str:
+        return f"[{self.start_time:04.1f} - {self.end_time:04.1f}] {self.title} @ {self.location}"
+
+def is_overlapping(event_a: Event, event_b: Event) -> bool:
+    return max(event_a.start_time, event_b.start_time) < min(event_a.end_time, event_b.end_time)
+
+def find_conflicts(events: list[Event]) -> list[tuple[Event, Event]]:
+    conflicts = []
+    n = len(events)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if is_overlapping(events[i], events[j]):
+                conflicts.append((events[i], events[j]))
+    return conflicts
+
+class ScheduleManager:
+    def __init__(self):
+        self._events = []
+
+    def add_event(self, event: Event):
+        if not isinstance(event, Event):
+            raise InvalidEventError("Expected an Event instance")
+        self._events.append(event)
+
+    def get_events(self) -> list[Event]:
+        return sorted(self._events, key=lambda e: (e.start_time, e.end_time, e.title))
+
+    def get_conflicts(self) -> list[tuple[Event, Event]]:
+        return find_conflicts(self.get_events())
+
+    def resolve_conflicts_greedy(self) -> list[Event]:
+        if not self._events:
+            return []
+        ordered = sorted(self._events, key=lambda e: (e.end_time, e.start_time))
+        selected = []
+        last_end = -1.0
+        for e in ordered:
+            if e.start_time >= last_end:
+                selected.append(e)
+                last_end = e.end_time
+        return sorted(selected, key=lambda e: (e.start_time, e.end_time))
+
+def generate_schedule_report(events: list[Event]) -> str:
+    if not events:
+        return "No events scheduled."
+    sorted_events = sorted(events, key=lambda e: (e.start_time, e.end_time, e.title))
+    lines = ["=== SCHEDULE REPORT ==="]
+    for e in sorted_events:
+        lines.append(f"{e.start_time:04.1f} - {e.end_time:04.1f} | {e.title} ({e.location}) [{e.duration}h]")
+    conflicts = find_conflicts(sorted_events)
+    lines.append(f"Total Events: {len(sorted_events)} | Conflicts Detected: {len(conflicts)}")
+    return "\\n".join(lines)
+
+sm = ScheduleManager()
+sm.add_event(Event("1", "Keynote Speech", 9.0, 10.0, "Auditorium"))
+sm.add_event(Event("2", "Machine Learning Lab", 9.5, 11.5, "Hall A"))
+sm.add_event(Event("3", "DevOps & Cloud", 10.0, 11.0, "Hall B"))
+sm.add_event(Event("4", "Community Lunch", 11.0, 12.0, "Cafeteria"))
+
+print(generate_schedule_report(sm.get_events()))
+print("")
+print("--- Resolving Conflicts (Greedy Algorithm) ---")
+optimal = sm.resolve_conflicts_greedy()
+print(generate_schedule_report(optimal))
+`,
+    readmeTemplate: `# Event Scheduling & Conflict Detection System
+
+A deterministic scheduling and interval conflict resolution engine in Python 3.
+
+## Features
+- **Object Invariant Validation**: Custom \`InvalidEventError\` guards against negative start times, non-string IDs, and backward intervals (\`end <= start\`).
+- **Interval Overlap Detection**: Mathematical evaluation \`max(start1, start2) < min(end1, end2)\` safely distinguishing overlapping vs adjacent intervals.
+- **Greedy Conflict Resolution**: Earliest-deadline-first interval scheduling yielding a maximum-size non-overlapping itinerary.
+- **Formatted Agendas**: Human-readable terminal schedule reports with duration, location, and conflict summaries.
+
+## Running
+\`\`\`bash
+python event_scheduler.py
+\`\`\`
+`,
+  },
 ];
 
 export function generateProjectReadme(project: StudioProject, studentCode: string): string {

@@ -65,9 +65,9 @@ test.describe('Project Studio & Student Portfolio', () => {
     await expect(page.locator('.metric-lbl').filter({hasText: 'In Progress'})).toBeVisible();
     await expect(page.locator('.metric-lbl').filter({hasText: 'Milestones Solved'})).toBeVisible();
 
-    // Project cards in portfolio
+    // Project cards in portfolio (3 flagship projects + 1 capstone = 4)
     const cards = page.locator('.portfolio-project-card');
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(4);
     await expect(page.getByRole('button', {name: /Start Project|Continue Project|Review Code/i}).first()).toBeVisible();
   });
 

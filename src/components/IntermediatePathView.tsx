@@ -641,6 +641,20 @@ export default function IntermediatePathView({initialModuleId, onNavigate}: Prop
           Open Capstone Project <ArrowRight size={16} />
         </a>
       </div>
+
+      {/* Advanced Learning Path Onward Bridge */}
+      <div className="card catalog-advanced-banner">
+        <div className="banner-content">
+          <span className="eyebrow"><Sparkles size={14} /> NEXT STAGE IN YOUR JOURNEY</span>
+          <h3>Advanced Python & Software Engineering Studio</h3>
+          <p>
+            Ready for the next level? Master composition, dataclasses, decorators, custom exception hierarchies, and high-performance algorithms.
+          </p>
+        </div>
+        <a href="#/advanced" className="button large">
+          Enter Advanced Studio <ArrowRight size={15} />
+        </a>
+      </div>
     </div>
   );
 }
