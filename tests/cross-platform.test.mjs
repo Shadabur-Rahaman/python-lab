@@ -19,7 +19,7 @@ test('Cross-Platform Ecosystem: Python Lab links to valid DS LAB production endp
   assert.ok(appTsx.includes(dsLabUrl), 'App.tsx must include DS LAB production URL');
   assert.ok(intermediateTsx.includes(dsLabUrl), 'IntermediatePathView.tsx must include DS LAB production URL');
   assert.ok(projectStudioTsx.includes(dsLabUrl), 'ProjectStudioView.tsx must include DS LAB production URL');
-  assert.ok(studentMarksTsx.includes('https://shadabur-rahaman.github.io/ds-lab/#/courses'), 'StudentMarksAnalyzerView.tsx must link to DS LAB courses');
+  assert.ok(studentMarksTsx.includes('https://shadabur-rahaman.github.io/ds-lab/courses'), 'StudentMarksAnalyzerView.tsx must link to DS LAB courses');
   assert.ok(catalogTsx.includes(dsLabUrl), 'CourseCatalog.tsx must include DS LAB production URL');
 });
 

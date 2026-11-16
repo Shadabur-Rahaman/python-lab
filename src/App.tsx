@@ -181,7 +181,7 @@ export default function App(){
      </div>
      <div className="sidebar-ecosystem">
        <div className="nav-group-title">Learning Ecosystem</div>
-       <a href="https://shadabur-rahaman.github.io/ds-lab/" className="ecosystem-badge-link" target="_blank" rel="noreferrer">
+       <a href="https://shadabur-rahaman.github.io/ds-lab/roadmap" className="ecosystem-badge-link" target="_blank" rel="noreferrer">
          <span className="ecosystem-badge-icon">DS</span>
          <div className="ecosystem-badge-text">
            <strong>DS LAB</strong>

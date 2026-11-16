@@ -32,7 +32,7 @@ export default function CourseCatalog({catalog, progress}: {
         <h3>Data Science Lab (DS LAB)</h3>
         <p>Take your Python skills into Data Science: Learn statistics, SQL, NumPy arrays, Pandas DataFrames, and Machine Learning on real datasets.</p>
       </div>
-      <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="button large">
+      <a href="https://shadabur-rahaman.github.io/ds-lab/courses" target="_blank" rel="noreferrer" className="button large">
         Open DS LAB <ArrowUpRight size={15} />
       </a>
     </div>

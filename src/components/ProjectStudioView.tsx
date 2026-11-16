@@ -146,7 +146,7 @@ export default function ProjectStudioView({selectedProjectId, onSelectProject}: 
 
           <div className="journey-arrow">→</div>
 
-          <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="journey-node future-node ecosystem-node">
+          <a href="https://shadabur-rahaman.github.io/ds-lab/roadmap" target="_blank" rel="noreferrer" className="journey-node future-node ecosystem-node">
             <span className="node-icon"><Cpu size={14} /></span>
             <div className="node-text">
               <small>STAGE 4 · ECOSYSTEM</small>
@@ -540,7 +540,7 @@ export default function ProjectStudioView({selectedProjectId, onSelectProject}: 
                     <span>Iris Classification</span>
                   </div>
                 </div>
-                <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="button primary ds-bridge-action">
+                <a href="https://shadabur-rahaman.github.io/ds-lab/roadmap" target="_blank" rel="noreferrer" className="button primary ds-bridge-action">
                   Explore DS LAB <ArrowUpRight size={16} />
                 </a>
               </div>

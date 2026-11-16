@@ -157,7 +157,7 @@ export default function IntermediatePathView({initialModuleId, onNavigate}: Prop
 
           <div className="journey-arrow">→</div>
 
-          <a href="https://shadabur-rahaman.github.io/ds-lab/" target="_blank" rel="noreferrer" className="journey-node future-node ecosystem-node">
+          <a href="https://shadabur-rahaman.github.io/ds-lab/roadmap" target="_blank" rel="noreferrer" className="journey-node future-node ecosystem-node">
             <span className="node-icon"><Cpu size={14} /></span>
             <div className="node-text">
               <small>STAGE 3 · ECOSYSTEM</small>

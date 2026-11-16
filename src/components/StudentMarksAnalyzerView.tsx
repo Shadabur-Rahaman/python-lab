@@ -373,7 +373,7 @@ python student_marks_analyzer.py
                 <span>Data Visualization Lab</span>
               </div>
             </div>
-            <a href="https://shadabur-rahaman.github.io/ds-lab/#/courses" target="_blank" rel="noreferrer" className="button primary ds-bridge-action">
+            <a href="https://shadabur-rahaman.github.io/ds-lab/courses" target="_blank" rel="noreferrer" className="button primary ds-bridge-action">
               Open DS LAB <ArrowUpRight size={16} />
             </a>
           </div>
